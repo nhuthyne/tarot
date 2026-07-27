@@ -49,7 +49,7 @@
             margin-top: 30px;
         }
 
-        /* --- NÚT HƯỚNG DẪN NỔI (DỄ THƯƠNG) --- */
+        /* --- NÚT HƯỚNG DẪN NỔI --- */
         .guide-btn {
             position: fixed; top: 15px; right: 15px; 
             background: var(--white); padding: 8px 16px;
@@ -60,11 +60,11 @@
         }
         .guide-btn:hover { background: var(--accent-color); color: var(--white); transform: translateY(-2px); }
 
-        /* --- CẨM NANG MODAL (CUTE UI) --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.7); z-index: 9999; display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
+        /* --- MODAL CHUNG --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.85); z-index: 9999; display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
         .guide-content { background: var(--white); width: 100%; max-width: 450px; border-radius: 24px; padding: 25px 20px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 85vh; display: flex; flex-direction: column; }
         @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; color: #94a3b8; cursor: pointer; transition: 0.2s; line-height: 1; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; color: #94a3b8; cursor: pointer; transition: 0.2s; line-height: 1; z-index: 10; }
         .close-btn:hover { color: #ef4444; }
         
         .guide-header { text-align: center; margin-bottom: 15px; }
@@ -82,6 +82,12 @@
 
         .btn-got-it { background: linear-gradient(135deg, #f472b6, #3b82f6); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; width: 100%; transition: 0.3s; }
         .btn-got-it:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3); }
+
+        /* --- MODAL XEM & LƯU ẢNH TRÊN ĐIỆN THOẠI --- */
+        .image-modal-content { background: var(--white); width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .image-preview-wrapper { width: 100%; max-height: 60vh; overflow-y: auto; border-radius: 12px; border: 1px solid var(--card-border); margin: 15px 0; }
+        .image-preview-wrapper img { width: 100%; display: block; border-radius: 12px; -webkit-user-select: auto; user-select: auto; }
+        .image-save-hint { font-size: 0.75rem; color: var(--accent-color); font-weight: 600; margin-bottom: 10px; background: #eff6ff; padding: 8px 12px; border-radius: 8px; width: 100%; }
 
         /* --- WEATHER CARD --- */
         .status-bar { background: linear-gradient(145deg, #1e293b, #0f172a); color: var(--white); border-radius: 20px; padding: 25px 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25); position: relative; overflow: hidden; min-height: 170px; transition: all 0.5s ease; }
@@ -213,31 +219,11 @@
         
         .footer { font-size: 0.7rem; color: #94a3b8; margin-top: 25px; }
 
-        /* ========================================================
-           HACK XUYÊN GIÁP SAFARI: ĐẬP PHẲNG 3D KHI XUẤT ẢNH 
-           ======================================================== */
-        .export-mode .tarot-card { 
-            perspective: none !important; 
-            -webkit-perspective: none !important; 
-        }
-        .export-mode .card-inner { 
-            transform: none !important; 
-            -webkit-transform: none !important; 
-            transform-style: flat !important; 
-            -webkit-transform-style: flat !important; 
-            transition: none !important; 
-            -webkit-transition: none !important;
-        }
-        .export-mode .card-back { 
-            display: none !important; 
-        }
-        .export-mode .card-front { 
-            transform: none !important; 
-            -webkit-transform: none !important; 
-            backface-visibility: visible !important; 
-            -webkit-backface-visibility: visible !important; 
-            z-index: 10 !important; 
-        }
+        /* --- HACK XUYÊN GIÁP SAFARI: ĐẬP PHẲNG 3D KHI XUẤT ẢNH --- */
+        .export-mode .tarot-card { perspective: none !important; -webkit-perspective: none !important; }
+        .export-mode .card-inner { transform: none !important; -webkit-transform: none !important; transform-style: flat !important; -webkit-transform-style: flat !important; transition: none !important; -webkit-transition: none !important; }
+        .export-mode .card-back { display: none !important; }
+        .export-mode .card-front { transform: none !important; -webkit-transform: none !important; backface-visibility: visible !important; -webkit-backface-visibility: visible !important; z-index: 10 !important; }
     </style>
 </head>
 <body>
@@ -441,6 +427,21 @@
         </div>
     </div>
 
+    <!-- MODAL XEM & LƯU ẢNH TRÊN ĐIỆN THOẠI -->
+    <div id="imageModal" class="modal-overlay">
+        <div class="image-modal-content">
+            <span class="close-btn" onclick="closeImageModal()">&times;</span>
+            <h3 style="font-size: 1.1rem; color: var(--primary-color); margin-top: 5px;">Ảnh Kết Quả Trải Bài</h3>
+            <div class="image-preview-wrapper">
+                <img id="export-preview-img" src="" alt="Trải bài Tarot Codelo">
+            </div>
+            <div class="image-save-hint">
+                <i class="fas fa-fingerprint"></i> Mẹo: Nhấn giữ vào ảnh 1-2 giây rồi chọn "Lưu hình ảnh" để lưu vào máy nhé!
+            </div>
+            <button class="btn-got-it" onclick="closeImageModal()">Đóng Cửa Sổ</button>
+        </div>
+    </div>
+
     <!-- MODAL HƯỚNG DẪN CUTE DỄ THƯƠNG -->
     <div id="guideModal" class="modal-overlay">
         <div class="guide-content">
@@ -494,6 +495,14 @@
 
         function openGuide() { document.getElementById('guideModal').style.display = 'flex'; }
         function closeGuide() { document.getElementById('guideModal').style.display = 'none'; localStorage.setItem('bh_guide_seen', 'true'); }
+        
+        function openImageModal(imgUrl) {
+            document.getElementById('export-preview-img').src = imgUrl;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
 
         function initDOB() {
             const daySelect = document.getElementById('dob-day');
@@ -873,15 +882,14 @@
         }
 
         // ==========================================
-        // JS: XUẤT ẢNH FIX MẤT BÀI VÀ FIX QR BẰNG CSS HACK
+        // JS: TÍNH NĂNG LƯU/XUẤT ẢNH HOÀN HẢO CHO ĐIỆN THOẠI
         // ==========================================
         function exportImage(containerId, fileName) {
             const container = document.getElementById(containerId); 
             const oldBg = container.style.background;
-            
-            const footer = document.createElement('div');
-            footer.className = 'export-footer';
-            
+            const footer = document.getElementById('export-footer');
+
+            // Lấy QR Canvas
             const qrCanvas = document.querySelector('#qr-generator-cache canvas');
             let qrDataUrl = '';
             if (qrCanvas) {
@@ -904,7 +912,7 @@
             container.style.background = '#ffffff'; 
             container.appendChild(footer); 
 
-            // Ép tắt toàn bộ 3D để Safari chịu chụp hình
+            // Bẻ phẳng hiệu ứng 3D tạm thời
             container.classList.add('export-mode');
 
             setTimeout(() => {
@@ -913,17 +921,36 @@
                     container.style.background = oldBg;
                     container.removeChild(footer); 
                     
-                    const link = document.createElement('a'); 
-                    link.download = fileName + '.png'; 
-                    link.href = canvas.toDataURL('image/png'); 
-                    link.click();
+                    canvas.toBlob(function(blob) {
+                        if (!blob) {
+                            alert("Có lỗi khi tạo ảnh!");
+                            return;
+                        }
+
+                        // Cách 1: Thử gọi Web Share API native trên điện thoại
+                        const file = new File([blob], fileName + '.png', { type: 'image/png' });
+                        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                            navigator.share({
+                                files: [file],
+                                title: 'Codelo Tarot',
+                                text: 'Thông điệp Tarot dành riêng cho bạn!'
+                            }).catch(() => {
+                                // Nếu người dùng nhấn hủy Share -> mở Khung xem ảnh để lưu tay
+                                openImageModal(URL.createObjectURL(blob));
+                            });
+                        } else {
+                            // Cách 2: Mở Popup xem ảnh để người dùng chạm giữ Lưu vào điện thoại (Hoạt động 100% mọi trình duyệt)
+                            openImageModal(URL.createObjectURL(blob));
+                        }
+                    }, 'image/png');
+
                 }).catch(err => {
                     container.classList.remove('export-mode'); 
                     container.style.background = oldBg;
                     container.removeChild(footer);
-                    alert("Có lỗi khi lưu ảnh, Hy thử lại nhé!");
+                    alert("Có lỗi khi tạo hình ảnh, cậu chủ thử lại nhé!");
                 });
-            }, 600); // Đợi 600ms cho chắc ăn Safari đã vẽ xong dạng phẳng
+            }, 500);
         }
 
         window.onload = function() { 
