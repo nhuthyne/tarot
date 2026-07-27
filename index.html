@@ -32,7 +32,6 @@
             user-select: none; -webkit-user-select: none;
         }
 
-        /* Cho phép tương tác với form cuộn */
         select { user-select: auto; -webkit-user-select: auto; }
         .tarot-card, .btn-business, button, .status-bar, .brand-logo, img { -webkit-user-drag: none; }
 
@@ -85,29 +84,17 @@
         .brand-logo h1 { font-size: 2rem; color: var(--primary-color); letter-spacing: -1px; }
         .brand-logo span { color: var(--accent-color); }
 
-        /* --- DOB SELECTORS (KÉO CHỌN NATIVE) --- */
+        /* --- DOB SELECTORS --- */
         .dob-container { background: var(--white); border: 2px solid var(--card-border); padding: 18px; border-radius: 12px; margin-bottom: 20px; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
         .dob-container label { font-size: 0.85rem; font-weight: 600; color: var(--primary-color); display: block; margin-bottom: 12px; }
         .dob-selectors { display: flex; gap: 10px; width: 100%; }
-        .dob-selectors select {
-            flex: 1; padding: 12px 10px; border: 2px solid var(--card-border); border-radius: 8px;
-            font-family: 'Poppins', sans-serif; outline: none; color: var(--text-color); font-size: 0.95rem;
-            background-color: #f8fafc; cursor: pointer; appearance: none; -webkit-appearance: none;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%2364748b" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4z"/></svg>');
-            background-repeat: no-repeat; background-position: right 10px center; font-weight: 500; text-align: center;
-        }
+        .dob-selectors select { flex: 1; padding: 12px 10px; border: 2px solid var(--card-border); border-radius: 8px; font-family: 'Poppins', sans-serif; outline: none; color: var(--text-color); font-size: 0.95rem; background-color: #f8fafc; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%2364748b" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4z"/></svg>'); background-repeat: no-repeat; background-position: right 10px center; font-weight: 500; text-align: center; }
         .dob-selectors select:focus { border-color: var(--accent-color); background-color: #ffffff; }
         .dob-container p { font-size: 0.7rem; color: #64748b; margin-top: 12px; font-style: italic; line-height: 1.4; text-align: center; }
 
         /* --- MENU --- */
         .action-area { display: flex; flex-direction: column; width: 100%; margin-bottom: 25px; }
-        .btn-business { 
-            display: flex; align-items: center; justify-content: space-between; 
-            background: var(--white); border: 2px solid var(--card-border); 
-            padding: 15px 20px; border-radius: 12px; transition: all 0.3s ease; 
-            width: 100%; cursor: pointer; text-decoration: none; 
-            margin-bottom: 12px; 
-        }
+        .btn-business { display: flex; align-items: center; justify-content: space-between; background: var(--white); border: 2px solid var(--card-border); padding: 15px 20px; border-radius: 12px; transition: all 0.3s ease; width: 100%; cursor: pointer; text-decoration: none; margin-bottom: 12px; }
         .btn-business:last-child { margin-bottom: 0; }
         .btn-content { display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; }
         .btn-title { font-weight: 600; color: var(--primary-color); font-size: 1rem; }
@@ -158,17 +145,21 @@
         .hexagram-title { font-size: 0.7rem; font-weight: 700; color: var(--accent-color); margin-bottom: 5px; text-transform: uppercase; }
         .hexagram-name { font-size: 1.2rem; font-weight: 700; color: var(--primary-color); margin-bottom: 5px; }
 
-        /* --- BOX KẾT QUẢ ĐỌC BÀI --- */
-        .admin-notice-box { background: var(--admin-bg); border-left: 4px solid var(--admin-border); border-radius: 6px; padding: 10px 15px; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 12px; text-align: left; }
-        .notice-icon { font-size: 1.2rem; color: var(--admin-border); margin-top: 2px; }
-        .notice-title { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--admin-border); display: block; margin-bottom: 3px; }
-        .notice-text { font-size: 0.8rem; color: var(--admin-text); font-weight: 500; line-height: 1.3; }
-        
+        /* --- KẾT QUẢ ĐỌC BÀI --- */
         .reading-result-box { background: var(--bg-color); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: left; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); display: none; }
         .reading-title { font-size: 1rem; font-weight: 700; color: var(--accent-color); margin-bottom: 10px; border-bottom: 1px solid var(--card-border); padding-bottom: 5px; text-transform: uppercase; }
         .reading-section { margin-bottom: 10px; }
         .reading-section h4 { font-size: 0.8rem; color: var(--primary-color); margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
         .reading-section p { font-size: 0.8rem; color: var(--text-color); line-height: 1.4; }
+
+        /* --- XUẤT ẢNH QR --- */
+        .export-footer { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 20px; padding-top: 20px; border-top: 2px dashed #cbd5e1; text-align: left; width: 100%; background: #ffffff; }
+        .qr-wrapper { width: 70px; height: 70px; flex-shrink: 0; background: var(--white); border: 2px solid var(--accent-color); border-radius: 10px; padding: 4px; }
+        .qr-wrapper img { width: 100%; height: 100%; object-fit: contain; }
+        .export-promo { display: flex; flex-direction: column; }
+        .promo-title { font-size: 0.95rem; color: var(--primary-color); font-weight: 600; line-height: 1.2; }
+        .promo-title span { color: var(--accent-color); font-weight: 800; }
+        .promo-desc { font-size: 0.75rem; color: #64748b; margin-top: 4px; line-height: 1.4; }
 
         /* --- CONTACT --- */
         .contact-label { font-size: 0.75rem; color: #94a3b8; font-weight: 500; margin-bottom: 10px; text-align: left; text-transform: uppercase; width: 100%; }
@@ -228,7 +219,6 @@
         <!-- MENU CHÍNH -->
         <div id="main-menu" class="section active action-area">
             
-            <!-- NHẬP NGÀY THÁNG NĂM SINH DẠNG CUỘN (KÉO CHỌN) -->
             <div class="dob-container">
                 <label><i class="fas fa-calendar-alt"></i> Ngày tháng năm sinh của bạn:</label>
                 <div class="dob-selectors">
@@ -239,12 +229,13 @@
                 <p>* Lăn chọn ngày sinh để hệ thống kết nối năng lượng chuẩn xác nhất.</p>
             </div>
 
+            <!-- ĐỔI TÊN MENU ĐỂ PHÙ HỢP CHỨC NĂNG MỚI -->
             <button onclick="handleMenuClick('time')" class="btn-business">
                 <div class="btn-content">
-                    <span class="btn-title">Lá Bài Thời Gian</span>
-                    <span class="btn-desc">Thông điệp chi tiết tùy theo lá bài bạn bốc được</span>
+                    <span class="btn-title">Giải Mã 1 Lá Tarot</span>
+                    <span class="btn-desc">Phân tích chuyên sâu ý nghĩa riêng của từng lá bài</span>
                 </div>
-                <div class="btn-icon"><i class="fas fa-clock"></i></div>
+                <div class="btn-icon"><i class="fas fa-search-plus"></i></div>
             </button>
 
             <button onclick="handleMenuClick('yesno')" class="btn-business">
@@ -272,15 +263,15 @@
             </button>
         </div>
 
-        <!-- SECTION: THỜI GIAN -->
+        <!-- SECTION: GIẢI MÃ 1 LÁ -->
         <div id="time-card-section" class="section">
             <div class="sub-controls">
                 <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
                 <button class="btn-action primary" onclick="drawTimeCard()"><i class="fas fa-hand-sparkles"></i> Bốc Bài</button>
-                <button id="btn-export-time" class="btn-action" style="display: none;" onclick="exportImage('time-export-area', 'Codelo-Thong-Diep')"><i class="fas fa-camera"></i> Lưu ảnh</button>
+                <button id="btn-export-time" class="btn-action" style="display: none;" onclick="exportImage('time-export-area', 'Codelo-GiaiMa')"><i class="fas fa-camera"></i> Lưu ảnh</button>
             </div>
             
-            <div id="time-export-area">
+            <div id="time-export-area" style="padding: 10px; border-radius: 12px;">
                 <div id="time-card-result" class="tarot-grid" style="grid-template-columns: 140px; margin-bottom: 15px;"></div>
                 
                 <div class="reading-result-box" id="reading-result-box">
@@ -301,7 +292,7 @@
             </div>
         </div>
 
-        <!-- SECTION: LUẬN ĐÚNG/SAI (YES/NO) -->
+        <!-- SECTION: LUẬN ĐÚNG/SAI -->
         <div id="yesno-section" class="section">
             <div class="sub-controls">
                 <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
@@ -309,7 +300,7 @@
                 <button id="btn-export-yesno" class="btn-action" style="display: none;" onclick="exportImage('yesno-export-area', 'Codelo-YesNo')"><i class="fas fa-camera"></i> Lưu ảnh</button>
             </div>
             
-            <div id="yesno-export-area">
+            <div id="yesno-export-area" style="padding: 10px; border-radius: 12px;">
                 <div id="yesno-card-result" class="tarot-grid" style="grid-template-columns: 140px; margin-bottom: 15px;"></div>
                 
                 <div class="reading-result-box" id="yesno-result-box">
@@ -332,7 +323,7 @@
                 <button class="btn-action" onclick="drawTarot(6, 'tarot-result')">6 Lá</button>
                 <button id="btn-export-tarot" class="btn-action primary" style="display: none;" onclick="exportImage('tarot-export-area', 'Codelo-Trai-Bai')"><i class="fas fa-camera"></i> Lưu ảnh</button>
             </div>
-            <div id="tarot-export-area">
+            <div id="tarot-export-area" style="padding: 10px; border-radius: 12px;">
                 <div id="tarot-result" class="tarot-grid"></div>
             </div>
         </div>
@@ -344,7 +335,7 @@
                 <button id="btn-gieo-tu-dong" class="btn-action" onclick="autoToss()"><i class="fas fa-bolt"></i> Xin Quẻ</button>
                 <button id="btn-export-iching" class="btn-action primary" style="display: none;" onclick="exportImage('iching-export-area', 'Codelo-Kinh-Dich')"><i class="fas fa-camera"></i> Lưu kết quả</button>
             </div>
-            <div id="iching-export-area">
+            <div id="iching-export-area" style="padding: 10px; border-radius: 12px;">
                 <div id="lines-display" class="lines-container" style="background:#f8fafc; padding:15px; border-radius:12px; border:1px solid var(--card-border);"></div>
                 <div id="iching-result" class="results" style="display: none;">
                     <div class="hexagram-result">
@@ -372,67 +363,58 @@
         <div class="footer"> 2026 Codelo VN. All rights reserved.<br>Designed for Bao Hy.</div>
     </div>
 
+    <!-- KHUNG CHỨA QR -->
+    <div id="export-footer" class="export-footer" style="display: none;">
+        <div class="qr-wrapper">
+            <img src="https://wsrv.nl/?url=https://i.imgur.com/PrnnUfN.jpeg" crossorigin="anonymous" alt="Codelo QR">
+        </div>
+        <div class="export-promo">
+            <div class="promo-title">Trải bài tại <span>Codelo Tarot</span></div>
+            <div class="promo-desc">Quét mã QR để nhận thông điệp vũ trụ dành riêng cho bạn!</div>
+        </div>
+    </div>
+
     <script>
-        // CHỐNG CHUỘT PHẢI
         document.addEventListener('contextmenu', event => event.preventDefault());
 
-        // CHẶN PHÍM TẮT XEM CODE VÀ CHỤP MÀN HÌNH (PC/LAPTOP)
         document.onkeydown = function(e) {
-            if(e.keyCode == 123) return false; // Chặn F12
+            if(e.keyCode == 123) return false; 
             if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0))) return false;
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Chặn Ctrl+U
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; 
             if(e.key === 'PrintScreen' || e.keyCode == 44) {
-                navigator.clipboard.writeText(''); // Xóa bộ nhớ đệm
+                navigator.clipboard.writeText(''); 
                 alert("Codelo trân trọng: Hãy dùng nút Lưu ảnh có sẵn trong web nhé!");
             }
         };
 
-        // KHỞI TẠO DROP-DOWN NGÀY THÁNG NĂM SINH
         function initDOB() {
             const daySelect = document.getElementById('dob-day');
             const monthSelect = document.getElementById('dob-month');
             const yearSelect = document.getElementById('dob-year');
-            
-            for(let i = 1; i <= 31; i++) {
-                daySelect.innerHTML += `<option value="${i}">${i}</option>`;
-            }
-            for(let i = 1; i <= 12; i++) {
-                monthSelect.innerHTML += `<option value="${i}">Tháng ${i}</option>`;
-            }
+            for(let i = 1; i <= 31; i++) { daySelect.innerHTML += `<option value="${i}">${i}</option>`; }
+            for(let i = 1; i <= 12; i++) { monthSelect.innerHTML += `<option value="${i}">Tháng ${i}</option>`; }
             const currentYear = new Date().getFullYear();
-            for(let i = currentYear; i >= 1950; i--) {
-                yearSelect.innerHTML += `<option value="${i}">${i}</option>`;
-            }
+            for(let i = currentYear; i >= 1950; i--) { yearSelect.innerHTML += `<option value="${i}">${i}</option>`; }
         }
 
-        // CHUYỂN TRANG
         function switchSection(sectionId) {
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
             
             if(sectionId === 'tarot-section') {
-                document.getElementById('tarot-result').innerHTML = '';
-                document.getElementById('btn-export-tarot').style.display = 'none';
+                document.getElementById('tarot-result').innerHTML = ''; document.getElementById('btn-export-tarot').style.display = 'none';
             }
             if(sectionId === 'time-card-section') {
-                document.getElementById('reading-result-box').style.display = 'none';
-                document.getElementById('btn-export-time').style.display = 'none';
-                document.getElementById('time-card-result').innerHTML = '';
+                document.getElementById('reading-result-box').style.display = 'none'; document.getElementById('btn-export-time').style.display = 'none'; document.getElementById('time-card-result').innerHTML = '';
             }
             if(sectionId === 'yesno-section') {
-                document.getElementById('yesno-result-box').style.display = 'none';
-                document.getElementById('btn-export-yesno').style.display = 'none';
-                document.getElementById('yesno-card-result').innerHTML = '';
+                document.getElementById('yesno-result-box').style.display = 'none'; document.getElementById('btn-export-yesno').style.display = 'none'; document.getElementById('yesno-card-result').innerHTML = '';
             }
             if(sectionId === 'iching-section') resetIching();
         }
 
-        // KIỂM TRA NGÀY THÁNG NĂM SINH TRƯỚC KHI VÀO
         function checkDOB() {
-            const d = document.getElementById('dob-day').value;
-            const m = document.getElementById('dob-month').value;
-            const y = document.getElementById('dob-year').value;
-            
+            const d = document.getElementById('dob-day').value; const m = document.getElementById('dob-month').value; const y = document.getElementById('dob-year').value;
             if (!d || !m || !y) {
                 alert("Bạn vui lòng lăn chọn đầy đủ Ngày, Tháng, Năm sinh để hệ thống Codelo kết nối năng lượng chuẩn xác nhất nhé!");
                 return false;
@@ -442,21 +424,18 @@
 
         function handleMenuClick(action) {
             if (!checkDOB()) return; 
-            
             if (action === 'time') switchSection('time-card-section');
             else if (action === 'tarot') switchSection('tarot-section');
             else if (action === 'yesno') switchSection('yesno-section');
             else if (action === 'iching') switchSection('iching-section');
         }
 
-        // ==========================================
-        // JS: THỜI TIẾT, ĐỒNG HỒ & TIN TỨC
-        // ==========================================
+        // --- WEATHER & NEWS ---
         function renderWeatherEffects(code, isDay) {
             const container = document.getElementById('weather-anim-container'); container.innerHTML = ''; 
             if (isDay === 1) { 
-                if (code <= 3) { container.innerHTML = `<i class="fas fa-sun anim-sun"></i>`; } 
-                else if (code <= 48) { container.innerHTML = `<i class="fas fa-cloud anim-cloud cloud-1"></i><i class="fas fa-cloud anim-cloud cloud-2"></i>`; } 
+                if (code <= 3) container.innerHTML = `<i class="fas fa-sun anim-sun"></i>`; 
+                else if (code <= 48) container.innerHTML = `<i class="fas fa-cloud anim-cloud cloud-1"></i><i class="fas fa-cloud anim-cloud cloud-2"></i>`; 
                 else { 
                     let rainDrops = '';
                     for(let i=0; i<15; i++) {
@@ -477,16 +456,8 @@
             }
         }
 
-        async function getLocationName(lat, lon) {
-            const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=vi`;
-            try {
-                const response = await fetch(url); const data = await response.json();
-                document.getElementById('location').textContent = data.city || data.locality || data.principalSubdivision || "Vị trí của bạn";
-            } catch (err) { document.getElementById('location').textContent = "Vị trí của bạn"; }
-        }
-
         function getWeather(lat, lon) {
-            getLocationName(lat, lon);
+            document.getElementById('location').textContent = "Hồ Chí Minh"; // Hardcode cho nhanh mượt
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
             fetch(url).then(response => response.json()).then(data => {
                 const temp = Math.round(data.current_weather.temperature);
@@ -505,15 +476,6 @@
             }).catch(err => { document.getElementById('temperature').textContent = "N/A"; });
         }
 
-        function initLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (p) => { getWeather(p.coords.latitude, p.coords.longitude); },
-                    (e) => { document.getElementById('location').textContent = "Hồ Chí Minh"; getWeather(10.8231, 106.6297); }
-                );
-            } else { document.getElementById('location').textContent = "Hồ Chí Minh"; getWeather(10.8231, 106.6297); }
-        }
-
         async function fetchNews() {
             const feeds = ['https://vnexpress.net/rss/kinh-doanh.rss', 'https://vnexpress.net/rss/phap-luat.rss'];
             const newsContainer = document.getElementById('news-feed');
@@ -529,9 +491,7 @@
                     rawHtml += `<div class="ticker-item"><span class="time-tag">[${timeStr}]</span><i class="fas ${icon}"></i> ${item.title}</div>`;
                 });
                 newsContainer.innerHTML = rawHtml + rawHtml;
-            } catch (error) {
-                newsContainer.innerHTML = `<div class="ticker-item"><i class="fas fa-newspaper"></i> Đang tải tin tức...</div>`.repeat(2);
-            }
+            } catch (error) { newsContainer.innerHTML = `<div class="ticker-item"><i class="fas fa-newspaper"></i> Đang tải tin tức...</div>`.repeat(2); }
         }
 
         function updateClock() {
@@ -541,9 +501,7 @@
         }
         setInterval(updateClock, 1000);
 
-        // ==========================================
-        // JS: CƠ SỞ DỮ LIỆU BÀI & THUẬT TOÁN XÁO
-        // ==========================================
+        // --- TAROT DATA ---
         const majorNames = ["The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor", "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit", "Wheel of Fortune", "Justice", "The Hanged Man", "Death", "Temperance", "The Devil", "The Tower", "The Star", "The Moon", "The Sun", "Judgement", "The World"];
         const suits = [{code: 'Wands', imgCode: 'wa'}, {code: 'Cups', imgCode: 'cu'}, {code: 'Swords', imgCode: 'sw'}, {code: 'Pentacles', imgCode: 'pe'}];
         const ranks = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Page", "Knight", "Queen", "King"];
@@ -570,85 +528,88 @@
         }
 
         // ==========================================
-        // JS: LUẬN ĐÚNG / SAI (YES/NO)
+        // JS: TỪ ĐIỂN TAROT CHI TIẾT (MAJOR & MINOR)
         // ==========================================
-        function drawYesNo() {
-            const resultDiv = document.getElementById('yesno-card-result'); 
-            resultDiv.innerHTML = '';
-            document.getElementById('yesno-result-box').style.display = 'none';
-            document.getElementById('btn-export-yesno').style.display = 'none';
+        const majorDict = {
+            "The Fool": ["Khởi đầu mới, tự do, phiêu lưu.", "Cơ hội mới, hãy dám mạo hiểm.", "Tình cảm tươi mới, không ràng buộc.", "Liều lĩnh, thiếu suy nghĩ, rủi ro.", "Bất cẩn, thiếu kế hoạch rõ ràng.", "Hời hợt, thiếu sự cam kết."],
+            "The Magician": ["Sự sáng tạo, quyền lực, ý chí.", "Kỹ năng tốt, làm chủ tình huống.", "Sức hút mãnh liệt, chủ động.", "Thao túng, ảo tưởng, lừa dối.", "Lãng phí tài năng, kỹ năng kém.", "Thiếu trung thực, thao túng cảm xúc."],
+            "The High Priestess": ["Trực giác, bí ẩn, tiềm thức.", "Tin vào linh cảm, thông tin ẩn.", "Tình cảm sâu sắc nhưng thầm kín.", "Mất kết nối với bản thân.", "Thiếu thông tin, quyết định sai.", "Giấu giếm, thiếu chia sẻ cảm xúc."],
+            "The Empress": ["Sự nuôi dưỡng, sinh sôi, trù phú.", "Sự nghiệp phát triển, môi trường tốt.", "Tình yêu ấm áp, chăm sóc lẫn nhau.", "Phụ thuộc, cạn kiệt năng lượng.", "Bế tắc ý tưởng, thiếu hỗ trợ.", "Kiểm soát quá mức, ghen tuông."],
+            "The Emperor": ["Cấu trúc, quyền lực, trật tự.", "Khả năng lãnh đạo, công việc ổn định.", "Tình yêu bền vững nhưng cứng nhắc.", "Độc đoán, cứng nhắc, lạm quyền.", "Quản lý kém, môi trường ngột ngạt.", "Thích kiểm soát, thiếu lãng mạn."],
+            "The Hierophant": ["Truyền thống, tín ngưỡng, học hỏi.", "Làm việc theo khuôn khổ, có người hướng dẫn.", "Mối quan hệ cam kết, truyền thống.", "Nổi loạn, phá vỡ nguyên tắc.", "Cảm thấy bị gò bó, mâu thuẫn cấp trên.", "Khác biệt quan điểm, áp lực gia đình."],
+            "The Lovers": ["Tình yêu, sự hòa hợp, lựa chọn.", "Đối tác tốt, quyết định quan trọng.", "Hạnh phúc, kết nối sâu sắc.", "Mất cân bằng, lựa chọn sai lầm.", "Xung đột lợi ích, rạn nứt đối tác.", "Bất hòa, xa cách, cám dỗ."],
+            "The Chariot": ["Chiến thắng, ý chí, kiểm soát.", "Vượt qua thử thách, đạt mục tiêu.", "Cùng nhau vượt qua sóng gió.", "Mất phương hướng, thiếu kiểm soát.", "Bị áp đảo, thất bại tạm thời.", "Áp đặt, ép buộc đối phương."],
+            "Strength": ["Sức mạnh nội tâm, dũng cảm, kiên nhẫn.", "Giải quyết vấn đề khéo léo, tự tin.", "Tình yêu bao dung, thấu hiểu.", "Yếu đuối, nghi ngờ bản thân.", "Thiếu tự tin, né tránh khó khăn.", "Ghen tuông, bất an trong tình cảm."],
+            "The Hermit": ["Chiêm nghiệm, tĩnh lặng, tìm kiếm.", "Cần thời gian suy nghĩ, làm việc độc lập.", "Cần không gian riêng, tĩnh tâm.", "Cô lập, cô đơn, trốn tránh.", "Làm việc kém hiệu quả do cô lập.", "Xa cách, cảm thấy bị bỏ rơi."],
+            "Wheel of Fortune": ["May mắn, thay đổi, định mệnh.", "Cơ hội bất ngờ, chuyển biến tốt.", "Sự kiện bước ngoặt trong tình cảm.", "Xui xẻo, mất kiểm soát.", "Gặp trở ngại ngoài ý muốn.", "Mối quan hệ xáo trộn, bất ổn."],
+            "Justice": ["Công bằng, nhân quả, sự thật.", "Hợp đồng rõ ràng, làm việc minh bạch.", "Tôn trọng, đối xử công bằng.", "Bất công, dối trá, thiên vị.", "Rắc rối pháp lý, quyết định sai.", "Bất đồng, đối xử không công bằng."],
+            "The Hanged Man": ["Sự hy sinh, góc nhìn mới, tạm dừng.", "Cần thay đổi cách tiếp cận, trì hoãn.", "Hy sinh vì tình yêu, chậm lại.", "Hy sinh vô ích, cố chấp.", "Đình trệ, không chịu thay đổi.", "Mắc kẹt trong mối quan hệ độc hại."],
+            "Death": ["Kết thúc, lột xác, khởi đầu mới.", "Thay đổi công việc, đóng lại dự án cũ.", "Kết thúc giai đoạn cũ, bước ngoặt.", "Sợ thay đổi, níu kéo quá khứ.", "Cố chấp với công việc bế tắc.", "Không chịu buông bỏ người cũ."],
+            "Temperance": ["Cân bằng, điều độ, kiên nhẫn.", "Làm việc hài hòa, hợp tác tốt.", "Mối quan hệ bình yên, thấu hiểu.", "Mất cân bằng, cực đoan, vội vã.", "Xung đột, làm việc quá sức.", "Thiếu kiên nhẫn, dễ cãi vã."],
+            "The Devil": ["Cám dỗ, trói buộc, vật chất.", "Bị kẹt trong công việc độc hại.", "Mối quan hệ phụ thuộc, cám dỗ.", "Giải phóng, thoát khỏi gông cùm.", "Tự do khỏi môi trường xấu.", "Nhận ra và rũ bỏ tình cảm độc hại."],
+            "The Tower": ["Sụp đổ đột ngột, hỗn loạn, biến cố.", "Sự cố công việc, thay đổi sốc.", "Rạn nứt đột ngột, cãi vã lớn.", "Tránh được tai họa, thay đổi chậm.", "Hậu quả nhẹ hơn dự kiến.", "Vẫn còn níu kéo sau đổ vỡ."],
+            "The Star": ["Hy vọng, chữa lành, niềm tin.", "Tương lai tươi sáng, ý tưởng tốt.", "Bình yên, hàn gắn tổn thương.", "Thất vọng, mất niềm tin.", "Thiếu ý tưởng, bi quan.", "Tình cảm mệt mỏi, thiếu hy vọng."],
+            "The Moon": ["Ảo ảnh, sợ hãi, lo âu.", "Thông tin mập mờ, cẩn thận lừa dối.", "Bất an, hiểu lầm, giấu giếm.", "Sự thật sáng tỏ, vượt qua sợ hãi.", "Hiểu rõ vấn đề, giải quyết xong.", "Giải tỏa hiểu lầm, rõ ràng hơn."],
+            "The Sun": ["Thành công, niềm vui, rực rỡ.", "Đạt kết quả xuất sắc, được công nhận.", "Hạnh phúc viên mãn, ấm áp.", "Niềm vui bị trì hoãn, kém tự tin.", "Thành công không như mong đợi.", "Có chút rắc rối nhỏ nhưng vẫn ổn."],
+            "Judgement": ["Tái sinh, phán xét, thức tỉnh.", "Đánh giá lại, cơ hội thứ hai.", "Bước tiến mới sau khi nhìn nhận lại.", "Nghi ngờ bản thân, từ chối thay đổi.", "Bỏ lỡ cơ hội, sợ bị đánh giá.", "Cố chấp, không chịu sửa sai."],
+            "The World": ["Hoàn thành, trọn vẹn, thành tựu.", "Kết thúc thành công một chu kỳ.", "Tình cảm viên mãn, đạt mục tiêu.", "Dang dở, thiếu sót, trì hoãn.", "Dự án chưa hoàn thiện.", "Mối quan hệ thiếu đi một chút để trọn vẹn."]
+        };
 
-            let selectedCard = shuffleDeck([...tarotDeck])[0];
-            const isUpright = Math.random() > 0.5;
+        function getMinorMeaning(rank, suit, isUpright) {
+            const suitThemes = {
+                "Wands": { name: "hành động và đam mê", work: "dự án và động lực làm việc", love: "sự nhiệt huyết trong tình cảm" },
+                "Cups": { name: "cảm xúc và trực giác", work: "mối quan hệ đồng nghiệp và sự sáng tạo", love: "sự gắn kết và thấu hiểu lẫn nhau" },
+                "Swords": { name: "tư duy và lý trí", work: "các quyết định và giao tiếp công việc", love: "những khúc mắc và lời nói trong tình yêu" },
+                "Pentacles": { name: "vật chất và thực tế", work: "tài chính, đầu tư và nền tảng sự nghiệp", love: "sự an toàn và cam kết lâu dài" }
+            };
+            const rankMeanings = {
+                "Ace": { up: ["Khởi đầu mới rực rỡ về", "Cơ hội tuyệt vời cho", "Tiềm năng mới trong"], rev: ["Bỏ lỡ cơ hội về", "Sự chậm trễ trong", "Thiếu cảm hứng về"] },
+                "2": { up: ["Lên kế hoạch và đưa ra lựa chọn về", "Sự cân bằng bước đầu trong", "Định hướng rõ ràng cho"], rev: ["Sự e ngại, trì hoãn trong", "Mất cân bằng về", "Lo sợ rủi ro liên quan đến"] },
+                "3": { up: ["Mở rộng tầm nhìn và phát triển", "Bước tiến vững chắc trong", "Sự mong đợi thành quả từ"], rev: ["Gặp rào cản khi phát triển", "Sự chậm trễ trong", "Thiếu tầm nhìn về"] },
+                "4": { up: ["Sự ổn định và ăn mừng", "Nền tảng vững chắc trong", "Sự bình yên và hài hòa trong"], rev: ["Cảm giác thiếu an toàn về", "Sự bất ổn nhất thời trong", "Mâu thuẫn nhỏ trong"] },
+                "5": { up: ["Sự cạnh tranh, mâu thuẫn về", "Thử thách và xung đột trong", "Cảm giác khó khăn, bất đồng trong"], rev: ["Tránh né xung đột về", "Bắt đầu hòa giải", "Sự buông bỏ chấp niệm trong"] },
+                "6": { up: ["Sự công nhận, chiến thắng trong", "Thành tựu đáng tự hào về", "Tiến triển tích cực, được ủng hộ trong"], rev: ["Sự tự cao, kiêu ngạo trong", "Thiếu sự công nhận về", "Thất bại tạm thời trong"] },
+                "7": { up: ["Sự kiên trì, bảo vệ quan điểm về", "Đứng vững trước áp lực trong", "Cố gắng duy trì lợi thế trong"], rev: ["Cảm giác kiệt sức, muốn bỏ cuộc trong", "Sự choáng ngợp bởi", "Thiếu tự tin bảo vệ"] },
+                "8": { up: ["Sự tiến triển nhanh chóng, tốc độ về", "Hành động dứt khoát trong", "Giao tiếp suôn sẻ, thuận lợi trong"], rev: ["Sự trì trệ, chậm chạp trong", "Hành động vội vã, sai lầm trong", "Đình trệ thông tin về"] },
+                "9": { up: ["Sự bền bỉ, cẩn trọng trong", "Gần đạt được mục tiêu nhưng cần đề phòng về", "Bảo vệ thành quả trong"], rev: ["Sự kiệt sức, đa nghi quá mức về", "Cố chấp, từ chối sự giúp đỡ trong", "Cảm giác quá tải trong"] },
+                "10": { up: ["Trách nhiệm nặng nề, áp lực từ", "Gánh vác quá nhiều trong", "Hoàn thành một chu kỳ đầy mệt mỏi của"], rev: ["Học cách buông bỏ áp lực về", "Sự gục ngã vì quá sức trong", "Rũ bỏ gánh nặng của"] },
+                "Page": { up: ["Tin tức mới, sự khám phá về", "Khởi nguồn ý tưởng trẻ trung trong", "Thông điệp tích cực liên quan đến"], rev: ["Thiếu kinh nghiệm, non nớt trong", "Tin tức trì hoãn về", "Thiếu định hướng rõ ràng trong"] },
+                "Knight": { up: ["Hành động quyết liệt, tập trung vào", "Sự tiến lên mạnh mẽ trong", "Theo đuổi đam mê liên quan đến"], rev: ["Sự bốc đồng, nóng vội trong", "Thiếu kiên nhẫn, dễ nổi cáu về", "Kế hoạch bị đình trệ trong"] },
+                "Queen": { up: ["Sự thấu hiểu, tự tin và làm chủ", "Sức hút và sự khéo léo trong", "Trưởng thành và nuôi dưỡng trong"], rev: ["Sự ích kỷ, cảm xúc tiêu cực trong", "Phụ thuộc hoặc kiểm soát quá mức trong", "Ghen tị, thiếu khoan dung về"] },
+                "King": { up: ["Sự lãnh đạo, quyền lực và tầm nhìn trong", "Kiểm soát tốt và thành công về", "Bản lĩnh và sự ổn định trong"], rev: ["Sự độc tài, áp đặt trong", "Lạm quyền hoặc cứng nhắc về", "Thiếu bao dung, lạnh lùng trong"] }
+            };
 
-            const cardWrapper = document.createElement('div'); 
-            cardWrapper.className = 'tarot-card';
-            cardWrapper.innerHTML = `
-                <div class="card-inner">
-                    <div class="card-back"></div>
-                    <div class="card-front"><img src="${selectedCard.img}" class="${isUpright ? '' : 'img-reversed'}" alt="${selectedCard.name}" crossorigin="anonymous"></div>
-                </div>
-            `;
-            resultDiv.appendChild(cardWrapper);
+            let t = suitThemes[suit];
+            let r = rankMeanings[rank];
+            let state = isUpright ? r.up : r.rev;
 
-            setTimeout(() => {
-                cardWrapper.classList.add('flipped');
-                setTimeout(() => {
-                    let answer = isUpright ? "CÓ (THUẬN LỢI)" : "KHÔNG (THỬ THÁCH)";
-                    let color = isUpright ? "#10b981" : "#ef4444";
-                    let desc = isUpright 
-                        ? "Năng lượng hiện tại đang ủng hộ quyết định này. Mọi yếu tố đang diễn ra khá suôn sẻ, hãy tự tin tiến bước và nắm bắt cơ hội của bạn." 
-                        : "Vũ trụ khuyên bạn nên chậm lại và suy nghĩ kỹ hơn. Có thể vẫn còn những rủi ro ẩn khuất hoặc đây chưa phải là thời điểm thích hợp.";
-
-                    document.getElementById('yesno-card-name').innerHTML = `${selectedCard.name} ${isUpright ? '(Xuôi)' : '(Ngược)'}`;
-                    document.getElementById('yesno-answer').innerHTML = `<span style="color:${color}">${answer}</span>`;
-                    document.getElementById('yesno-desc').innerText = desc;
-                    
-                    document.getElementById('yesno-result-box').style.display = 'block';
-                    document.getElementById('btn-export-yesno').style.display = 'inline-flex';
-                }, 600);
-            }, 300);
+            const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+            return [
+                cap(`${state[0]} ${t.name}.`),
+                cap(`${state[1]} ${t.work}.`),
+                cap(`${state[2]} ${t.love}.`)
+            ];
         }
 
-        // ==========================================
-        // JS: LÁ BÀI THỜI GIAN
-        // ==========================================
+        // --- RÚT GIẢI MÃ 1 LÁ CHI TIẾT ---
         function generateReading(card, isUpright) {
-            let gen = "", work = "", love = "";
-            const state = isUpright ? " (Xuôi)" : " (Ngược)";
+            let gen, work, love;
+            const stateStr = isUpright ? " (Xuôi)" : " (Ngược)";
             
             if (card.type === "Major") {
-                if(isUpright) {
-                    gen = "Sự chuyển biến lớn, bạn đang ở một giai đoạn quan trọng mang tính bước ngoặt.";
-                    work = "Cần sự quyết đoán và cái nhìn dài hạn. Đây là lúc để thể hiện bản lĩnh.";
-                    love = "Mối quan hệ có sự tiến triển sâu sắc, hoặc bạn sắp gặp một người thay đổi tư duy của mình.";
-                } else {
-                    gen = "Sự bế tắc tạm thời, có bài học vũ trụ mà bạn đang cố tình phớt lờ.";
-                    work = "Tránh đưa ra quyết định vội vàng. Mọi thứ đang bị trì hoãn ngoài ý muốn.";
-                    love = "Cần thời gian để tĩnh lặng và nhìn nhận lại tổn thương của bản thân.";
-                }
-            } else if (card.type === "Wands") {
-                gen = isUpright ? "Năng lượng dồi dào, hành động và đam mê." : "Thiếu động lực, kiệt sức hoặc quá nóng vội.";
-                work = isUpright ? "Tiến độ công việc rất tốt, sẽ có cơ hội hoặc dự án mới đáng để thử sức." : "Cẩn thận xung đột với đồng nghiệp hoặc kế hoạch bị chệch hướng.";
-                love = isUpright ? "Tình cảm nhiệt huyết, vui vẻ và có tính xây dựng." : "Dễ xảy ra cãi vã vì cái tôi quá cao.";
-            } else if (card.type === "Cups") {
-                gen = isUpright ? "Cảm xúc thăng hoa, sự kết nối và trực giác nhạy bén." : "Cảm xúc bất ổn, nhạy cảm quá mức hoặc bị lừa dối.";
-                work = isUpright ? "Môi trường làm việc hòa đồng, có quý nhân giúp đỡ." : "Thiếu thực tế, dễ bị tình cảm chi phối quyết định công việc.";
-                love = isUpright ? "Sự thấu hiểu, lãng mạn và có thể có những cam kết tiến xa hơn." : "Cảm giác cô đơn hoặc thất vọng về đối phương.";
-            } else if (card.type === "Swords") {
-                gen = isUpright ? "Sự logic, lý trí và những sự thật cần được làm rõ." : "Suy nghĩ tiêu cực, lo âu, hoặc lời nói gây tổn thương.";
-                work = isUpright ? "Cần giải quyết vấn đề bằng lý trí, sự minh bạch sẽ mang lại kết quả." : "Có thể có thị phi, áp lực tinh thần lớn.";
-                love = isUpright ? "Nên giao tiếp thẳng thắn để giải quyết khúc mắc." : "Khoảng cách tâm lý, mâu thuẫn dai dẳng chưa được tháo gỡ.";
-            } else if (card.type === "Pentacles") {
-                gen = isUpright ? "Sự ổn định, nền tảng vật chất và những thành quả thực tế." : "Khó khăn về tài chính, sự trì trệ hoặc quá thực dụng.";
-                work = isUpright ? "Tài chính khởi sắc, công sức của bạn được ghi nhận xứng đáng." : "Đừng quá tham lam hoặc lo lắng về tiền bạc, hãy quản lý lại chi tiêu.";
-                love = isUpright ? "Mối quan hệ bền vững, mang lại cảm giác an toàn." : "Cảm thấy thiếu thốn sự quan tâm hoặc áp lực vì vật chất.";
+                const data = majorDict[card.name];
+                if(isUpright) { gen = data[0]; work = data[1]; love = data[2]; }
+                else { gen = data[3]; work = data[4]; love = data[5]; }
+            } else {
+                let parts = card.name.split(" of ");
+                let meanings = getMinorMeaning(parts[0], parts[1], isUpright);
+                gen = meanings[0]; work = meanings[1]; love = meanings[2];
             }
 
             document.getElementById('reading-general').innerText = gen;
             document.getElementById('reading-work').innerText = work;
             document.getElementById('reading-love').innerText = love;
-            document.getElementById('reading-card-name').innerHTML = `${card.name} ${state}`;
+            document.getElementById('reading-card-name').innerHTML = `${card.name.replace(' of ', ' of ')} ${stateStr}`;
         }
 
         function drawTimeCard() {
@@ -678,9 +639,44 @@
             }, 300);
         }
 
-        // ==========================================
-        // JS: TRẢI BÀI TAROT NHIỀU LÁ
-        // ==========================================
+        // --- RÚT YES/NO ---
+        function drawYesNo() {
+            const resultDiv = document.getElementById('yesno-card-result'); resultDiv.innerHTML = '';
+            document.getElementById('yesno-result-box').style.display = 'none';
+            document.getElementById('btn-export-yesno').style.display = 'none';
+
+            let selectedCard = shuffleDeck([...tarotDeck])[0];
+            const isUpright = Math.random() > 0.5;
+
+            const cardWrapper = document.createElement('div'); cardWrapper.className = 'tarot-card';
+            cardWrapper.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-back"></div>
+                    <div class="card-front"><img src="${selectedCard.img}" class="${isUpright ? '' : 'img-reversed'}" alt="${selectedCard.name}" crossorigin="anonymous"></div>
+                </div>
+            `;
+            resultDiv.appendChild(cardWrapper);
+
+            setTimeout(() => {
+                cardWrapper.classList.add('flipped');
+                setTimeout(() => {
+                    let answer = isUpright ? "CÓ (THUẬN LỢI)" : "KHÔNG (THỬ THÁCH)";
+                    let color = isUpright ? "#10b981" : "#ef4444";
+                    let desc = isUpright 
+                        ? "Năng lượng hiện tại đang ủng hộ quyết định này. Mọi yếu tố đang diễn ra khá suôn sẻ, hãy tự tin tiến bước và nắm bắt cơ hội của bạn." 
+                        : "Vũ trụ khuyên bạn nên chậm lại và suy nghĩ kỹ hơn. Có thể vẫn còn những rủi ro ẩn khuất hoặc đây chưa phải là thời điểm thích hợp.";
+
+                    document.getElementById('yesno-card-name').innerHTML = `${selectedCard.name} ${isUpright ? '(Xuôi)' : '(Ngược)'}`;
+                    document.getElementById('yesno-answer').innerHTML = `<span style="color:${color}">${answer}</span>`;
+                    document.getElementById('yesno-desc').innerText = desc;
+                    
+                    document.getElementById('yesno-result-box').style.display = 'block';
+                    document.getElementById('btn-export-yesno').style.display = 'inline-flex';
+                }, 600);
+            }, 300);
+        }
+
+        // --- RÚT TỰ DO ---
         function drawTarot(numCards, containerId) {
             document.getElementById('btn-export-tarot').style.display = 'none';
             const resultDiv = document.getElementById(containerId); resultDiv.innerHTML = '';
@@ -705,9 +701,7 @@
             setTimeout(() => { document.getElementById('btn-export-tarot').style.display = 'inline-flex'; }, 200 + (numCards * 150) + 300);
         }
 
-        // ==========================================
-        // JS: KINH DỊCH
-        // ==========================================
+        // --- KINH DỊCH ---
         const elements = { 7: "Thiên (Trời)", 3: "Trạch (Đầm)", 5: "Hỏa (Lửa)", 1: "Lôi (Sấm)", 6: "Phong (Gió)", 2: "Thủy (Nước)", 4: "Sơn (Núi)", 0: "Địa (Đất)" };
         const elementPrefix = { 7: "Thiên", 3: "Trạch", 5: "Hỏa", 1: "Lôi", 6: "Phong", 2: "Thủy", 4: "Sơn", 0: "Địa" };
         let currentLines = [];
@@ -772,18 +766,36 @@
             document.getElementById('btn-gieo-tu-dong').innerHTML = '<i class="fas fa-bolt"></i> Xin Quẻ';
         }
 
+        // --- XUẤT ẢNH ---
         function exportImage(containerId, fileName) {
-            const container = document.getElementById(containerId); const oldBg = container.style.background;
+            const container = document.getElementById(containerId); 
+            const oldBg = container.style.background;
+            const footer = document.getElementById('export-footer');
+
             container.style.background = '#ffffff'; 
-            html2canvas(container, { useCORS: true, scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
-                container.style.background = oldBg;
-                const link = document.createElement('a'); link.download = fileName + '.png'; link.href = canvas.toDataURL('image/png'); link.click();
-            });
+            container.appendChild(footer); 
+            footer.style.display = 'flex'; 
+
+            setTimeout(() => {
+                html2canvas(container, { useCORS: true, scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+                    container.style.background = oldBg;
+                    footer.style.display = 'none'; 
+                    document.body.appendChild(footer); 
+                    
+                    const link = document.createElement('a'); 
+                    link.download = fileName + '.png'; 
+                    link.href = canvas.toDataURL('image/png'); 
+                    link.click();
+                }).catch(err => {
+                    container.style.background = oldBg;
+                    footer.style.display = 'none'; 
+                    document.body.appendChild(footer);
+                    alert("Có lỗi khi lưu ảnh. Trình duyệt của bạn có thể đang chặn tải ảnh.");
+                });
+            }, 300);
         }
 
-        window.onload = function() { 
-            initLocation(); fetchNews(); updateClock(); initDOB(); 
-        };
+        window.onload = function() { getWeather(10.8231, 106.6297); fetchNews(); updateClock(); initDOB(); };
     </script>
 </body>
 </html>
