@@ -3,575 +3,753 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Sinh Thái Tâm Linh Pro - Bảo Mật</title>
-    <!-- Thư viện html2canvas để hỗ trợ xuất ảnh -->
+    <title>Codelo Tarot - Enterprise Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --border-color: rgba(255, 255, 255, 0.15);
-            --primary: #a78bfa;
-            --primary-hover: #c084fc;
-            --secondary: #f472b6;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --gold: #fbbf24;
-            --danger: #f87171;
+            --primary-color: #0f172a;
+            --accent-color: #3b82f6;
+            --text-color: #334155;
+            --bg-color: #f1f5f9;
+            --white: #ffffff;
+            --news-bg: #e0f2fe; --news-text: #0369a1;
+            --admin-bg: #fff7ed; --admin-border: #f97316; --admin-text: #9a3412;
+            --card-border: #e2e8f0;
         }
 
-        /* KHÓA BÔI ĐEN VÀ KÉO THẢ (ANTI-COPY/DRAG) */
-        * { 
-            box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; 
-            user-select: none;
-            -webkit-user-drag: none;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
+            font-family: 'Poppins', sans-serif;
             background-color: var(--bg-color);
-            background-image: radial-gradient(circle at 50% -20%, #312e81 0%, var(--bg-color) 80%);
-            color: var(--text-main);
+            color: var(--text-color);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem;
-            overflow-x: hidden;
-            transition: filter 0.2s ease;
+            display: flex; justify-content: center; align-items: center;
+            padding: 20px; flex-direction: column;
+            user-select: none; -webkit-user-select: none;
         }
 
-        /* LÀM MỜ KHI IN (ANTI-PRINT) */
-        @media print {
-            body { display: none !important; }
-        }
-
-        header { text-align: center; margin-bottom: 2rem; }
-        h1 { 
-            font-size: 2.5rem; 
-            background: linear-gradient(to right, var(--secondary), var(--primary)); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            margin-bottom: 0.5rem; 
-        }
+        /* Cho phép tương tác với form cuộn */
+        select { user-select: auto; -webkit-user-select: auto; }
+        .tarot-card, .btn-business, button, .status-bar, .brand-logo, img { -webkit-user-drag: none; }
 
         .container {
-            width: 100%;
-            max-width: 1000px;
-            background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 2rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            width: 100%; max-width: 480px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow: hidden; padding: 25px;
+            text-align: center; position: relative; z-index: 1;
         }
 
-        .controls { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
-
-        button {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        /* --- WEATHER CARD --- */
+        .status-bar {
+            background: linear-gradient(145deg, #1e293b, #0f172a); 
+            color: var(--white); border-radius: 20px; padding: 25px 20px;
+            margin-bottom: 20px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
+            position: relative; overflow: hidden; min-height: 170px; transition: all 0.5s ease;
         }
+        .weather-anim-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .status-content { position: relative; z-index: 10; }
+        .anim-sun { position: absolute; top: -60px; right: -60px; font-size: 10rem; color: #fbbf24; opacity: 0.3; animation: spin-slow 60s linear infinite; }
+        .anim-cloud { position: absolute; color: #cbd5e1; opacity: 0.3; font-size: 4rem; animation: drift linear infinite; }
+        .cloud-1 { top: 10px; left: -60px; animation-duration: 35s; }
+        .cloud-2 { top: 80px; left: -80px; font-size: 3rem; animation-duration: 25s; animation-delay: 5s; }
+        .anim-rain { position: absolute; background: rgba(255,255,255,0.4); width: 2px; height: 20px; top: -20px; animation: fall linear infinite; }
+        @keyframes drift { from { transform: translateX(-100px); } to { transform: translateX(500px); } }
+        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+        @keyframes fall { to { transform: translateY(250px); } }
+        .clock { font-size: 3.5rem; font-weight: 700; letter-spacing: -2px; margin-bottom: 0; line-height: 1; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .date { font-size: 0.85rem; font-weight: 400; opacity: 0.8; margin-bottom: 15px; text-transform: capitalize; }
+        .weather-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 15px; margin-top: 5px; }
+        .location-info { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 500; max-width: 60%; }
+        .location-info i { color: #fbbf24; }
+        .location-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .temp-info { display: flex; align-items: center; gap: 8px; font-size: 1.4rem; font-weight: 600; }
 
-        button:hover:not(:disabled) { 
-            background: rgba(167, 139, 250, 0.2); 
-            border-color: var(--primary); 
-            transform: translateY(-2px); 
-            box-shadow: 0 10px 15px -3px rgba(167, 139, 250, 0.2); 
+        /* --- NEWS TICKER --- */
+        .news-ticker-area { background-color: var(--news-bg); border-radius: 10px; padding: 8px 0; margin-bottom: 25px; display: flex; align-items: center; overflow: hidden; border: 1px solid #bae6fd; position: relative; }
+        .news-badge { background: var(--accent-color); color: white; font-size: 0.65rem; font-weight: 700; padding: 4px 8px; border-radius: 4px; white-space: nowrap; box-shadow: 0 2px 5px rgba(59, 130, 246, 0.3); margin-left: 10px; margin-right: 10px; z-index: 10; flex-shrink: 0; }
+        .ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); }
+        .ticker-move { display: inline-block; white-space: nowrap; animation: ticker 40s linear infinite; }
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .ticker-item { display: inline-block; padding-right: 50px; font-size: 0.8rem; color: var(--news-text); font-weight: 500; }
+        .ticker-item i { margin-right: 6px; color: var(--accent-color); font-size: 0.7rem; }
+        .time-tag { font-weight: 700; color: #0284c7; margin-right: 5px; font-size: 0.75rem; background: #e0f2fe; padding: 2px 5px; border-radius: 4px; border: 1px solid #bae6fd; }
+
+        /* --- BRAND LOGO --- */
+        .brand-logo { margin-bottom: 25px; }
+        .brand-logo h1 { font-size: 2rem; color: var(--primary-color); letter-spacing: -1px; }
+        .brand-logo span { color: var(--accent-color); }
+
+        /* --- DOB SELECTORS (KÉO CHỌN NATIVE) --- */
+        .dob-container { background: var(--white); border: 2px solid var(--card-border); padding: 18px; border-radius: 12px; margin-bottom: 20px; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .dob-container label { font-size: 0.85rem; font-weight: 600; color: var(--primary-color); display: block; margin-bottom: 12px; }
+        .dob-selectors { display: flex; gap: 10px; width: 100%; }
+        .dob-selectors select {
+            flex: 1; padding: 12px 10px; border: 2px solid var(--card-border); border-radius: 8px;
+            font-family: 'Poppins', sans-serif; outline: none; color: var(--text-color); font-size: 0.95rem;
+            background-color: #f8fafc; cursor: pointer; appearance: none; -webkit-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%2364748b" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4z"/></svg>');
+            background-repeat: no-repeat; background-position: right 10px center; font-weight: 500; text-align: center;
         }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .btn-back { background: transparent; border-color: var(--danger); color: var(--danger); }
-        .btn-back:hover { background: var(--danger); color: white; border-color: var(--danger); box-shadow: 0 10px 15px -3px rgba(248, 113, 113, 0.3); }
+        .dob-selectors select:focus { border-color: var(--accent-color); background-color: #ffffff; }
+        .dob-container p { font-size: 0.7rem; color: #64748b; margin-top: 12px; font-style: italic; line-height: 1.4; text-align: center; }
 
-        .btn-export { background: rgba(16, 185, 129, 0.1); border-color: #10b981; color: #10b981; }
-        .btn-export:hover { background: #10b981; color: white; border-color: #10b981; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3); }
+        /* --- MENU --- */
+        .action-area { display: flex; flex-direction: column; width: 100%; margin-bottom: 25px; }
+        .btn-business { 
+            display: flex; align-items: center; justify-content: space-between; 
+            background: var(--white); border: 2px solid var(--card-border); 
+            padding: 15px 20px; border-radius: 12px; transition: all 0.3s ease; 
+            width: 100%; cursor: pointer; text-decoration: none; 
+            margin-bottom: 12px; 
+        }
+        .btn-business:last-child { margin-bottom: 0; }
+        .btn-content { display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; }
+        .btn-title { font-weight: 600; color: var(--primary-color); font-size: 1rem; }
+        .btn-desc { font-size: 0.75rem; color: #64748b; margin-top: 3px; text-align: left; }
+        .btn-icon { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--accent-color); background: #eff6ff; border-radius: 50%; transition: all 0.3s ease; flex-shrink: 0; margin-left: 10px; }
+        .btn-business:hover { border-color: var(--accent-color); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.1); }
+        .btn-business:hover .btn-icon { background: var(--accent-color); color: var(--white); }
 
-        .section { display: none; animation: fadeIn 0.5s ease; }
+        /* --- CÁC SECTION --- */
+        .section { display: none; animation: fadeIn 0.4s ease; width: 100%; margin-bottom: 25px; }
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .sub-controls { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 15px; }
+        .btn-action { background: var(--bg-color); color: var(--text-color); border: 1px solid var(--card-border); padding: 8px 15px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-action:hover { background: var(--accent-color); color: var(--white); border-color: var(--accent-color); }
+        .btn-action.primary { background: #10b981; color: white; border-color: #10b981; }
 
-        /* --- XUẤT ẢNH & WATERMARK --- */
-        .export-area {
-            position: relative;
-            padding: 2rem;
-            border-radius: 16px;
-            background: var(--bg-color); /* Nền đặc để xuất ảnh không bị lỗi trong suốt */
-        }
-
-        .watermark-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(2rem, 5vw, 4rem);
-            color: rgba(255, 255, 255, 0.15); /* Chữ mờ */
-            font-weight: 800;
-            pointer-events: none;
-            z-index: 9999;
-            transform: rotate(-30deg);
-            white-space: nowrap;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* --- TAROT STYLES --- */
-        .tarot-wrapper { display: flex; justify-content: center; }
-        .grid-1 { display: flex; justify-content: center; }
-        .grid-1 .tarot-card { width: 260px; }
-        .grid-6 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 800px; }
-        .grid-6 .tarot-card { width: 180px; }
-        .grid-12 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 900px; }
-        .grid-12 .tarot-card { width: 150px; }
-
-        .tarot-card {
-            perspective: 1000px;
-            cursor: pointer;
-            aspect-ratio: 2 / 3.2;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-style: preserve-3d;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-            border-radius: 12px;
-        }
-
+        /* --- TAROT UI --- */
+        .tarot-grid { display: grid; gap: 10px; justify-content: center; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid var(--card-border); }
+        .tarot-card { perspective: 1000px; cursor: pointer; aspect-ratio: 2 / 3.2; width: 100%; display: flex; flex-direction: column; gap: 6px; }
+        .card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
         .tarot-card.flipped .card-inner { transform: rotateY(180deg); }
-
-        .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid var(--border-color);
-        }
-
-        .card-back {
-            background: linear-gradient(135deg, #1e1b4b, #312e81);
-            background-image: repeating-linear-gradient(45deg, rgba(167, 139, 250, 0.1) 0px, rgba(167, 139, 250, 0.1) 10px, transparent 10px, transparent 20px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .card-back::after { content: '✧'; font-size: 3rem; color: rgba(255,255,255,0.2); }
-
-        .card-front {
-            transform: rotateY(180deg);
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .card-front img { width: 100%; height: 100%; object-fit: cover; background: #fff; }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; overflow: hidden; border: 1px solid var(--card-border); }
+        .card-back { background: linear-gradient(145deg, var(--primary-color), #1e293b); display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent-color); }
+        .card-back::after { content: '\f0d0'; font-family: 'FontAwesome'; font-size: 1.5rem; color: var(--accent-color); opacity: 0.5; }
+        .card-front { transform: rotateY(180deg); background: var(--bg-color); }
+        .card-front img { width: 100%; height: 100%; object-fit: cover; }
         .img-reversed { transform: rotateZ(180deg); }
-        
-        /* GIAO DIỆN ĐỒ HỌA DỰ PHÒNG */
-        .card-fallback {
-            display: none; 
-            width: 100%; height: 100%;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            position: relative;
-            border: 1px solid #3b82f6;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
-            overflow: hidden;
-        }
-        
-        .card-fallback::before { 
-            content: ''; 
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background-image: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px);
-            background-size: 15px 15px;
-            z-index: 0;
-        }
-
-        .fallback-symbol {
-            position: relative;
-            width: 60px; height: 60px;
-            margin-bottom: 1.5rem;
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1;
-        }
-
-        .fallback-shape1, .fallback-shape2 {
-            position: absolute; width: 100%; height: 100%;
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            transition: transform 0.3s;
-        }
-        .fallback-shape1 { transform: rotate(45deg); }
-        .fallback-shape2 { transform: rotate(15deg); }
-        
-        .fallback-circle {
-            position: absolute; width: 85%; height: 85%;
-            border: 1px dashed rgba(212, 175, 55, 0.8); 
-            border-radius: 50%;
-            animation: spin 12s linear infinite;
-        }
-        
-        .fallback-moon {
-            position: absolute; width: 26px; height: 26px;
-            border-radius: 50%;
-            box-shadow: inset -4px -4px 0 0 #d4af37;
-            transform: rotate(-45deg);
-        }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .fallback-name { 
-            font-family: 'Georgia', serif; font-weight: bold; font-size: 1.05rem; 
-            line-height: 1.3; text-align: center; color: #f8fafc; z-index: 2;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-        }
-
-        .card-label {
-            text-align: center; font-size: 0.95rem; font-weight: 600;
-            opacity: 0; transition: opacity 0.5s; margin-top: 0.5rem; color: var(--primary);
-        }
+        .card-label { text-align: center; font-size: 0.75rem; font-weight: 600; opacity: 0; transition: opacity 0.5s; color: var(--text-color); }
         .tarot-card.flipped .card-label { opacity: 1; }
-        .text-nguoc { color: var(--danger); }
+        .text-nguoc { color: #ef4444; }
 
-        /* --- I CHING STYLES --- */
-        .iching-area { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
-        .lines-container { display: flex; flex-direction: column-reverse; gap: 0.6rem; width: 280px; margin: 0 auto; }
-
-        .hao-row { 
-            display: flex; align-items: center; justify-content: space-between; gap: 1rem; 
-            opacity: 0; transform: translateY(10px); transition: all 0.5s ease;
-        }
+        /* --- I CHING UI --- */
+        .lines-container { display: flex; flex-direction: column-reverse; gap: 8px; width: 100%; max-width: 250px; margin: 0 auto; }
+        .hao-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--white); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--card-border); opacity: 0; transform: translateY(5px); transition: all 0.5s ease; }
         .hao-row.show { opacity: 1; transform: translateY(0); }
-        
-        .hao-label { width: 50px; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
-        .hao { flex-grow: 1; height: 26px; display: flex; align-items: center; justify-content: center; }
-
-        .yang { width: 100%; height: 100%; background: linear-gradient(to right, #f8fafc, #cbd5e1); border-radius: 4px; box-shadow: 0 2px 10px rgba(255,255,255,0.1); }
+        .hao-label { width: 40px; font-size: 0.75rem; font-weight: 600; }
+        .hao { flex-grow: 1; height: 14px; display: flex; align-items: center; justify-content: center; }
+        .yang { width: 100%; height: 100%; background: var(--primary-color); border-radius: 3px; }
         .yin { width: 100%; height: 100%; display: flex; justify-content: space-between; }
-        .yin::before, .yin::after { content: ''; width: 46%; height: 100%; background: linear-gradient(to right, #f8fafc, #cbd5e1); border-radius: 4px; box-shadow: 0 2px 10px rgba(255,255,255,0.1); }
+        .yin::before, .yin::after { content: ''; width: 45%; height: 100%; background: var(--primary-color); border-radius: 3px; }
+        .hao-status { width: 55px; font-size: 0.65rem; font-weight: 600; text-align: right; }
+        .hao-status span { background: #fee2e2; color: #ef4444; padding: 2px 4px; border-radius: 3px; display: inline-block; }
+        .hao-status .dong-duong { background: #dbeafe; color: var(--accent-color); }
+        .results { display: flex; gap: 10px; justify-content: center; width: 100%; margin-top: 15px; }
+        .hexagram-result { background: var(--white); padding: 12px; border-radius: 10px; text-align: center; flex: 1; border: 1px solid var(--card-border); }
+        .hexagram-title { font-size: 0.7rem; font-weight: 700; color: var(--accent-color); margin-bottom: 5px; text-transform: uppercase; }
+        .hexagram-name { font-size: 1.2rem; font-weight: 700; color: var(--primary-color); margin-bottom: 5px; }
+
+        /* --- BOX KẾT QUẢ ĐỌC BÀI --- */
+        .admin-notice-box { background: var(--admin-bg); border-left: 4px solid var(--admin-border); border-radius: 6px; padding: 10px 15px; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 12px; text-align: left; }
+        .notice-icon { font-size: 1.2rem; color: var(--admin-border); margin-top: 2px; }
+        .notice-title { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--admin-border); display: block; margin-bottom: 3px; }
+        .notice-text { font-size: 0.8rem; color: var(--admin-text); font-weight: 500; line-height: 1.3; }
         
-        .hao-status { width: 40px; color: var(--gold); font-weight: bold; font-size: 1rem; text-align: center; }
-        .hao-status span { display: inline-block; background: rgba(251, 191, 36, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
+        .reading-result-box { background: var(--bg-color); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: left; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); display: none; }
+        .reading-title { font-size: 1rem; font-weight: 700; color: var(--accent-color); margin-bottom: 10px; border-bottom: 1px solid var(--card-border); padding-bottom: 5px; text-transform: uppercase; }
+        .reading-section { margin-bottom: 10px; }
+        .reading-section h4 { font-size: 0.8rem; color: var(--primary-color); margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
+        .reading-section p { font-size: 0.8rem; color: var(--text-color); line-height: 1.4; }
 
-        .results { display: flex; gap: 1.5rem; justify-content: center; width: 100%; margin-top: 1rem; flex-wrap: wrap; }
-        .hexagram-result { 
-            background: rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 16px; 
-            text-align: center; flex: 1; min-width: 250px; 
-            border: 1px solid var(--border-color); 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
-            animation: fadeIn 1s ease forwards;
-        }
-        .hexagram-title { font-size: 1.1rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;}
-        .hexagram-name { font-size: 1.8rem; font-weight: bold; color: var(--primary); margin-bottom: 1rem; }
-
+        /* --- CONTACT --- */
+        .contact-label { font-size: 0.75rem; color: #94a3b8; font-weight: 500; margin-bottom: 10px; text-align: left; text-transform: uppercase; width: 100%; }
+        .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
+        .contact-item { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px 10px; text-decoration: none; color: var(--text-color); transition: all 0.2s ease; }
+        .contact-item i { font-size: 1.2rem; margin-bottom: 5px; color: #64748b; }
+        .contact-item span { font-size: 0.7rem; font-weight: 500; }
+        .contact-item:hover { transform: translateY(-2px); border-color: transparent; }
+        .contact-item.email:hover { background: #fee2e2; color: #ef4444; } 
+        .contact-item.zalo:hover { background: #dcfce7; color: #10b981; } 
+        .contact-item.fb:hover { background: #dbeafe; color: #2563eb; }
+        
+        .footer { font-size: 0.7rem; color: #94a3b8; margin-top: 25px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Codelo Tarot</h1>
-        <p style="color: var(--text-muted)">Thấu hiểu năng lượng vũ trụ qua Tarot & Kinh Dịch</p>
-    </header>
-
     <div class="container">
-        <!-- Main Menu -->
-        <div id="main-menu" class="section active">
-            <div class="controls">
-                <button onclick="switchSection('tarot-section')">🃏 Trải Bài Tarot</button>
-                <button onclick="switchSection('iching-section')">☯️ Gieo Quẻ Kinh Dịch</button>
-            </div>
+        <!-- BRAND LOGO -->
+        <div class="brand-logo">
+            <h1>Codelo <span>Tarot.</span></h1>
+            <p style="font-size: 0.8rem; color: #64748b;">Enterprise Astrology Solutions</p>
         </div>
 
-        <!-- Tarot Section -->
-        <div id="tarot-section" class="section">
-            <div class="controls">
-                <button class="btn-back" onclick="switchSection('main-menu')">← Trở về</button>
-                <button onclick="drawTarot(1)">Trải 1 lá</button>
-                <button onclick="drawTarot(6)">Trải 6 lá</button>
-                <button onclick="drawTarot(12)">Trải 12 lá</button>
-                <button id="btn-export-tarot" class="btn-export" style="display: none;" onclick="exportImage('tarot-export-area', 'Codelo-Tarot-Spread')">📸 Lưu Ảnh Chuyên Nghiệp</button>
+        <!-- WEATHER WIDGET -->
+        <div class="status-bar" id="weather-card">
+            <div class="weather-anim-layer" id="weather-anim-container">
+                <i class="fas fa-cloud anim-cloud cloud-1"></i>
+                <i class="fas fa-cloud anim-cloud cloud-2"></i>
             </div>
-            <!-- Gói gọn khu vực cần xuất ảnh -->
-            <div id="tarot-export-area" class="export-area">
-                <div class="tarot-wrapper">
-                    <div id="tarot-result"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- I Ching Section -->
-        <div id="iching-section" class="section">
-            <div class="controls">
-                <button class="btn-back" onclick="switchSection('main-menu')">← Trở về</button>
-                <button id="btn-gieo-tu-dong" onclick="autoToss()">⚡ Gieo Quẻ Tự Động</button>
-                <button onclick="resetIching()">🔄 Xóa làm lại</button>
-                <button id="btn-export-iching" class="btn-export" style="display: none;" onclick="exportImage('iching-export-area', 'Codelo-IChing-Result')">📸 Lưu Ảnh Chuyên Nghiệp</button>
-            </div>
-            
-            <!-- Gói gọn khu vực cần xuất ảnh -->
-            <div id="iching-export-area" class="export-area">
-                <div class="iching-area">
-                    <div id="lines-display" class="lines-container"></div>
-                    <div id="iching-result" class="results" style="display: none;">
-                        <div class="hexagram-result">
-                            <div class="hexagram-title">Quẻ Chủ (Hiện Tại)</div>
-                            <div id="que-chu-name" class="hexagram-name"></div>
-                            <div id="que-chu-detail" style="color: var(--text-main)"></div>
-                        </div>
-                        <div class="hexagram-result" id="que-bien-container" style="display: none;">
-                            <div class="hexagram-title">Quẻ Biến (Tương Lai)</div>
-                            <div id="que-bien-name" class="hexagram-name"></div>
-                            <div id="que-bien-detail" style="color: var(--text-main)"></div>
-                        </div>
+            <div class="status-content">
+                <div class="clock" id="clock">00:00</div>
+                <div class="date" id="date">Đang tải...</div>
+                <div class="weather-row">
+                    <div class="location-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="location" class="location-text">Đang định vị...</span>
+                    </div>
+                    <div class="temp-info">
+                        <i class="fas fa-cloud-sun weather-icon-main" id="weather-icon"></i>
+                        <span id="temperature">--°C</span>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- NEWS TICKER -->
+        <div class="news-ticker-area">
+            <div class="news-badge">TIN MỚI</div>
+            <div class="ticker-wrap">
+                <div class="ticker-move" id="news-feed">
+                    <div class="ticker-item"><i class="fas fa-circle-notch fa-spin"></i> Đang tải dữ liệu...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MENU CHÍNH -->
+        <div id="main-menu" class="section active action-area">
+            
+            <!-- NHẬP NGÀY THÁNG NĂM SINH DẠNG CUỘN (KÉO CHỌN) -->
+            <div class="dob-container">
+                <label><i class="fas fa-calendar-alt"></i> Ngày tháng năm sinh của bạn:</label>
+                <div class="dob-selectors">
+                    <select id="dob-day"><option value="" disabled selected>Ngày</option></select>
+                    <select id="dob-month"><option value="" disabled selected>Tháng</option></select>
+                    <select id="dob-year"><option value="" disabled selected>Năm</option></select>
+                </div>
+                <p>* Lăn chọn ngày sinh để hệ thống kết nối năng lượng chuẩn xác nhất.</p>
+            </div>
+
+            <button onclick="handleMenuClick('time')" class="btn-business">
+                <div class="btn-content">
+                    <span class="btn-title">Lá Bài Thời Gian</span>
+                    <span class="btn-desc">Thông điệp chi tiết tùy theo lá bài bạn bốc được</span>
+                </div>
+                <div class="btn-icon"><i class="fas fa-clock"></i></div>
+            </button>
+
+            <button onclick="handleMenuClick('yesno')" class="btn-business">
+                <div class="btn-content">
+                    <span class="btn-title">Luận Đúng / Sai (Yes-No)</span>
+                    <span class="btn-desc">Nhận đáp án trực tiếp Có hoặc Không cho vấn đề</span>
+                </div>
+                <div class="btn-icon"><i class="fas fa-balance-scale"></i></div>
+            </button>
+            
+            <button onclick="handleMenuClick('tarot')" class="btn-business">
+                <div class="btn-content">
+                    <span class="btn-title">Trải Bài Tarot</span>
+                    <span class="btn-desc">Rút bài tự do 1, 3, 6 lá</span>
+                </div>
+                <div class="btn-icon"><i class="fas fa-layer-group"></i></div>
+            </button>
+
+            <button onclick="handleMenuClick('iching')" class="btn-business">
+                <div class="btn-content">
+                    <span class="btn-title">Gieo Quẻ Kinh Dịch</span>
+                    <span class="btn-desc">Xin quẻ 6 hào, phân tích quẻ biến</span>
+                </div>
+                <div class="btn-icon"><i class="fas fa-yin-yang"></i></div>
+            </button>
+        </div>
+
+        <!-- SECTION: THỜI GIAN -->
+        <div id="time-card-section" class="section">
+            <div class="sub-controls">
+                <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
+                <button class="btn-action primary" onclick="drawTimeCard()"><i class="fas fa-hand-sparkles"></i> Bốc Bài</button>
+                <button id="btn-export-time" class="btn-action" style="display: none;" onclick="exportImage('time-export-area', 'Codelo-Thong-Diep')"><i class="fas fa-camera"></i> Lưu ảnh</button>
+            </div>
+            
+            <div id="time-export-area">
+                <div id="time-card-result" class="tarot-grid" style="grid-template-columns: 140px; margin-bottom: 15px;"></div>
+                
+                <div class="reading-result-box" id="reading-result-box">
+                    <div class="reading-title" id="reading-card-name"></div>
+                    <div class="reading-section">
+                        <h4><i class="fas fa-star" style="color:#fbbf24"></i> Tổng Quan:</h4>
+                        <p id="reading-general"></p>
+                    </div>
+                    <div class="reading-section">
+                        <h4><i class="fas fa-briefcase" style="color:#3b82f6"></i> Công Việc / Tài Chính:</h4>
+                        <p id="reading-work"></p>
+                    </div>
+                    <div class="reading-section">
+                        <h4><i class="fas fa-heart" style="color:#ef4444"></i> Tình Cảm / Quan Hệ:</h4>
+                        <p id="reading-love"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION: LUẬN ĐÚNG/SAI (YES/NO) -->
+        <div id="yesno-section" class="section">
+            <div class="sub-controls">
+                <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
+                <button class="btn-action primary" onclick="drawYesNo()"><i class="fas fa-hand-sparkles"></i> Bốc Bài</button>
+                <button id="btn-export-yesno" class="btn-action" style="display: none;" onclick="exportImage('yesno-export-area', 'Codelo-YesNo')"><i class="fas fa-camera"></i> Lưu ảnh</button>
+            </div>
+            
+            <div id="yesno-export-area">
+                <div id="yesno-card-result" class="tarot-grid" style="grid-template-columns: 140px; margin-bottom: 15px;"></div>
+                
+                <div class="reading-result-box" id="yesno-result-box">
+                    <div class="reading-title" id="yesno-card-name"></div>
+                    <div class="reading-section">
+                        <h4><i class="fas fa-gavel" style="color:#f97316"></i> Kết luận:</h4>
+                        <p id="yesno-answer" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;"></p>
+                        <p id="yesno-desc"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION: TAROT TỰ DO -->
+        <div id="tarot-section" class="section">
+            <div class="sub-controls">
+                <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
+                <button class="btn-action" onclick="drawTarot(1, 'tarot-result')">1 Lá</button>
+                <button class="btn-action" onclick="drawTarot(3, 'tarot-result')">3 Lá</button>
+                <button class="btn-action" onclick="drawTarot(6, 'tarot-result')">6 Lá</button>
+                <button id="btn-export-tarot" class="btn-action primary" style="display: none;" onclick="exportImage('tarot-export-area', 'Codelo-Trai-Bai')"><i class="fas fa-camera"></i> Lưu ảnh</button>
+            </div>
+            <div id="tarot-export-area">
+                <div id="tarot-result" class="tarot-grid"></div>
+            </div>
+        </div>
+
+        <!-- SECTION: KINH DỊCH -->
+        <div id="iching-section" class="section">
+            <div class="sub-controls">
+                <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
+                <button id="btn-gieo-tu-dong" class="btn-action" onclick="autoToss()"><i class="fas fa-bolt"></i> Xin Quẻ</button>
+                <button id="btn-export-iching" class="btn-action primary" style="display: none;" onclick="exportImage('iching-export-area', 'Codelo-Kinh-Dich')"><i class="fas fa-camera"></i> Lưu kết quả</button>
+            </div>
+            <div id="iching-export-area">
+                <div id="lines-display" class="lines-container" style="background:#f8fafc; padding:15px; border-radius:12px; border:1px solid var(--card-border);"></div>
+                <div id="iching-result" class="results" style="display: none;">
+                    <div class="hexagram-result">
+                        <div class="hexagram-title">Quẻ Chủ (Hiện Tại)</div>
+                        <div id="que-chu-name" class="hexagram-name"></div>
+                        <div id="que-chu-detail" style="font-size:0.8rem;"></div>
+                    </div>
+                    <div class="hexagram-result" id="que-bien-container" style="display: none;">
+                        <div class="hexagram-title">Quẻ Biến (Tương Lai)</div>
+                        <div id="que-bien-name" class="hexagram-name"></div>
+                        <div id="que-bien-detail" style="font-size:0.8rem;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTACT GRID -->
+        <div class="contact-label">Contact Work</div>
+        <div class="contact-grid">
+            <a href="mailto:Nhuthyne@gmail.com" class="contact-item email"><i class="fas fa-envelope"></i><span>Email</span></a>
+            <a href="https://zalo.me/0376138554" class="contact-item zalo" target="_blank"><i class="fas fa-phone-alt"></i><span>Zalo</span></a>
+            <a href="https://www.facebook.com/nhuthynee?" class="contact-item fb" target="_blank"><i class="fab fa-facebook-f"></i><span>Social</span></a>
+        </div>
+
+        <div class="footer"> 2026 Codelo VN. All rights reserved.<br>Designed for Bao Hy.</div>
     </div>
 
     <script>
-        // === HỆ THỐNG BẢO MẬT (CHỐNG SOI CODE & CHỤP MÀN HÌNH BẰNG TỔ HỢP PHÍM) ===
-        // Chặn chuột phải
+        // CHỐNG CHUỘT PHẢI
         document.addEventListener('contextmenu', event => event.preventDefault());
-        
-        // Chặn phím tắt mở Developer Tools
+
+        // CHẶN PHÍM TẮT XEM CODE VÀ CHỤP MÀN HÌNH (PC/LAPTOP)
         document.onkeydown = function(e) {
-            if(e.keyCode == 123) return false; // F12
+            if(e.keyCode == 123) return false; // Chặn F12
             if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0))) return false;
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Ctrl+U
-            // Thử bắt PrintScreen (Dù hệ điều hành có thể ưu tiên thu nhận trước)
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Chặn Ctrl+U
             if(e.key === 'PrintScreen' || e.keyCode == 44) {
                 navigator.clipboard.writeText(''); // Xóa bộ nhớ đệm
-                document.body.style.filter = 'blur(20px)';
-                setTimeout(() => { document.body.style.filter = 'none'; }, 2000);
+                alert("Codelo trân trọng: Hãy dùng nút Lưu ảnh có sẵn trong web nhé!");
             }
         };
 
-        // Làm mờ trang khi cửa sổ bị mất tiêu điểm (Anti-Snipping Tool)
-        window.addEventListener('blur', () => {
-            document.body.style.filter = 'blur(20px)';
-        });
-        window.addEventListener('focus', () => {
-            document.body.style.filter = 'none';
-        });
+        // KHỞI TẠO DROP-DOWN NGÀY THÁNG NĂM SINH
+        function initDOB() {
+            const daySelect = document.getElementById('dob-day');
+            const monthSelect = document.getElementById('dob-month');
+            const yearSelect = document.getElementById('dob-year');
+            
+            for(let i = 1; i <= 31; i++) {
+                daySelect.innerHTML += `<option value="${i}">${i}</option>`;
+            }
+            for(let i = 1; i <= 12; i++) {
+                monthSelect.innerHTML += `<option value="${i}">Tháng ${i}</option>`;
+            }
+            const currentYear = new Date().getFullYear();
+            for(let i = currentYear; i >= 1950; i--) {
+                yearSelect.innerHTML += `<option value="${i}">${i}</option>`;
+            }
+        }
 
-        // === HỆ THỐNG ĐIỀU HƯỚNG ===
+        // CHUYỂN TRANG
         function switchSection(sectionId) {
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
-            if(sectionId === 'iching-section') resetIching();
+            
             if(sectionId === 'tarot-section') {
                 document.getElementById('tarot-result').innerHTML = '';
                 document.getElementById('btn-export-tarot').style.display = 'none';
             }
+            if(sectionId === 'time-card-section') {
+                document.getElementById('reading-result-box').style.display = 'none';
+                document.getElementById('btn-export-time').style.display = 'none';
+                document.getElementById('time-card-result').innerHTML = '';
+            }
+            if(sectionId === 'yesno-section') {
+                document.getElementById('yesno-result-box').style.display = 'none';
+                document.getElementById('btn-export-yesno').style.display = 'none';
+                document.getElementById('yesno-card-result').innerHTML = '';
+            }
+            if(sectionId === 'iching-section') resetIching();
         }
 
-        // === LOGIC XUẤT ẢNH CHUYÊN NGHIỆP CÓ WATERMARK ===
-        function exportImage(containerId, fileName) {
-            const container = document.getElementById(containerId);
+        // KIỂM TRA NGÀY THÁNG NĂM SINH TRƯỚC KHI VÀO
+        function checkDOB() {
+            const d = document.getElementById('dob-day').value;
+            const m = document.getElementById('dob-month').value;
+            const y = document.getElementById('dob-year').value;
             
-            // Tạo Watermark
-            const watermark = document.createElement('div');
-            watermark.className = 'watermark-overlay';
-            watermark.innerText = 'Created by Bao Hy - Codelo';
-            container.appendChild(watermark);
-
-            // Tạm thời sửa style để xuất ảnh đẹp hơn
-            const oldBg = container.style.background;
-            container.style.background = '#0f172a'; // Đổ nền đặc chống lỗi trong suốt
-            
-            // Tiến hành chụp khung hình
-            html2canvas(container, {
-                useCORS: true, // Cho phép load ảnh từ CDN chéo domain
-                scale: 2,      // Xuất ảnh sắc nét (HD)
-                backgroundColor: '#0f172a'
-            }).then(canvas => {
-                // Xóa Watermark & Trả lại giao diện
-                container.removeChild(watermark);
-                container.style.background = oldBg;
-                
-                // Tự động tải xuống
-                const link = document.createElement('a');
-                link.download = fileName + '.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            }).catch(err => {
-                container.removeChild(watermark);
-                container.style.background = oldBg;
-                alert("Xuất ảnh thất bại. Có thể do kết nối mạng yếu lúc tải hình!");
-            });
+            if (!d || !m || !y) {
+                alert("Bạn vui lòng lăn chọn đầy đủ Ngày, Tháng, Năm sinh để hệ thống Codelo kết nối năng lượng chuẩn xác nhất nhé!");
+                return false;
+            }
+            return true;
         }
 
-        // === LOGIC TAROT ===
+        function handleMenuClick(action) {
+            if (!checkDOB()) return; 
+            
+            if (action === 'time') switchSection('time-card-section');
+            else if (action === 'tarot') switchSection('tarot-section');
+            else if (action === 'yesno') switchSection('yesno-section');
+            else if (action === 'iching') switchSection('iching-section');
+        }
+
+        // ==========================================
+        // JS: THỜI TIẾT, ĐỒNG HỒ & TIN TỨC
+        // ==========================================
+        function renderWeatherEffects(code, isDay) {
+            const container = document.getElementById('weather-anim-container'); container.innerHTML = ''; 
+            if (isDay === 1) { 
+                if (code <= 3) { container.innerHTML = `<i class="fas fa-sun anim-sun"></i>`; } 
+                else if (code <= 48) { container.innerHTML = `<i class="fas fa-cloud anim-cloud cloud-1"></i><i class="fas fa-cloud anim-cloud cloud-2"></i>`; } 
+                else { 
+                    let rainDrops = '';
+                    for(let i=0; i<15; i++) {
+                        let left = Math.floor(Math.random() * 100); let delay = Math.random() * 2; let duration = 0.5 + Math.random();
+                        rainDrops += `<div class="anim-rain" style="left: ${left}%; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
+                    }
+                    container.innerHTML = rainDrops;
+                }
+            } else { 
+                if (code > 60) { 
+                    let rainDrops = '';
+                    for(let i=0; i<15; i++) {
+                        let left = Math.floor(Math.random() * 100); let delay = Math.random() * 2;
+                        rainDrops += `<div class="anim-rain" style="left: ${left}%; animation-delay: ${delay}s; background: rgba(255,255,255,0.15);"></div>`;
+                    }
+                    container.innerHTML = rainDrops;
+                } 
+            }
+        }
+
+        async function getLocationName(lat, lon) {
+            const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=vi`;
+            try {
+                const response = await fetch(url); const data = await response.json();
+                document.getElementById('location').textContent = data.city || data.locality || data.principalSubdivision || "Vị trí của bạn";
+            } catch (err) { document.getElementById('location').textContent = "Vị trí của bạn"; }
+        }
+
+        function getWeather(lat, lon) {
+            getLocationName(lat, lon);
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+            fetch(url).then(response => response.json()).then(data => {
+                const temp = Math.round(data.current_weather.temperature);
+                const code = data.current_weather.weathercode; const isDay = data.current_weather.is_day;
+                document.getElementById('temperature').textContent = `${temp}°C`;
+                const iconEl = document.getElementById('weather-icon');
+                if (isDay === 1) {
+                    if (code <= 3) { iconEl.className = "fas fa-sun weather-icon-main"; iconEl.style.color = "#fbbf24"; } 
+                    else if (code <= 48) { iconEl.className = "fas fa-cloud-sun weather-icon-main"; iconEl.style.color = "#f1f5f9"; } 
+                    else { iconEl.className = "fas fa-cloud-showers-heavy weather-icon-main"; iconEl.style.color = "#93c5fd"; }
+                } else {
+                    if (code <= 3) { iconEl.className = "fas fa-moon weather-icon-main"; iconEl.style.color = "#fef3c7"; } 
+                    else { iconEl.className = "fas fa-cloud-moon-rain weather-icon-main"; }
+                }
+                renderWeatherEffects(code, isDay);
+            }).catch(err => { document.getElementById('temperature').textContent = "N/A"; });
+        }
+
+        function initLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (p) => { getWeather(p.coords.latitude, p.coords.longitude); },
+                    (e) => { document.getElementById('location').textContent = "Hồ Chí Minh"; getWeather(10.8231, 106.6297); }
+                );
+            } else { document.getElementById('location').textContent = "Hồ Chí Minh"; getWeather(10.8231, 106.6297); }
+        }
+
+        async function fetchNews() {
+            const feeds = ['https://vnexpress.net/rss/kinh-doanh.rss', 'https://vnexpress.net/rss/phap-luat.rss'];
+            const newsContainer = document.getElementById('news-feed');
+            try {
+                const promises = feeds.map(feed => fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed)}&_t=${Date.now()}`).then(res => res.json()));
+                const results = await Promise.all(promises); let allItems = [];
+                results.forEach(data => { if(data.status === 'ok') allItems = allItems.concat(data.items); });
+                allItems.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+                let rawHtml = '';
+                allItems.slice(0, 8).forEach(item => {
+                    const timeStr = new Date(item.pubDate).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+                    let icon = item.link.includes('kinh-doanh') ? 'fa-chart-line' : 'fa-gavel';
+                    rawHtml += `<div class="ticker-item"><span class="time-tag">[${timeStr}]</span><i class="fas ${icon}"></i> ${item.title}</div>`;
+                });
+                newsContainer.innerHTML = rawHtml + rawHtml;
+            } catch (error) {
+                newsContainer.innerHTML = `<div class="ticker-item"><i class="fas fa-newspaper"></i> Đang tải tin tức...</div>`.repeat(2);
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('date').textContent = now.toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long' });
+        }
+        setInterval(updateClock, 1000);
+
+        // ==========================================
+        // JS: CƠ SỞ DỮ LIỆU BÀI & THUẬT TOÁN XÁO
+        // ==========================================
         const majorNames = ["The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor", "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit", "Wheel of Fortune", "Justice", "The Hanged Man", "Death", "Temperance", "The Devil", "The Tower", "The Star", "The Moon", "The Sun", "Judgement", "The World"];
         const suits = [{code: 'Wands', imgCode: 'wa'}, {code: 'Cups', imgCode: 'cu'}, {code: 'Swords', imgCode: 'sw'}, {code: 'Pentacles', imgCode: 'pe'}];
         const ranks = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Page", "Knight", "Queen", "King"];
         
-        const proxy = "https://wsrv.nl/?url=";
+        const proxy = "https://wsrv.nl/?url="; 
         let tarotDeck = [];
-        
-        majorNames.forEach((name, i) => {
-            let numStr = i < 10 ? '0' + i : i;
-            tarotDeck.push({ name: name, img: `${proxy}sacred-texts.com/tarot/pkt/img/ar${numStr}.jpg` });
-        });
-        
+        majorNames.forEach((name, i) => { let numStr = i < 10 ? '0' + i : i; tarotDeck.push({ name: name, type: "Major", img: `${proxy}sacred-texts.com/tarot/pkt/img/ar${numStr}.jpg` }); });
         suits.forEach(suit => {
             ranks.forEach((rank, i) => {
                 let suffix = '';
-                if (rank === "Ace") suffix = 'ac';
-                else if (rank === "Page") suffix = 'pa';
-                else if (rank === "Knight") suffix = 'kn';
-                else if (rank === "Queen") suffix = 'qu';
-                else if (rank === "King") suffix = 'ki';
-                else {
-                    let num = i + 1;
-                    suffix = num < 10 ? '0' + num : num.toString();
-                }
-                tarotDeck.push({ name: `${rank} of<br>${suit.code}`, img: `${proxy}sacred-texts.com/tarot/pkt/img/${suit.imgCode}${suffix}.jpg` });
+                if (rank === "Ace") suffix = 'ac'; else if (rank === "Page") suffix = 'pa'; else if (rank === "Knight") suffix = 'kn'; else if (rank === "Queen") suffix = 'qu'; else if (rank === "King") suffix = 'ki';
+                else { let num = i + 1; suffix = num < 10 ? '0' + num : num.toString(); }
+                tarotDeck.push({ name: `${rank} of ${suit.code}`, type: suit.code, img: `${proxy}sacred-texts.com/tarot/pkt/img/${suit.imgCode}${suffix}.jpg` });
             });
         });
 
-        function drawTarot(numCards) {
-            document.getElementById('btn-export-tarot').style.display = 'none'; // Ẩn nút lưu ảnh khi mới lật
-            const resultDiv = document.getElementById('tarot-result');
+        function shuffleDeck(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex); currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // ==========================================
+        // JS: LUẬN ĐÚNG / SAI (YES/NO)
+        // ==========================================
+        function drawYesNo() {
+            const resultDiv = document.getElementById('yesno-card-result'); 
             resultDiv.innerHTML = '';
-            resultDiv.className = `grid-${numCards}`;
+            document.getElementById('yesno-result-box').style.display = 'none';
+            document.getElementById('btn-export-yesno').style.display = 'none';
+
+            let selectedCard = shuffleDeck([...tarotDeck])[0];
+            const isUpright = Math.random() > 0.5;
+
+            const cardWrapper = document.createElement('div'); 
+            cardWrapper.className = 'tarot-card';
+            cardWrapper.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-back"></div>
+                    <div class="card-front"><img src="${selectedCard.img}" class="${isUpright ? '' : 'img-reversed'}" alt="${selectedCard.name}" crossorigin="anonymous"></div>
+                </div>
+            `;
+            resultDiv.appendChild(cardWrapper);
+
+            setTimeout(() => {
+                cardWrapper.classList.add('flipped');
+                setTimeout(() => {
+                    let answer = isUpright ? "CÓ (THUẬN LỢI)" : "KHÔNG (THỬ THÁCH)";
+                    let color = isUpright ? "#10b981" : "#ef4444";
+                    let desc = isUpright 
+                        ? "Năng lượng hiện tại đang ủng hộ quyết định này. Mọi yếu tố đang diễn ra khá suôn sẻ, hãy tự tin tiến bước và nắm bắt cơ hội của bạn." 
+                        : "Vũ trụ khuyên bạn nên chậm lại và suy nghĩ kỹ hơn. Có thể vẫn còn những rủi ro ẩn khuất hoặc đây chưa phải là thời điểm thích hợp.";
+
+                    document.getElementById('yesno-card-name').innerHTML = `${selectedCard.name} ${isUpright ? '(Xuôi)' : '(Ngược)'}`;
+                    document.getElementById('yesno-answer').innerHTML = `<span style="color:${color}">${answer}</span>`;
+                    document.getElementById('yesno-desc').innerText = desc;
+                    
+                    document.getElementById('yesno-result-box').style.display = 'block';
+                    document.getElementById('btn-export-yesno').style.display = 'inline-flex';
+                }, 600);
+            }, 300);
+        }
+
+        // ==========================================
+        // JS: LÁ BÀI THỜI GIAN
+        // ==========================================
+        function generateReading(card, isUpright) {
+            let gen = "", work = "", love = "";
+            const state = isUpright ? " (Xuôi)" : " (Ngược)";
             
-            let shuffled = [...tarotDeck].sort(() => 0.5 - Math.random());
-            let selected = shuffled.slice(0, numCards);
+            if (card.type === "Major") {
+                if(isUpright) {
+                    gen = "Sự chuyển biến lớn, bạn đang ở một giai đoạn quan trọng mang tính bước ngoặt.";
+                    work = "Cần sự quyết đoán và cái nhìn dài hạn. Đây là lúc để thể hiện bản lĩnh.";
+                    love = "Mối quan hệ có sự tiến triển sâu sắc, hoặc bạn sắp gặp một người thay đổi tư duy của mình.";
+                } else {
+                    gen = "Sự bế tắc tạm thời, có bài học vũ trụ mà bạn đang cố tình phớt lờ.";
+                    work = "Tránh đưa ra quyết định vội vàng. Mọi thứ đang bị trì hoãn ngoài ý muốn.";
+                    love = "Cần thời gian để tĩnh lặng và nhìn nhận lại tổn thương của bản thân.";
+                }
+            } else if (card.type === "Wands") {
+                gen = isUpright ? "Năng lượng dồi dào, hành động và đam mê." : "Thiếu động lực, kiệt sức hoặc quá nóng vội.";
+                work = isUpright ? "Tiến độ công việc rất tốt, sẽ có cơ hội hoặc dự án mới đáng để thử sức." : "Cẩn thận xung đột với đồng nghiệp hoặc kế hoạch bị chệch hướng.";
+                love = isUpright ? "Tình cảm nhiệt huyết, vui vẻ và có tính xây dựng." : "Dễ xảy ra cãi vã vì cái tôi quá cao.";
+            } else if (card.type === "Cups") {
+                gen = isUpright ? "Cảm xúc thăng hoa, sự kết nối và trực giác nhạy bén." : "Cảm xúc bất ổn, nhạy cảm quá mức hoặc bị lừa dối.";
+                work = isUpright ? "Môi trường làm việc hòa đồng, có quý nhân giúp đỡ." : "Thiếu thực tế, dễ bị tình cảm chi phối quyết định công việc.";
+                love = isUpright ? "Sự thấu hiểu, lãng mạn và có thể có những cam kết tiến xa hơn." : "Cảm giác cô đơn hoặc thất vọng về đối phương.";
+            } else if (card.type === "Swords") {
+                gen = isUpright ? "Sự logic, lý trí và những sự thật cần được làm rõ." : "Suy nghĩ tiêu cực, lo âu, hoặc lời nói gây tổn thương.";
+                work = isUpright ? "Cần giải quyết vấn đề bằng lý trí, sự minh bạch sẽ mang lại kết quả." : "Có thể có thị phi, áp lực tinh thần lớn.";
+                love = isUpright ? "Nên giao tiếp thẳng thắn để giải quyết khúc mắc." : "Khoảng cách tâm lý, mâu thuẫn dai dẳng chưa được tháo gỡ.";
+            } else if (card.type === "Pentacles") {
+                gen = isUpright ? "Sự ổn định, nền tảng vật chất và những thành quả thực tế." : "Khó khăn về tài chính, sự trì trệ hoặc quá thực dụng.";
+                work = isUpright ? "Tài chính khởi sắc, công sức của bạn được ghi nhận xứng đáng." : "Đừng quá tham lam hoặc lo lắng về tiền bạc, hãy quản lý lại chi tiêu.";
+                love = isUpright ? "Mối quan hệ bền vững, mang lại cảm giác an toàn." : "Cảm thấy thiếu thốn sự quan tâm hoặc áp lực vì vật chất.";
+            }
+
+            document.getElementById('reading-general').innerText = gen;
+            document.getElementById('reading-work').innerText = work;
+            document.getElementById('reading-love').innerText = love;
+            document.getElementById('reading-card-name').innerHTML = `${card.name} ${state}`;
+        }
+
+        function drawTimeCard() {
+            const resultDiv = document.getElementById('time-card-result'); resultDiv.innerHTML = '';
+            document.getElementById('reading-result-box').style.display = 'none';
+            document.getElementById('btn-export-time').style.display = 'none';
+
+            let selectedCard = shuffleDeck([...tarotDeck])[0];
+            const isUpright = Math.random() > 0.5;
+
+            const cardWrapper = document.createElement('div'); cardWrapper.className = 'tarot-card';
+            cardWrapper.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-back"></div>
+                    <div class="card-front"><img src="${selectedCard.img}" class="${isUpright ? '' : 'img-reversed'}" alt="${selectedCard.name}" crossorigin="anonymous"></div>
+                </div>
+            `;
+            resultDiv.appendChild(cardWrapper);
+
+            setTimeout(() => {
+                cardWrapper.classList.add('flipped');
+                setTimeout(() => {
+                    generateReading(selectedCard, isUpright);
+                    document.getElementById('reading-result-box').style.display = 'block';
+                    document.getElementById('btn-export-time').style.display = 'inline-flex';
+                }, 600);
+            }, 300);
+        }
+
+        // ==========================================
+        // JS: TRẢI BÀI TAROT NHIỀU LÁ
+        // ==========================================
+        function drawTarot(numCards, containerId) {
+            document.getElementById('btn-export-tarot').style.display = 'none';
+            const resultDiv = document.getElementById(containerId); resultDiv.innerHTML = '';
+            let selected = shuffleDeck([...tarotDeck]).slice(0, numCards);
 
             selected.forEach((card, index) => {
                 const isUpright = Math.random() > 0.5;
                 const stateText = isUpright ? 'Xuôi' : 'Ngược';
                 const labelClass = isUpright ? '' : 'text-nguoc';
-                const imgClass = isUpright ? '' : 'img-reversed';
-
-                const cardWrapper = document.createElement('div');
-                cardWrapper.className = 'tarot-card';
+                const cardWrapper = document.createElement('div'); cardWrapper.className = 'tarot-card';
                 cardWrapper.innerHTML = `
                     <div class="card-inner">
                         <div class="card-back"></div>
-                        <div class="card-front">
-                            <img src="${card.img}" class="${imgClass}" alt="${card.name}" crossorigin="anonymous"
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="card-fallback">
-                                <div class="fallback-symbol ${imgClass}">
-                                    <div class="fallback-shape1"></div>
-                                    <div class="fallback-shape2"></div>
-                                    <div class="fallback-circle"></div>
-                                    <div class="fallback-moon"></div>
-                                </div>
-                                <div class="fallback-name ${imgClass}">${card.name}</div>
-                            </div>
-                        </div>
+                        <div class="card-front"><img src="${card.img}" class="${isUpright ? '' : 'img-reversed'}" alt="${card.name}" crossorigin="anonymous"></div>
                     </div>
-                    <div class="card-label ${labelClass}">${card.name.replace('<br>', ' ')}<br>(${stateText})</div>
+                    <div class="card-label ${labelClass}">${card.name.replace(' of ', ' of<br>')}<br>(${stateText})</div>
                 `;
-                
                 cardWrapper.onclick = () => cardWrapper.classList.toggle('flipped');
                 resultDiv.appendChild(cardWrapper);
-
-                // Tự động lật bài
-                setTimeout(() => {
-                    cardWrapper.classList.add('flipped');
-                }, 200 + (index * 150));
+                setTimeout(() => { cardWrapper.classList.add('flipped'); }, 200 + (index * 150));
             });
-
-            // Hiện nút lưu ảnh sau khi lật bài xong
-            setTimeout(() => {
-                document.getElementById('btn-export-tarot').style.display = 'flex';
-            }, 200 + (numCards * 150) + 500);
+            setTimeout(() => { document.getElementById('btn-export-tarot').style.display = 'inline-flex'; }, 200 + (numCards * 150) + 300);
         }
 
-        // === LOGIC KINH DỊCH ===
+        // ==========================================
+        // JS: KINH DỊCH
+        // ==========================================
         const elements = { 7: "Thiên (Trời)", 3: "Trạch (Đầm)", 5: "Hỏa (Lửa)", 1: "Lôi (Sấm)", 6: "Phong (Gió)", 2: "Thủy (Nước)", 4: "Sơn (Núi)", 0: "Địa (Đất)" };
         const elementPrefix = { 7: "Thiên", 3: "Trạch", 5: "Hỏa", 1: "Lôi", 6: "Phong", 2: "Thủy", 4: "Sơn", 0: "Địa" };
-
         let currentLines = [];
 
         function autoToss() {
             resetIching();
             const btnGieo = document.getElementById('btn-gieo-tu-dong');
-            btnGieo.disabled = true;
-            btnGieo.innerText = "Đang gieo...";
-
+            btnGieo.disabled = true; btnGieo.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gieo...';
             for (let i = 0; i < 6; i++) {
-                let coin1 = Math.random() > 0.5 ? 2 : 3;
-                let coin2 = Math.random() > 0.5 ? 2 : 3;
-                let coin3 = Math.random() > 0.5 ? 2 : 3;
+                let coin1 = Math.random() > 0.5 ? 2 : 3; let coin2 = Math.random() > 0.5 ? 2 : 3; let coin3 = Math.random() > 0.5 ? 2 : 3;
                 currentLines.push(coin1 + coin2 + coin3);
             }
             renderIchingLinesAuto();
         }
 
         function renderIchingLinesAuto() {
-            const container = document.getElementById('lines-display');
-            container.innerHTML = '';
-            
+            const container = document.getElementById('lines-display'); container.innerHTML = '';
             currentLines.forEach((val, index) => {
-                let isYang = (val === 7 || val === 9);
-                let isMoving = (val === 6 || val === 9);
-                let textMoving = val === 6 ? "Động Âm" : (val === 9 ? "Động Dương" : "");
-
-                const row = document.createElement('div');
-                row.className = 'hao-row';
-                row.innerHTML = `
-                    <div class="hao-label">Hào ${index + 1}</div>
-                    <div class="hao">
-                        <div class="${isYang ? 'yang' : 'yin'}"></div>
-                    </div>
-                    <div class="hao-status">${isMoving ? `<span>${textMoving}</span>` : ''}</div>
-                `;
-                container.prepend(row);
-
-                setTimeout(() => { row.classList.add('show'); }, index * 200);
+                let isYang = (val === 7 || val === 9); let isMoving = (val === 6 || val === 9);
+                let textMoving = val === 6 ? "<span class='dong-am'>Động Âm</span>" : (val === 9 ? "<span class='dong-duong'>Động Dương</span>" : "");
+                const row = document.createElement('div'); row.className = 'hao-row';
+                row.innerHTML = `<div class="hao-label">Hào ${index + 1}</div><div class="hao"><div class="${isYang ? 'yang' : 'yin'}"></div></div><div class="hao-status">${isMoving ? textMoving : ''}</div>`;
+                container.prepend(row); setTimeout(() => { row.classList.add('show'); }, index * 200);
             });
-
             setTimeout(() => {
                 calculateHexagrams();
                 const btnGieo = document.getElementById('btn-gieo-tu-dong');
-                btnGieo.disabled = false;
-                btnGieo.innerText = "⚡ Gieo Quẻ Tự Động";
-                document.getElementById('btn-export-iching').style.display = 'flex'; // Hiện nút xuất ảnh
+                btnGieo.disabled = false; btnGieo.innerHTML = '<i class="fas fa-bolt"></i> Xin Quẻ Mới';
+                document.getElementById('btn-export-iching').style.display = 'inline-flex'; 
             }, 6 * 200 + 300);
         }
 
         function calculateHexagrams() {
             let primaryBinary = [], secondaryBinary = [], hasMovingLine = false;
-
             currentLines.forEach(val => {
                 if (val === 7) { primaryBinary.push(1); secondaryBinary.push(1); }
                 else if (val === 8) { primaryBinary.push(0); secondaryBinary.push(0); }
                 else if (val === 9) { primaryBinary.push(1); secondaryBinary.push(0); hasMovingLine = true; }
                 else if (val === 6) { primaryBinary.push(0); secondaryBinary.push(1); hasMovingLine = true; }
             });
-
             const getTrigramIndex = (binArr, start) => (binArr[start]*1) + (binArr[start+1]*2) + (binArr[start+2]*4);
-
-            const pLower = getTrigramIndex(primaryBinary, 0);
-            const pUpper = getTrigramIndex(primaryBinary, 3);
+            const pLower = getTrigramIndex(primaryBinary, 0); const pUpper = getTrigramIndex(primaryBinary, 3);
             const pName = (pUpper === pLower) ? `Thuần ${elementPrefix[pUpper]}` : `${elementPrefix[pUpper]} ${elementPrefix[pLower]}`;
             
             document.getElementById('que-chu-name').innerText = pName;
@@ -580,24 +758,32 @@
 
             const queBienContainer = document.getElementById('que-bien-container');
             if (hasMovingLine) {
-                const sLower = getTrigramIndex(secondaryBinary, 0);
-                const sUpper = getTrigramIndex(secondaryBinary, 3);
+                const sLower = getTrigramIndex(secondaryBinary, 0); const sUpper = getTrigramIndex(secondaryBinary, 3);
                 const sName = (sUpper === sLower) ? `Thuần ${elementPrefix[sUpper]}` : `${elementPrefix[sUpper]} ${elementPrefix[sLower]}`;
-                
                 document.getElementById('que-bien-name').innerText = sName;
                 document.getElementById('que-bien-detail').innerHTML = `Thượng: <b>${elements[sUpper]}</b> <br> Hạ: <b>${elements[sLower]}</b>`;
                 queBienContainer.style.display = 'block';
-            } else {
-                queBienContainer.style.display = 'none';
-            }
+            } else { queBienContainer.style.display = 'none'; }
         }
 
         function resetIching() {
-            currentLines = [];
-            document.getElementById('lines-display').innerHTML = '';
-            document.getElementById('iching-result').style.display = 'none';
-            document.getElementById('btn-export-iching').style.display = 'none';
+            currentLines = []; document.getElementById('lines-display').innerHTML = '';
+            document.getElementById('iching-result').style.display = 'none'; document.getElementById('btn-export-iching').style.display = 'none';
+            document.getElementById('btn-gieo-tu-dong').innerHTML = '<i class="fas fa-bolt"></i> Xin Quẻ';
         }
+
+        function exportImage(containerId, fileName) {
+            const container = document.getElementById(containerId); const oldBg = container.style.background;
+            container.style.background = '#ffffff'; 
+            html2canvas(container, { useCORS: true, scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+                container.style.background = oldBg;
+                const link = document.createElement('a'); link.download = fileName + '.png'; link.href = canvas.toDataURL('image/png'); link.click();
+            });
+        }
+
+        window.onload = function() { 
+            initLocation(); fetchNews(); updateClock(); initDOB(); 
+        };
     </script>
 </body>
 </html>
