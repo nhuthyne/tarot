@@ -6,7 +6,10 @@
     <title>Codelo Tarot - Enterprise Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Thư viện chụp ảnh và Thư viện tạo QR Code -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root {
@@ -30,9 +33,9 @@
             display: flex; justify-content: center; align-items: center;
             padding: 20px; flex-direction: column;
             user-select: none; -webkit-user-select: none;
+            position: relative;
         }
 
-        /* Cho phép tương tác với form cuộn */
         select { user-select: auto; -webkit-user-select: auto; }
         .tarot-card, .btn-business, button, .status-bar, .brand-logo, img { -webkit-user-drag: none; }
 
@@ -43,15 +46,45 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             overflow: hidden; padding: 25px;
             text-align: center; position: relative; z-index: 1;
+            margin-top: 30px;
         }
 
-        /* --- WEATHER CARD --- */
-        .status-bar {
-            background: linear-gradient(145deg, #1e293b, #0f172a); 
-            color: var(--white); border-radius: 20px; padding: 25px 20px;
-            margin-bottom: 20px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
-            position: relative; overflow: hidden; min-height: 170px; transition: all 0.5s ease;
+        /* --- NÚT HƯỚNG DẪN NỔI (DỄ THƯƠNG) --- */
+        .guide-btn {
+            position: fixed; top: 15px; right: 15px; 
+            background: var(--white); padding: 8px 16px;
+            border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            font-size: 0.8rem; font-weight: 600; color: var(--accent-color); 
+            cursor: pointer; z-index: 100; border: 2px solid var(--accent-color); 
+            transition: all 0.3s ease; display: flex; align-items: center; gap: 6px;
         }
+        .guide-btn:hover { background: var(--accent-color); color: var(--white); transform: translateY(-2px); }
+
+        /* --- CẨM NANG MODAL (CUTE UI) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.7); z-index: 9999; display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
+        .guide-content { background: var(--white); width: 100%; max-width: 450px; border-radius: 24px; padding: 25px 20px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 85vh; display: flex; flex-direction: column; }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; color: #94a3b8; cursor: pointer; transition: 0.2s; line-height: 1; }
+        .close-btn:hover { color: #ef4444; }
+        
+        .guide-header { text-align: center; margin-bottom: 15px; }
+        .guide-header h2 { font-size: 1.4rem; color: var(--primary-color); margin-bottom: 5px; }
+        .guide-header h2 span { color: var(--accent-color); }
+        .guide-header p { font-size: 0.8rem; color: #64748b; }
+        
+        .guide-body { overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
+        .guide-body::-webkit-scrollbar { width: 4px; }
+        .guide-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        .guide-item { padding: 12px 15px; border-radius: 12px; border-left: 4px solid #ccc; text-align: left; }
+        .guide-item h4 { font-size: 0.85rem; margin-bottom: 4px; color: var(--primary-color); display: flex; align-items: center; gap: 6px; }
+        .guide-item p { font-size: 0.75rem; color: var(--text-color); line-height: 1.4; }
+
+        .btn-got-it { background: linear-gradient(135deg, #f472b6, #3b82f6); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; width: 100%; transition: 0.3s; }
+        .btn-got-it:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3); }
+
+        /* --- WEATHER CARD --- */
+        .status-bar { background: linear-gradient(145deg, #1e293b, #0f172a); color: var(--white); border-radius: 20px; padding: 25px 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25); position: relative; overflow: hidden; min-height: 170px; transition: all 0.5s ease; }
         .weather-anim-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         .status-content { position: relative; z-index: 10; }
         .anim-sun { position: absolute; top: -60px; right: -60px; font-size: 10rem; color: #fbbf24; opacity: 0.3; animation: spin-slow 60s linear infinite; }
@@ -129,6 +162,27 @@
         .tarot-card.flipped .card-label { opacity: 1; }
         .text-nguoc { color: #ef4444; }
 
+        /* --- KẾT QUẢ ĐỌC BÀI --- */
+        .admin-notice-box { background: var(--admin-bg); border-left: 4px solid var(--admin-border); border-radius: 6px; padding: 10px 15px; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 12px; text-align: left; }
+        .notice-icon { font-size: 1.2rem; color: var(--admin-border); margin-top: 2px; }
+        .notice-title { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--admin-border); display: block; margin-bottom: 3px; }
+        .notice-text { font-size: 0.8rem; color: var(--admin-text); font-weight: 500; line-height: 1.3; }
+        
+        .reading-result-box { background: var(--bg-color); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: left; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); display: none; }
+        .reading-title { font-size: 1rem; font-weight: 700; color: var(--accent-color); margin-bottom: 10px; border-bottom: 1px solid var(--card-border); padding-bottom: 5px; text-transform: uppercase; }
+        .reading-section { margin-bottom: 10px; }
+        .reading-section h4 { font-size: 0.8rem; color: var(--primary-color); margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
+        .reading-section p { font-size: 0.8rem; color: var(--text-color); line-height: 1.4; }
+
+        /* --- XUẤT ẢNH QR --- */
+        .export-footer { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 20px; padding-top: 20px; border-top: 2px dashed #cbd5e1; text-align: left; width: 100%; background: #ffffff; }
+        .qr-wrapper { width: 70px; height: 70px; flex-shrink: 0; background: var(--white); border: 2px solid var(--accent-color); border-radius: 10px; padding: 4px; display: flex; justify-content: center; align-items: center; }
+        .qr-wrapper img, .qr-wrapper canvas { max-width: 100%; max-height: 100%; }
+        .export-promo { display: flex; flex-direction: column; }
+        .promo-title { font-size: 0.95rem; color: var(--primary-color); font-weight: 600; line-height: 1.2; }
+        .promo-title span { color: var(--accent-color); font-weight: 800; }
+        .promo-desc { font-size: 0.75rem; color: #64748b; margin-top: 4px; line-height: 1.4; }
+
         /* --- I CHING UI --- */
         .lines-container { display: flex; flex-direction: column-reverse; gap: 8px; width: 100%; max-width: 250px; margin: 0 auto; }
         .hao-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--white); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--card-border); opacity: 0; transform: translateY(5px); transition: all 0.5s ease; }
@@ -146,27 +200,6 @@
         .hexagram-title { font-size: 0.7rem; font-weight: 700; color: var(--accent-color); margin-bottom: 5px; text-transform: uppercase; }
         .hexagram-name { font-size: 1.2rem; font-weight: 700; color: var(--primary-color); margin-bottom: 5px; }
 
-        /* --- KẾT QUẢ ĐỌC BÀI --- */
-        .admin-notice-box { background: var(--admin-bg); border-left: 4px solid var(--admin-border); border-radius: 6px; padding: 10px 15px; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 12px; text-align: left; }
-        .notice-icon { font-size: 1.2rem; color: var(--admin-border); margin-top: 2px; }
-        .notice-title { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--admin-border); display: block; margin-bottom: 3px; }
-        .notice-text { font-size: 0.8rem; color: var(--admin-text); font-weight: 500; line-height: 1.3; }
-        
-        .reading-result-box { background: var(--bg-color); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: left; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); display: none; }
-        .reading-title { font-size: 1rem; font-weight: 700; color: var(--accent-color); margin-bottom: 10px; border-bottom: 1px solid var(--card-border); padding-bottom: 5px; text-transform: uppercase; }
-        .reading-section { margin-bottom: 10px; }
-        .reading-section h4 { font-size: 0.8rem; color: var(--primary-color); margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
-        .reading-section p { font-size: 0.8rem; color: var(--text-color); line-height: 1.4; }
-
-        /* --- XUẤT ẢNH QR --- */
-        .export-footer { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 20px; padding-top: 20px; border-top: 2px dashed #cbd5e1; text-align: left; width: 100%; background: #ffffff; }
-        .qr-wrapper { width: 70px; height: 70px; flex-shrink: 0; background: var(--white); border: 2px solid var(--accent-color); border-radius: 10px; padding: 4px; }
-        .qr-wrapper img { width: 100%; height: 100%; object-fit: contain; }
-        .export-promo { display: flex; flex-direction: column; }
-        .promo-title { font-size: 0.95rem; color: var(--primary-color); font-weight: 600; line-height: 1.2; }
-        .promo-title span { color: var(--accent-color); font-weight: 800; }
-        .promo-desc { font-size: 0.75rem; color: #64748b; margin-top: 4px; line-height: 1.4; }
-
         /* --- CONTACT --- */
         .contact-label { font-size: 0.75rem; color: #94a3b8; font-weight: 500; margin-bottom: 10px; text-align: left; text-transform: uppercase; width: 100%; }
         .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
@@ -179,9 +212,40 @@
         .contact-item.fb:hover { background: #dbeafe; color: #2563eb; }
         
         .footer { font-size: 0.7rem; color: #94a3b8; margin-top: 25px; }
+
+        /* ========================================================
+           HACK XUYÊN GIÁP SAFARI: ĐẬP PHẲNG 3D KHI XUẤT ẢNH 
+           ======================================================== */
+        .export-mode .tarot-card { 
+            perspective: none !important; 
+            -webkit-perspective: none !important; 
+        }
+        .export-mode .card-inner { 
+            transform: none !important; 
+            -webkit-transform: none !important; 
+            transform-style: flat !important; 
+            -webkit-transform-style: flat !important; 
+            transition: none !important; 
+            -webkit-transition: none !important;
+        }
+        .export-mode .card-back { 
+            display: none !important; 
+        }
+        .export-mode .card-front { 
+            transform: none !important; 
+            -webkit-transform: none !important; 
+            backface-visibility: visible !important; 
+            -webkit-backface-visibility: visible !important; 
+            z-index: 10 !important; 
+        }
     </style>
 </head>
 <body>
+
+    <!-- NÚT MỞ HƯỚNG DẪN NỔI -->
+    <div class="guide-btn" onclick="openGuide()">
+        <i class="fas fa-book-open"></i> Cẩm Nang
+    </div>
 
     <div class="container">
         <!-- BRAND LOGO -->
@@ -235,7 +299,6 @@
                 <p>* Lăn chọn ngày sinh để hệ thống kết nối năng lượng chuẩn xác nhất.</p>
             </div>
 
-            <!-- TÍNH NĂNG ĐÃ ĐƯỢC ĐỔI TÊN THÀNH THÔNG ĐIỆP MỖI NGÀY -->
             <button onclick="handleMenuClick('time')" class="btn-business">
                 <div class="btn-content">
                     <span class="btn-title">Thông Điệp Mỗi Ngày</span>
@@ -274,7 +337,7 @@
             <div class="sub-controls">
                 <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
                 <button class="btn-action primary" onclick="drawTimeCard()"><i class="fas fa-hand-sparkles"></i> Bốc Bài</button>
-                <button id="btn-export-time" class="btn-action" style="display: none;" onclick="exportImage('time-export-area', 'Codelo-GiaiMa')"><i class="fas fa-camera"></i> Lưu ảnh</button>
+                <button id="btn-export-time" class="btn-action" style="display: none;" onclick="exportImage('time-export-area', 'Codelo-ThongDiepMoiNgay')"><i class="fas fa-camera"></i> Lưu ảnh</button>
             </div>
             
             <div id="time-export-area" style="padding: 10px; border-radius: 12px;">
@@ -369,14 +432,50 @@
         <div class="footer"> 2026 Codelo VN. All rights reserved.<br>Designed for Bao Hy.</div>
     </div>
 
-    <!-- KHUNG CHỨA QR -->
+    <!-- KHU VỰC TẠO QR ẨN -->
     <div id="export-footer" class="export-footer" style="display: none;">
-        <div class="qr-wrapper">
-            <img id="qr-code-img" src="" alt="Codelo QR">
-        </div>
+        <div id="qr-generator-cache" class="qr-wrapper"></div>
         <div class="export-promo">
-            <div class="promo-title">Trải bài tại <span>Codelo Tarot</span></div>
-            <div class="promo-desc">Quét mã QR để nhận thông điệp vũ trụ dành riêng cho bạn!</div>
+            <div class="promo-title">Thông điệp từ <span>Codelo Tarot</span></div>
+            <div class="promo-desc">Quét mã QR để tự rút bài và nhận thông điệp cho riêng mình!</div>
+        </div>
+    </div>
+
+    <!-- MODAL HƯỚNG DẪN CUTE DỄ THƯƠNG -->
+    <div id="guideModal" class="modal-overlay">
+        <div class="guide-content">
+            <span class="close-btn" onclick="closeGuide()">&times;</span>
+            <div class="guide-header">
+                <h2>✨ Cẩm Nang <span>Vũ Trụ</span> ✨</h2>
+                <p>Chào mừng bạn đến với Codelo Tarot! Đọc lướt qua hướng dẫn trước khi dùng nhé 👇</p>
+            </div>
+            <div class="guide-body">
+                <div class="guide-item" style="border-left-color: #ec4899; background: #fdf2f8;">
+                    <h4>🎂 1. Khai Báo Năng Lượng</h4>
+                    <p>Hãy <b>kéo chọn Ngày/Tháng/Năm sinh</b> ở màn hình chính đầu tiên. Bước này giúp hệ thống kết nối chuẩn xác với tần số vũ trụ của bạn đó nha!</p>
+                </div>
+                <div class="guide-item" style="border-left-color: #3b82f6; background: #eff6ff;">
+                    <h4>🔮 2. Thông Điệp Mỗi Ngày</h4>
+                    <p>Mỗi buổi sáng, vào đây rút <b>1 lá bài</b>. Hệ thống sẽ giải mã chi tiết các khía cạnh: Tổng quan, Công việc & Tình cảm cho ngày mới của bạn.</p>
+                </div>
+                <div class="guide-item" style="border-left-color: #f59e0b; background: #fffbeb;">
+                    <h4>⚖️ 3. Luận Đúng / Sai (Yes-No)</h4>
+                    <p>Đang đắn đo một câu hỏi? Hãy nhẩm trong đầu và rút bài. Vũ trụ sẽ cho bạn đáp án thẳng thắn <b>CÓ</b> hoặc <b>KHÔNG</b>.</p>
+                </div>
+                <div class="guide-item" style="border-left-color: #8b5cf6; background: #f5f3ff;">
+                    <h4>🃏 4. Trải Bài Tự Do</h4>
+                    <p>Dành riêng cho những bạn thích tự chiêm nghiệm. Rút liền lúc 1, 3 hoặc 6 lá để tự xâu chuỗi thông điệp.</p>
+                </div>
+                <div class="guide-item" style="border-left-color: #10b981; background: #ecfdf5;">
+                    <h4>☯️ 5. Gieo Quẻ Kinh Dịch</h4>
+                    <p>Chỉ cần bấm "Xin Quẻ", hệ thống sẽ tự động gieo đồng xu 6 lần để tìm ra <b>Quẻ Chủ</b> và <b>Quẻ Biến</b> cho bạn.</p>
+                </div>
+                <div class="guide-item" style="border-left-color: #f97316; background: #fff7ed;">
+                    <h4>📸 6. Chia Sẻ Thông Điệp</h4>
+                    <p>Xem xong nhớ bấm nút <b>Lưu ảnh</b> màu xanh lá để tải ảnh nét căng (có mã QR cực xịn) về khoe bạn bè nhé!</p>
+                </div>
+            </div>
+            <button class="btn-got-it" onclick="closeGuide()">Đã Hiểu Rồi 💖</button>
         </div>
     </div>
 
@@ -393,24 +492,8 @@
             }
         };
 
-        // --- HÀM TẢI ẢNH QR XUỐNG DƯỚI DẠNG BASE64 TỪ LINK GITHUB CỦA CẬU CHỦ ---
-        function loadQRBase64() {
-            // Tự động tạo mã QR từ link https://nhuthyne.github.io/tarot/
-            const targetUrl = "https://nhuthyne.github.io/tarot/";
-            const imgUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(targetUrl)}&margin=10`;
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(imgUrl)}`;
-            
-            fetch(proxyUrl)
-                .then(response => response.blob())
-                .then(blob => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                        document.getElementById('qr-code-img').src = reader.result; 
-                    };
-                    reader.readAsDataURL(blob);
-                })
-                .catch(error => console.error('Lỗi tải QR:', error));
-        }
+        function openGuide() { document.getElementById('guideModal').style.display = 'flex'; }
+        function closeGuide() { document.getElementById('guideModal').style.display = 'none'; localStorage.setItem('bh_guide_seen', 'true'); }
 
         function initDOB() {
             const daySelect = document.getElementById('dob-day');
@@ -553,7 +636,7 @@
         }
 
         // ==========================================
-        // JS: TỪ ĐIỂN TAROT CHI TIẾT (MAJOR & MINOR)
+        // JS: TỪ ĐIỂN TAROT CHI TIẾT
         // ==========================================
         const majorDict = {
             "The Fool": ["Khởi đầu mới, tự do, phiêu lưu.", "Cơ hội mới, hãy dám mạo hiểm.", "Tình cảm tươi mới, không ràng buộc.", "Liều lĩnh, thiếu suy nghĩ, rủi ro.", "Bất cẩn, thiếu kế hoạch rõ ràng.", "Hời hợt, thiếu sự cam kết."],
@@ -564,7 +647,7 @@
             "The Hierophant": ["Truyền thống, tín ngưỡng, học hỏi.", "Làm việc theo khuôn khổ, có người hướng dẫn.", "Mối quan hệ cam kết, truyền thống.", "Nổi loạn, phá vỡ nguyên tắc.", "Cảm thấy bị gò bó, mâu thuẫn cấp trên.", "Khác biệt quan điểm, áp lực gia đình."],
             "The Lovers": ["Tình yêu, sự hòa hợp, lựa chọn.", "Đối tác tốt, quyết định quan trọng.", "Hạnh phúc, kết nối sâu sắc.", "Mất cân bằng, lựa chọn sai lầm.", "Xung đột lợi ích, rạn nứt đối tác.", "Bất hòa, xa cách, cám dỗ."],
             "The Chariot": ["Chiến thắng, ý chí, kiểm soát.", "Vượt qua thử thách, đạt mục tiêu.", "Cùng nhau vượt qua sóng gió.", "Mất phương hướng, thiếu kiểm soát.", "Bị áp đảo, thất bại tạm thời.", "Áp đặt, ép buộc đối phương."],
-            "Strength": ["Sức mạnh nội tâm, dũng cảm, kiên nhẫn.", "Giải quyết vấn đề khéo léo, tự tự.", "Tình yêu bao dung, thấu hiểu.", "Yếu đuối, nghi ngờ bản thân.", "Thiếu tự tin, né tránh khó khăn.", "Ghen tuông, bất an trong tình cảm."],
+            "Strength": ["Sức mạnh nội tâm, dũng cảm, kiên nhẫn.", "Giải quyết vấn đề khéo léo, tự tin.", "Tình yêu bao dung, thấu hiểu.", "Yếu đuối, nghi ngờ bản thân.", "Thiếu tự tin, né tránh khó khăn.", "Ghen tuông, bất an trong tình cảm."],
             "The Hermit": ["Chiêm nghiệm, tĩnh lặng, tìm kiếm.", "Cần thời gian suy nghĩ, làm việc độc lập.", "Cần không gian riêng, tĩnh tâm.", "Cô lập, cô đơn, trốn tránh.", "Làm việc kém hiệu quả do cô lập.", "Xa cách, cảm thấy bị bỏ rơi."],
             "Wheel of Fortune": ["May mắn, thay đổi, định mệnh.", "Cơ hội bất ngờ, chuyển biến tốt.", "Sự kiện bước ngoặt trong tình cảm.", "Xui xẻo, mất kiểm soát.", "Gặp trở ngại ngoài ý muốn.", "Mối quan hệ xáo trộn, bất ổn."],
             "Justice": ["Công bằng, nhân quả, sự thật.", "Hợp đồng rõ ràng, làm việc minh bạch.", "Tôn trọng, đối xử công bằng.", "Bất công, dối trá, thiên vị.", "Rắc rối pháp lý, quyết định sai.", "Bất đồng, đối xử không công bằng."],
@@ -644,7 +727,6 @@
                     <div class="card-front"><img src="${selectedCard.img}" class="${isUpright ? '' : 'img-reversed'}" alt="${selectedCard.name}" crossorigin="anonymous"></div>
                 </div>
             `;
-            
             resultDiv.appendChild(cardWrapper);
 
             setTimeout(() => {
@@ -657,7 +739,9 @@
             }, 300);
         }
 
-        // --- RÚT YES/NO ---
+        // ==========================================
+        // JS: LUẬN ĐÚNG / SAI (YES/NO)
+        // ==========================================
         function drawYesNo() {
             const resultDiv = document.getElementById('yesno-card-result'); resultDiv.innerHTML = '';
             document.getElementById('yesno-result-box').style.display = 'none';
@@ -694,7 +778,9 @@
             }, 300);
         }
 
-        // --- RÚT TỰ DO ---
+        // ==========================================
+        // JS: TRẢI BÀI TAROT NHIỀU LÁ
+        // ==========================================
         function drawTarot(numCards, containerId) {
             document.getElementById('btn-export-tarot').style.display = 'none';
             const resultDiv = document.getElementById(containerId); resultDiv.innerHTML = '';
@@ -719,7 +805,9 @@
             setTimeout(() => { document.getElementById('btn-export-tarot').style.display = 'inline-flex'; }, 200 + (numCards * 150) + 300);
         }
 
-        // --- KINH DỊCH ---
+        // ==========================================
+        // JS: KINH DỊCH
+        // ==========================================
         const elements = { 7: "Thiên (Trời)", 3: "Trạch (Đầm)", 5: "Hỏa (Lửa)", 1: "Lôi (Sấm)", 6: "Phong (Gió)", 2: "Thủy (Nước)", 4: "Sơn (Núi)", 0: "Địa (Đất)" };
         const elementPrefix = { 7: "Thiên", 3: "Trạch", 5: "Hỏa", 1: "Lôi", 6: "Phong", 2: "Thủy", 4: "Sơn", 0: "Địa" };
         let currentLines = [];
@@ -784,33 +872,58 @@
             document.getElementById('btn-gieo-tu-dong').innerHTML = '<i class="fas fa-bolt"></i> Xin Quẻ';
         }
 
-        // --- XUẤT ẢNH ---
+        // ==========================================
+        // JS: XUẤT ẢNH FIX MẤT BÀI VÀ FIX QR BẰNG CSS HACK
+        // ==========================================
         function exportImage(containerId, fileName) {
             const container = document.getElementById(containerId); 
             const oldBg = container.style.background;
-            const footer = document.getElementById('export-footer');
+            
+            const footer = document.createElement('div');
+            footer.className = 'export-footer';
+            
+            const qrCanvas = document.querySelector('#qr-generator-cache canvas');
+            let qrDataUrl = '';
+            if (qrCanvas) {
+                qrDataUrl = qrCanvas.toDataURL("image/png");
+            } else {
+                const qrImg = document.querySelector('#qr-generator-cache img');
+                if (qrImg) qrDataUrl = qrImg.src;
+            }
+
+            footer.innerHTML = `
+                <div class="qr-wrapper">
+                    <img src="${qrDataUrl}" alt="Codelo QR">
+                </div>
+                <div class="export-promo">
+                    <div class="promo-title">Thông điệp từ <span>Codelo Tarot</span></div>
+                    <div class="promo-desc">Quét mã QR để tự rút bài và nhận thông điệp cho riêng mình!</div>
+                </div>
+            `;
 
             container.style.background = '#ffffff'; 
             container.appendChild(footer); 
-            footer.style.display = 'flex'; 
+
+            // Ép tắt toàn bộ 3D để Safari chịu chụp hình
+            container.classList.add('export-mode');
 
             setTimeout(() => {
-                html2canvas(container, { useCORS: true, scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+                html2canvas(container, { scale: 2, backgroundColor: '#ffffff', useCORS: true }).then(canvas => {
+                    container.classList.remove('export-mode'); 
                     container.style.background = oldBg;
-                    footer.style.display = 'none'; 
-                    document.body.appendChild(footer); 
+                    container.removeChild(footer); 
                     
                     const link = document.createElement('a'); 
                     link.download = fileName + '.png'; 
                     link.href = canvas.toDataURL('image/png'); 
                     link.click();
                 }).catch(err => {
+                    container.classList.remove('export-mode'); 
                     container.style.background = oldBg;
-                    footer.style.display = 'none'; 
-                    document.body.appendChild(footer);
-                    alert("Có lỗi khi lưu ảnh. Trình duyệt của bạn có thể đang chặn tải ảnh.");
+                    container.removeChild(footer);
+                    alert("Có lỗi khi lưu ảnh, Hy thử lại nhé!");
                 });
-            }, 300);
+            }, 600); // Đợi 600ms cho chắc ăn Safari đã vẽ xong dạng phẳng
         }
 
         window.onload = function() { 
@@ -818,7 +931,19 @@
             fetchNews(); 
             updateClock(); 
             initDOB(); 
-            loadQRBase64(); 
+            
+            new QRCode(document.getElementById("qr-generator-cache"), {
+                text: "https://nhuthyne.github.io/tarot/",
+                width: 150,
+                height: 150,
+                colorDark : "#0f172a",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+
+            if (!localStorage.getItem('bh_guide_seen')) {
+                setTimeout(openGuide, 500);
+            }
         };
     </script>
 </body>
