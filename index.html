@@ -3,193 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codelo Tarot - Enterprise Portal</title>
+    <title>Codelo Tarot - Enterprise Astrology</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Thư viện chụp ảnh và Thư viện tạo QR Code -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root {
-            --primary-color: #0f172a;
-            --accent-color: #3b82f6;
-            --text-color: #334155;
-            --bg-color: #f1f5f9;
-            --white: #ffffff;
-            --news-bg: #e0f2fe; --news-text: #0369a1;
-            --admin-bg: #fff7ed; --admin-border: #f97316; --admin-text: #9a3412;
-            --card-border: #e2e8f0;
+            --primary-color: #0f172a; --accent-color: #3b82f6; --text-color: #334155;
+            --bg-color: #f1f5f9; --white: #ffffff; --card-border: #e2e8f0;
+            --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex; justify-content: center; align-items: center;
-            padding: 20px; flex-direction: column;
-            user-select: none; -webkit-user-select: none;
-            position: relative;
+            font-family: 'Poppins', sans-serif; background-color: var(--bg-color);
+            color: var(--text-color); min-height: 100vh; display: flex; justify-content: center; align-items: center;
+            padding: 20px; flex-direction: column; user-select: none; -webkit-user-select: none;
+            position: relative; overflow-x: hidden;
         }
 
-        select { user-select: auto; -webkit-user-select: auto; }
-        .tarot-card, .btn-business, button, .status-bar, .brand-logo, img { -webkit-user-drag: none; }
+        /* --- BACKGROUND --- */
+        .ambient-orb { position: fixed; border-radius: 50%; filter: blur(60px); z-index: 0; opacity: 0.35; animation: floatOrb 12s infinite ease-in-out alternate; }
+        .orb-1 { width: 300px; height: 300px; background: #3b82f6; top: -50px; left: -50px; }
+        .orb-2 { width: 350px; height: 350px; background: #8b5cf6; bottom: -50px; right: -50px; animation-delay: -5s; }
+        @keyframes floatOrb { 100% { transform: translateY(40px) translateX(30px); } }
+
+        select, input { user-select: auto; -webkit-user-select: auto; }
+        .tarot-card, button, img { -webkit-user-drag: none; }
 
         .container {
-            width: 100%; max-width: 480px;
-            background: var(--white);
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            overflow: hidden; padding: 25px;
-            text-align: center; position: relative; z-index: 1;
-            margin-top: 30px;
+            width: 100%; max-width: 480px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,0.5);
+            overflow: hidden; padding: 25px; text-align: center; position: relative; z-index: 1; margin-top: 20px;
         }
 
-        /* --- NÚT HƯỚNG DẪN NỔI --- */
-        .guide-btn {
-            position: fixed; top: 15px; right: 15px; 
-            background: var(--white); padding: 8px 16px;
-            border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-            font-size: 0.8rem; font-weight: 600; color: var(--accent-color); 
-            cursor: pointer; z-index: 100; border: 2px solid var(--accent-color); 
-            transition: all 0.3s ease; display: flex; align-items: center; gap: 6px;
-        }
-        .guide-btn:hover { background: var(--accent-color); color: var(--white); transform: translateY(-2px); }
+        /* --- BADGES --- */
+        .top-badges { position: fixed; top: 15px; right: 15px; display: flex; gap: 10px; z-index: 100; flex-wrap: wrap; justify-content: flex-end;}
+        .badge-btn { background: var(--white); padding: 8px 14px; border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.3s ease; }
+        .guide-btn { color: var(--accent-color); border: 2px solid var(--accent-color); }
+        .streak-btn { color: #f97316; border: 2px solid #f97316; background: #fff7ed;}
+        .reward-btn { background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #be185d; border: 2px solid #f472b6; display: none; }
+        .reward-btn i { animation: tada 1.5s infinite; }
+        @keyframes tada { 0% { transform: scale(1); } 10%, 20% { transform: scale(0.9) rotate(-3deg); } 30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); } 40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); } 100% { transform: scale(1); } }
+        .badge-btn:hover { transform: translateY(-2px); }
 
-        /* --- MODAL CHUNG --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.85); z-index: 9999; display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
-        .guide-content { background: var(--white); width: 100%; max-width: 450px; border-radius: 24px; padding: 25px 20px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 85vh; display: flex; flex-direction: column; }
-        @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; color: #94a3b8; cursor: pointer; transition: 0.2s; line-height: 1; z-index: 10; }
-        .close-btn:hover { color: #ef4444; }
-        
-        .guide-header { text-align: center; margin-bottom: 15px; }
-        .guide-header h2 { font-size: 1.4rem; color: var(--primary-color); margin-bottom: 5px; }
-        .guide-header h2 span { color: var(--accent-color); }
-        .guide-header p { font-size: 0.8rem; color: #64748b; }
-        
-        .guide-body { overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
-        .guide-body::-webkit-scrollbar { width: 4px; }
-        .guide-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        
-        .guide-item { padding: 12px 15px; border-radius: 12px; border-left: 4px solid #ccc; text-align: left; }
-        .guide-item h4 { font-size: 0.85rem; margin-bottom: 4px; color: var(--primary-color); display: flex; align-items: center; gap: 6px; }
-        .guide-item p { font-size: 0.75rem; color: var(--text-color); line-height: 1.4; }
+        /* --- WEATHER --- */
+        .status-bar { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.8); color: var(--primary-color); border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.03); position: relative; overflow: hidden; min-height: 140px; }
+        .status-content { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; height: 100%; }
+        .location-info { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 5px; color: var(--primary-color);}
+        .location-info i { color: #f59e0b; }
+        .temp-info { font-size: 2.8rem; font-weight: 700; line-height: 1; color: var(--accent-color); display: flex; align-items: center;}
+        .weather-icon-main { font-size: 2.2rem; margin-right: 8px; color: var(--accent-color);}
 
-        .btn-got-it { background: linear-gradient(135deg, #f472b6, #3b82f6); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; width: 100%; transition: 0.3s; }
-        .btn-got-it:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3); }
-
-        /* --- MODAL XEM & LƯU ẢNH TRÊN ĐIỆN THOẠI --- */
-        .image-modal-content { background: var(--white); width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .image-preview-wrapper { width: 100%; max-height: 60vh; overflow-y: auto; border-radius: 12px; border: 1px solid var(--card-border); margin: 15px 0; }
-        .image-preview-wrapper img { width: 100%; display: block; border-radius: 12px; -webkit-user-select: auto; user-select: auto; }
-        .image-save-hint { font-size: 0.75rem; color: var(--accent-color); font-weight: 600; margin-bottom: 10px; background: #eff6ff; padding: 8px 12px; border-radius: 8px; width: 100%; }
-
-        /* --- WEATHER CARD --- */
-        .status-bar { background: linear-gradient(145deg, #1e293b, #0f172a); color: var(--white); border-radius: 20px; padding: 25px 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25); position: relative; overflow: hidden; min-height: 170px; transition: all 0.5s ease; }
-        .weather-anim-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-        .status-content { position: relative; z-index: 10; }
-        .anim-sun { position: absolute; top: -60px; right: -60px; font-size: 10rem; color: #fbbf24; opacity: 0.3; animation: spin-slow 60s linear infinite; }
-        .anim-cloud { position: absolute; color: #cbd5e1; opacity: 0.3; font-size: 4rem; animation: drift linear infinite; }
-        .cloud-1 { top: 10px; left: -60px; animation-duration: 35s; }
-        .cloud-2 { top: 80px; left: -80px; font-size: 3rem; animation-duration: 25s; animation-delay: 5s; }
-        .anim-rain { position: absolute; background: rgba(255,255,255,0.4); width: 2px; height: 20px; top: -20px; animation: fall linear infinite; }
-        @keyframes drift { from { transform: translateX(-100px); } to { transform: translateX(500px); } }
-        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
-        @keyframes fall { to { transform: translateY(250px); } }
-        .clock { font-size: 3.5rem; font-weight: 700; letter-spacing: -2px; margin-bottom: 0; line-height: 1; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .date { font-size: 0.85rem; font-weight: 400; opacity: 0.8; margin-bottom: 15px; text-transform: capitalize; }
-        .weather-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 15px; margin-top: 5px; }
-        .location-info { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 500; max-width: 60%; }
-        .location-info i { color: #fbbf24; }
-        .location-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .temp-info { display: flex; align-items: center; gap: 8px; font-size: 1.4rem; font-weight: 600; }
-
-        /* --- NEWS TICKER --- */
-        .news-ticker-area { background-color: var(--news-bg); border-radius: 10px; padding: 8px 0; margin-bottom: 25px; display: flex; align-items: center; overflow: hidden; border: 1px solid #bae6fd; position: relative; }
-        .news-badge { background: var(--accent-color); color: white; font-size: 0.65rem; font-weight: 700; padding: 4px 8px; border-radius: 4px; white-space: nowrap; box-shadow: 0 2px 5px rgba(59, 130, 246, 0.3); margin-left: 10px; margin-right: 10px; z-index: 10; flex-shrink: 0; }
-        .ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); }
-        .ticker-move { display: inline-block; white-space: nowrap; animation: ticker 40s linear infinite; }
-        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .ticker-item { display: inline-block; padding-right: 50px; font-size: 0.8rem; color: var(--news-text); font-weight: 500; }
-        .ticker-item i { margin-right: 6px; color: var(--accent-color); font-size: 0.7rem; }
-        .time-tag { font-weight: 700; color: #0284c7; margin-right: 5px; font-size: 0.75rem; background: #e0f2fe; padding: 2px 5px; border-radius: 4px; border: 1px solid #bae6fd; }
-
-        /* --- BRAND LOGO --- */
-        .brand-logo { margin-bottom: 25px; }
-        .brand-logo h1 { font-size: 2rem; color: var(--primary-color); letter-spacing: -1px; }
+        .brand-logo { margin-bottom: 20px; }
+        .brand-logo h1 { font-size: 2.2rem; color: var(--primary-color); letter-spacing: -1px; line-height: 1; }
         .brand-logo span { color: var(--accent-color); }
+        .clock-display { font-size: 0.9rem; color: var(--accent-color); font-weight: 600; margin-top: 5px; background: #e0f2fe; display: inline-block; padding: 4px 12px; border-radius: 20px; border: 1px dashed #bae6fd; }
 
-        /* --- DOB SELECTORS --- */
-        .dob-container { background: var(--white); border: 2px solid var(--card-border); padding: 18px; border-radius: 12px; margin-bottom: 20px; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
-        .dob-container label { font-size: 0.85rem; font-weight: 600; color: var(--primary-color); display: block; margin-bottom: 12px; }
+        /* --- KHAI BÁO & DASHBOARD --- */
+        .dob-container { background: var(--white); border: 1px solid var(--card-border); padding: 18px; border-radius: 16px; margin-bottom: 20px; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .dob-container label { font-size: 0.85rem; font-weight: 600; color: var(--primary-color); display: block; margin-bottom: 10px; }
         .dob-selectors { display: flex; gap: 10px; width: 100%; }
-        .dob-selectors select { flex: 1; padding: 12px 10px; border: 2px solid var(--card-border); border-radius: 8px; font-family: 'Poppins', sans-serif; outline: none; color: var(--text-color); font-size: 0.95rem; background-color: #f8fafc; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%2364748b" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4z"/></svg>'); background-repeat: no-repeat; background-position: right 10px center; font-weight: 500; text-align: center; }
-        .dob-selectors select:focus { border-color: var(--accent-color); background-color: #ffffff; }
-        .dob-container p { font-size: 0.7rem; color: #64748b; margin-top: 12px; font-style: italic; line-height: 1.4; text-align: center; }
-
-        /* --- MENU --- */
-        .action-area { display: flex; flex-direction: column; width: 100%; margin-bottom: 25px; }
-        .btn-business { display: flex; align-items: center; justify-content: space-between; background: var(--white); border: 2px solid var(--card-border); padding: 15px 20px; border-radius: 12px; transition: all 0.3s ease; width: 100%; cursor: pointer; text-decoration: none; margin-bottom: 12px; }
-        .btn-business:last-child { margin-bottom: 0; }
-        .btn-content { display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; }
-        .btn-title { font-weight: 600; color: var(--primary-color); font-size: 1rem; }
-        .btn-desc { font-size: 0.75rem; color: #64748b; margin-top: 3px; text-align: left; }
-        .btn-icon { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--accent-color); background: #eff6ff; border-radius: 50%; transition: all 0.3s ease; flex-shrink: 0; margin-left: 10px; }
-        .btn-business:hover { border-color: var(--accent-color); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.1); }
-        .btn-business:hover .btn-icon { background: var(--accent-color); color: var(--white); }
-
-        /* --- CÁC SECTION --- */
-        .section { display: none; animation: fadeIn 0.4s ease; width: 100%; margin-bottom: 25px; }
-        .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .dob-selectors select { flex: 1; padding: 12px 10px; border: 1px solid var(--card-border); border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.95rem; background-color: #f8fafc; cursor: pointer; outline:none; }
         
+        .astro-dashboard { margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border: 1px solid #e2e8f0; border-radius: 12px; display: none; animation: fadeIn 0.4s ease; }
+        .bio-section { background: #fff; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .bio-title { font-size: 0.85rem; font-weight: 700; color: var(--primary-color); margin-bottom: 10px; display: flex; align-items: center; gap: 5px;}
+        .bio-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 0.75rem; font-weight: 600; color: #475569;}
+        .bio-label { width: 75px; }
+        .bio-bar-bg { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; position: relative; }
+        .bio-fill { height: 100%; border-radius: 4px; position: absolute; left: 50%; transition: width 1s ease; }
+        .bio-val { width: 40px; text-align: right; font-weight: 700; }
+        
+        .action-card { background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); border: 1px solid #e2e8f0;}
+        .ac-header { background: var(--primary-color); color: white; padding: 8px 12px; font-size: 0.8rem; font-weight: 600; display:flex; justify-content:space-between; border-radius: 10px 10px 0 0;}
+        .ac-body { padding: 12px; text-align: left; font-size: 0.75rem;}
+        .ac-do { color: var(--success); font-weight: 600; margin-bottom: 5px;}
+        .ac-dont { color: var(--danger); font-weight: 600; margin-bottom: 10px;}
+        .ac-fengshui { border-top: 1px dashed #cbd5e1; padding-top: 10px; margin-top: 5px; color: #64748b;}
+        .ac-fengshui b { color: var(--primary-color); }
+
+        /* --- MENU CHÍNH --- */
+        .action-area { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; margin-bottom: 10px; }
+        .btn-business { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--white); border: 1px solid var(--card-border); padding: 16px 10px; border-radius: 16px; transition: all 0.3s ease; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .btn-business .btn-icon { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: var(--accent-color); background: #eff6ff; border-radius: 14px; margin-bottom: 8px; }
+        .btn-business .btn-title { font-weight: 600; color: var(--primary-color); font-size: 0.85rem; text-align: center; line-height: 1.3;}
+        .btn-highlight { border: 2px solid #ec4899; background: #fdf2f8; grid-column: span 2; flex-direction: row; justify-content: flex-start; padding: 15px 20px;}
+        .btn-highlight .btn-icon { background: #fce7f3; color: #ec4899; margin-bottom:0; margin-right:15px;}
+
+        /* --- CÁC SECTION CHUNG --- */
+        .section { display: none; width: 100%; margin-bottom: 20px; }
+        .section.active { display: block; animation: fadeIn 0.4s ease; }
         .sub-controls { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 15px; }
-        .btn-action { background: var(--bg-color); color: var(--text-color); border: 1px solid var(--card-border); padding: 8px 15px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn-action:hover { background: var(--accent-color); color: var(--white); border-color: var(--accent-color); }
-        .btn-action.primary { background: #10b981; color: white; border-color: #10b981; }
+        .btn-action { background: var(--white); color: var(--text-color); border: 1px solid var(--card-border); padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;}
+        .btn-action.primary { background: linear-gradient(135deg, var(--accent-color), #2563eb); color: white; border: none; }
+        
+        .section-intro { font-size: 0.8rem; color: #475569; background: #e0f2fe; border-left: 3px solid var(--accent-color); padding: 10px 15px; border-radius: 8px; text-align: left; margin-bottom: 15px; line-height: 1.4; }
+        .question-input { width: 100%; padding: 12px 15px; border: 2px solid var(--card-border); border-radius: 12px; font-family: 'Poppins', sans-serif; font-size: 0.9rem; outline: none; margin-bottom: 15px;}
+        .display-question { background: var(--white); padding: 12px 15px; border-radius: 12px; border: 1px dashed var(--accent-color); margin-bottom: 15px; text-align: left; font-size: 0.9rem; color: var(--primary-color); display: none; }
 
         /* --- TAROT UI --- */
-        .tarot-grid { display: grid; gap: 10px; justify-content: center; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid var(--card-border); }
-        .tarot-card { perspective: 1000px; cursor: pointer; aspect-ratio: 2 / 3.2; width: 100%; display: flex; flex-direction: column; gap: 6px; }
-        .card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .tarot-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 10px; background: #f8fafc; border-radius: 16px; border: 1px solid var(--card-border); margin-bottom:15px; align-items: flex-start;}
+        .tarot-card { perspective: 1000px; width: 30%; min-width: 95px; max-width: 130px; display: flex; flex-direction: column; gap: 4px; }
+        
+        .card-inner { position: relative; width: 100%; padding-bottom: 160%; text-align: center; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .tarot-card.flipped .card-inner { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; overflow: hidden; border: 1px solid var(--card-border); }
+        .card-front, .card-back { position: absolute; top:0; left:0; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; overflow: hidden; border: 1px solid var(--card-border); }
+        
         .card-back { background: linear-gradient(145deg, var(--primary-color), #1e293b); display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent-color); }
-        .card-back::after { content: '\f0d0'; font-family: 'FontAwesome'; font-size: 1.5rem; color: var(--accent-color); opacity: 0.5; }
+        .card-back::after { content: '\f0d0'; font-family: 'FontAwesome'; font-size: 1.5rem; color: var(--accent-color); opacity: 0.6; }
         .card-front { transform: rotateY(180deg); background: var(--bg-color); }
         .card-front img { width: 100%; height: 100%; object-fit: cover; }
-        .img-reversed { transform: rotateZ(180deg); }
-        .card-label { text-align: center; font-size: 0.75rem; font-weight: 600; opacity: 0; transition: opacity 0.5s; color: var(--text-color); }
+        
+        .img-reversed { transform: rotate(180deg); } 
+        .card-label { text-align: center; font-size: 0.65rem; font-weight: 600; opacity: 0; transition: opacity 0.5s; color: var(--text-color); background: var(--white); padding: 4px 2px; border-radius: 4px; line-height: 1.2; word-wrap: break-word; }
         .tarot-card.flipped .card-label { opacity: 1; }
         .text-nguoc { color: #ef4444; }
 
-        /* --- KẾT QUẢ ĐỌC BÀI --- */
-        .admin-notice-box { background: var(--admin-bg); border-left: 4px solid var(--admin-border); border-radius: 6px; padding: 10px 15px; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 12px; text-align: left; }
-        .notice-icon { font-size: 1.2rem; color: var(--admin-border); margin-top: 2px; }
-        .notice-title { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--admin-border); display: block; margin-bottom: 3px; }
-        .notice-text { font-size: 0.8rem; color: var(--admin-text); font-weight: 500; line-height: 1.3; }
-        
-        .reading-result-box { background: var(--bg-color); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: left; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); display: none; }
-        .reading-title { font-size: 1rem; font-weight: 700; color: var(--accent-color); margin-bottom: 10px; border-bottom: 1px solid var(--card-border); padding-bottom: 5px; text-transform: uppercase; }
-        .reading-section { margin-bottom: 10px; }
-        .reading-section h4 { font-size: 0.8rem; color: var(--primary-color); margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
-        .reading-section p { font-size: 0.8rem; color: var(--text-color); line-height: 1.4; }
+        /* Kết Quả Đọc Bài */
+        .reading-result-box { background: var(--white); border: 1px solid var(--card-border); border-radius: 16px; padding: 18px; text-align: left; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .reading-title { font-size: 1rem; font-weight: 700; color: var(--accent-color); margin-bottom: 12px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px; }
+        .reading-section { margin-bottom: 12px; background: #f8fafc; padding: 10px; border-radius: 10px; }
+        .reading-section h4 { font-size: 0.85rem; color: var(--primary-color); margin-bottom: 5px; display: flex; align-items: center; gap: 6px; text-transform: uppercase;}
+        .reading-section p { font-size: 0.8rem; color: var(--text-color); line-height: 1.5; margin: 0; }
 
-        /* --- XUẤT ẢNH QR --- */
-        .export-footer { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 20px; padding-top: 20px; border-top: 2px dashed #cbd5e1; text-align: left; width: 100%; background: #ffffff; }
-        .qr-wrapper { width: 70px; height: 70px; flex-shrink: 0; background: var(--white); border: 2px solid var(--accent-color); border-radius: 10px; padding: 4px; display: flex; justify-content: center; align-items: center; }
-        .qr-wrapper img, .qr-wrapper canvas { max-width: 100%; max-height: 100%; }
-        .export-promo { display: flex; flex-direction: column; }
-        .promo-title { font-size: 0.95rem; color: var(--primary-color); font-weight: 600; line-height: 1.2; }
-        .promo-title span { color: var(--accent-color); font-weight: 800; }
-        .promo-desc { font-size: 0.75rem; color: #64748b; margin-top: 4px; line-height: 1.4; }
+        /* --- KHU VỰC ĐO TƯƠNG HỢP (SOULMATE) --- */
+        .soulmate-box { background: #fff1f2; border: 2px dashed #fecdd3; border-radius: 16px; padding: 20px; text-align: left; }
+        .sm-item { background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        .sm-item h4 { font-size: 0.85rem; color: #db2777; margin-bottom: 4px; display:flex; align-items:center; gap:5px;}
+        .sm-item p { font-size: 0.85rem; color: #475569; font-weight: 500; line-height: 1.4;}
 
-        /* --- I CHING UI --- */
+        /* --- KINH DỊCH --- */
         .lines-container { display: flex; flex-direction: column-reverse; gap: 8px; width: 100%; max-width: 250px; margin: 0 auto; }
         .hao-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--white); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--card-border); opacity: 0; transform: translateY(5px); transition: all 0.5s ease; }
         .hao-row.show { opacity: 1; transform: translateY(0); }
@@ -198,780 +144,799 @@
         .yang { width: 100%; height: 100%; background: var(--primary-color); border-radius: 3px; }
         .yin { width: 100%; height: 100%; display: flex; justify-content: space-between; }
         .yin::before, .yin::after { content: ''; width: 45%; height: 100%; background: var(--primary-color); border-radius: 3px; }
-        .hao-status { width: 55px; font-size: 0.65rem; font-weight: 600; text-align: right; }
+        .hao-status { width: 55px; font-size: 0.6rem; font-weight: 600; text-align: right; }
         .hao-status span { background: #fee2e2; color: #ef4444; padding: 2px 4px; border-radius: 3px; display: inline-block; }
         .hao-status .dong-duong { background: #dbeafe; color: var(--accent-color); }
         .results { display: flex; gap: 10px; justify-content: center; width: 100%; margin-top: 15px; }
-        .hexagram-result { background: var(--white); padding: 12px; border-radius: 10px; text-align: center; flex: 1; border: 1px solid var(--card-border); }
+        .hexagram-result { background: var(--white); padding: 12px; border-radius: 12px; text-align: center; flex: 1; border: 1px solid var(--card-border); box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .hexagram-title { font-size: 0.7rem; font-weight: 700; color: var(--accent-color); margin-bottom: 5px; text-transform: uppercase; }
         .hexagram-name { font-size: 1.2rem; font-weight: 700; color: var(--primary-color); margin-bottom: 5px; }
 
-        /* --- CONTACT --- */
-        .contact-label { font-size: 0.75rem; color: #94a3b8; font-weight: 500; margin-bottom: 10px; text-align: left; text-transform: uppercase; width: 100%; }
-        .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
-        .contact-item { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px 10px; text-decoration: none; color: var(--text-color); transition: all 0.2s ease; }
-        .contact-item i { font-size: 1.2rem; margin-bottom: 5px; color: #64748b; }
-        .contact-item span { font-size: 0.7rem; font-weight: 500; }
-        .contact-item:hover { transform: translateY(-2px); border-color: transparent; }
-        .contact-item.email:hover { background: #fee2e2; color: #ef4444; } 
-        .contact-item.zalo:hover { background: #dcfce7; color: #10b981; } 
-        .contact-item.fb:hover { background: #dbeafe; color: #2563eb; }
-        
-        .footer { font-size: 0.7rem; color: #94a3b8; margin-top: 25px; }
+        /* --- WALLPAPER EXPORT ZONE (ẨN) --- */
+        #wallpaper-export-zone { display: none; position: absolute; top: -9999px; left: -9999px; width: 1080px; height: 1920px; background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Poppins', sans-serif; padding: 80px; box-sizing: border-box;}
+        #wallpaper-export-zone.active-export { display: flex; }
+        .wp-frame { border: 4px solid #f59e0b; border-radius: 30px; padding: 40px; width: 100%; height: 100%; display: block; text-align: center; background: rgba(0,0,0,0.4); }
+        .wp-title { font-size: 50px; font-weight: 800; color: #fcd34d; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase;}
+        .wp-date { font-size: 35px; color: #cbd5e1; margin-bottom: 60px; font-weight: 500;}
+        .wp-card-img { width: 500px; border-radius: 20px; margin-bottom: 40px;}
+        .wp-card-name { font-size: 45px; font-weight: 700; color: white; margin-bottom: 30px; text-transform: uppercase;}
+        .wp-action-box { background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); padding: 40px; border-radius: 20px; width: 100%; text-align: left;}
+        .wp-action-box h3 { font-size: 35px; color: #fcd34d; margin-bottom: 20px;}
+        .wp-action-box p { font-size: 30px; color: #f8fafc; line-height: 1.5; margin-bottom: 15px;}
+        .wp-footer { margin-top: 100px; font-size: 25px; color: #94a3b8; letter-spacing: 5px; opacity: 0.5;}
 
-        /* --- HACK XUYÊN GIÁP SAFARI: ĐẬP PHẲNG 3D KHI XUẤT ẢNH --- */
-        .export-mode .tarot-card { perspective: none !important; -webkit-perspective: none !important; }
-        .export-mode .card-inner { transform: none !important; -webkit-transform: none !important; transform-style: flat !important; -webkit-transform-style: flat !important; transition: none !important; -webkit-transition: none !important; }
+        /* --- LÀM PHẲNG DOM ĐỂ CỨU RAM LÚC XUẤT ẢNH --- */
+        body.is-exporting * {
+            box-shadow: none !important; text-shadow: none !important;
+            backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+            filter: none !important; transition: none !important; animation: none !important;
+        }
+        .export-mode .tarot-card, .export-mode .card-inner {
+            perspective: none !important; transform: none !important;
+            -webkit-transform: none !important; transform-style: flat !important;
+        }
         .export-mode .card-back { display: none !important; }
-        .export-mode .card-front { transform: none !important; -webkit-transform: none !important; backface-visibility: visible !important; -webkit-backface-visibility: visible !important; z-index: 10 !important; }
+        .export-mode .card-front {
+            position: absolute !important; display: block !important;
+            transform: none !important; -webkit-transform: none !important;
+        }
+
+        /* --- MODAL CHUNG --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.85); z-index: 9999; display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
+        .image-modal-content { background: var(--white); width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .image-preview-wrapper { width: 100%; max-height: 65vh; overflow-y: auto; border-radius: 12px; margin: 15px 0; background: #f8fafc; padding: 5px; border: 1px solid var(--card-border);}
+        .image-preview-wrapper img { width: 100%; display: block; border-radius: 8px; -webkit-user-select: auto !important; user-select: auto !important; pointer-events: auto !important;}
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 1.8rem; color: #94a3b8; cursor: pointer; z-index: 10; }
+        
+        .guide-content { background: #ffffff !important; width: 100%; max-width: 450px; border-radius: 24px; padding: 25px 20px; position: relative; z-index: 10000; box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-height: 85vh; display: flex; flex-direction: column; color: #334155; text-align: left; }
+        .guide-header { text-align: center; margin-bottom: 15px; }
+        .guide-header h2 { font-size: 1.4rem; color: #0f172a; margin-bottom: 5px; display:flex; justify-content:center; gap:8px;}
+        .guide-header h2 span { color: #3b82f6; }
+        .guide-body { overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
+        .guide-item { padding: 12px 15px; border-radius: 12px; border-left: 4px solid #ccc; text-align: left; }
+        .guide-item h4 { font-size: 0.85rem; margin-bottom: 4px; color: #0f172a; display: flex; align-items: center; gap: 6px; font-weight:700;}
+        .qr-wrapper { width:65px; height:65px; background:white; border:2px solid #3b82f6; border-radius:10px; padding:4px; display:flex; justify-content:center; align-items:center;}
     </style>
 </head>
 <body>
 
-    <!-- NÚT MỞ HƯỚNG DẪN NỔI -->
-    <div class="guide-btn" onclick="openGuide()">
-        <i class="fas fa-book-open"></i> Cẩm Nang
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+
+    <div class="top-badges">
+        <div class="badge-btn reward-btn" id="streak-reward-btn" onclick="openReward()"><i class="fas fa-gift"></i> Quà 30 Ngày!</div>
+        <div class="badge-btn streak-btn" title="Chuỗi ngày truy cập liên tục"><i class="fas fa-fire"></i> <span id="daily-streak">0 ngày</span></div>
+        <div class="badge-btn guide-btn" onclick="openGuide()"><i class="fas fa-book-open"></i> Cẩm Nang</div>
+    </div>
+
+    <!-- MODAL QUÀ TẶNG -->
+    <div id="rewardModal" class="modal-overlay">
+        <div class="guide-content" style="text-align: center;">
+            <span class="close-btn" onclick="closeReward()">&times;</span>
+            <i class="fas fa-gift" style="font-size: 4rem; color: #ec4899; margin-bottom: 15px; animation: tada 1.5s infinite;"></i>
+            <h2 style="color: #be185d; margin-bottom: 10px; font-size: 1.5rem;">Chúc Mừng Mốc 30 Ngày!</h2>
+            <p style="font-size: 0.9rem; line-height: 1.5; color: #334155; margin-bottom: 15px;">Sự kiên trì của bạn đã chạm đến vũ trụ! Bạn được tặng <b>1 lượt xem Tarot trực tiếp hoàn toàn MIỄN PHÍ</b> với Reader Bảo Hy.</p>
+            <p style="font-size: 0.8rem; color: #64748b; font-style: italic;">(Vui lòng chụp màn hình thông báo này để làm bằng chứng nhé)</p>
+            <a href="https://zalo.me/0376138554" target="_blank" class="btn-action primary" style="background: #ec4899; width: 100%; margin-top: 15px; padding: 14px; text-decoration: none; font-size: 1rem; display:block;">Nhắn Zalo Nhận Quà Ngay 💖</a>
+        </div>
+    </div>
+
+    <!-- MODAL HƯỚNG DẪN -->
+    <div id="guideModal" class="modal-overlay">
+        <div class="guide-content">
+            <span class="close-btn" onclick="closeGuide()">&times;</span>
+            <div class="guide-header">
+                <h2>✨ Cẩm Nang <span>Vũ Trụ</span> ✨</h2>
+                <p>Khám phá hệ sinh thái chiêm tinh Codelo Tarot!</p>
+            </div>
+            <div class="guide-body">
+                <div class="guide-item" style="border-left-color: #3b82f6; background: #eff6ff;">
+                    <h4><i class="fas fa-wave-square"></i> Nhịp Sinh Học & Lệnh Bài</h4>
+                    <p>Web tự tính chu kỳ Thể chất - Cảm xúc - Trí tuệ và đưa ra những việc <b>Nên/Không Nên làm</b> trong ngày hôm nay.</p>
+                </div>
+                <div class="guide-item" style="border-left-color: #f59e0b; background: #fffbeb;">
+                    <h4><i class="fas fa-mobile-alt"></i> Máy Ép Hình Nền</h4>
+                    <p>Mở mục "Thông Điệp", bốc bài và bấm nút Tải Hình Nền để tạo ra một chiếc Wallpaper 9:16 phong thủy tuyệt đẹp.</p>
+                </div>
+                <div class="guide-item" style="border-left-color: #ec4899; background: #fdf2f8;">
+                    <h4><i class="fas fa-heart"></i> Đo Tương Hợp Chân Ái</h4>
+                    <p>Nhập thêm ngày sinh của người ấy để hệ thống đo độ hợp nhau và đưa ra lời khuyên cho mối quan hệ.</p>
+                </div>
+            </div>
+            <button class="btn-action primary" style="width: 100%; padding: 12px; border-radius: 12px; font-size: 1rem;" onclick="closeGuide()">Đã Hiểu Rồi 💖</button>
+        </div>
     </div>
 
     <div class="container">
         <!-- BRAND LOGO -->
-        <div class="brand-logo">
+        <div class="brand-logo" style="margin-top: 20px;">
             <h1>Codelo <span>Tarot.</span></h1>
-            <p style="font-size: 0.8rem; color: #64748b;">Enterprise Astrology Solutions</p>
+            <div class="clock-display" id="date-clock">Đang kết nối vũ trụ...</div>
         </div>
 
         <!-- WEATHER WIDGET -->
         <div class="status-bar" id="weather-card">
-            <div class="weather-anim-layer" id="weather-anim-container">
-                <i class="fas fa-cloud anim-cloud cloud-1"></i>
-                <i class="fas fa-cloud anim-cloud cloud-2"></i>
-            </div>
             <div class="status-content">
-                <div class="clock" id="clock">00:00</div>
-                <div class="date" id="date">Đang tải...</div>
-                <div class="weather-row">
-                    <div class="location-info">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span id="location" class="location-text">Đang định vị...</span>
-                    </div>
-                    <div class="temp-info">
-                        <i class="fas fa-cloud-sun weather-icon-main" id="weather-icon"></i>
-                        <span id="temperature">--°C</span>
-                    </div>
+                <div style="text-align: left;">
+                    <div class="location-info"><i class="fas fa-map-marker-alt"></i><span id="location">Đang định vị...</span></div>
+                    <div style="font-size: 0.75rem; font-weight: 500; opacity: 0.8; margin-left: 3px;">Nhiệt độ hiện tại</div>
                 </div>
-            </div>
-        </div>
-
-        <!-- NEWS TICKER -->
-        <div class="news-ticker-area">
-            <div class="news-badge">TIN MỚI</div>
-            <div class="ticker-wrap">
-                <div class="ticker-move" id="news-feed">
-                    <div class="ticker-item"><i class="fas fa-circle-notch fa-spin"></i> Đang tải dữ liệu...</div>
-                </div>
+                <div class="temp-info"><i class="fas fa-cloud-sun weather-icon-main" id="weather-icon"></i><span id="temperature">--°C</span></div>
             </div>
         </div>
 
         <!-- MENU CHÍNH -->
-        <div id="main-menu" class="section active action-area">
-            
+        <div id="main-menu" class="section active">
+            <!-- BẢNG KHAI BÁO -->
             <div class="dob-container">
-                <label><i class="fas fa-calendar-alt"></i> Ngày tháng năm sinh của bạn:</label>
+                <label><i class="fas fa-calendar-alt"></i> Khai báo Ngày Sinh của bạn:</label>
                 <div class="dob-selectors">
-                    <select id="dob-day"><option value="" disabled selected>Ngày</option></select>
-                    <select id="dob-month"><option value="" disabled selected>Tháng</option></select>
-                    <select id="dob-year"><option value="" disabled selected>Năm</option></select>
+                    <select id="dob-day" onchange="calcAllData()"><option value="" disabled selected>Ngày</option></select>
+                    <select id="dob-month" onchange="calcAllData()"><option value="" disabled selected>Tháng</option></select>
+                    <select id="dob-year" onchange="calcAllData()"><option value="" disabled selected>Năm</option></select>
                 </div>
-                <p>* Lăn chọn ngày sinh để hệ thống kết nối năng lượng chuẩn xác nhất.</p>
+                
+                <div id="astro-dashboard" class="astro-dashboard">
+                    <div class="bio-section">
+                        <div class="bio-title"><i class="fas fa-wave-square"></i> Chỉ Số Nhịp Sinh Học Hôm Nay</div>
+                        <div class="bio-row"><div class="bio-label">Thể Chất</div><div class="bio-bar-bg"><div class="bio-fill" id="bio-p" style="background:#ef4444; width:0; left:50%;"></div></div><div class="bio-val" id="bio-p-val">0%</div></div>
+                        <div class="bio-row"><div class="bio-label">Cảm Xúc</div><div class="bio-bar-bg"><div class="bio-fill" id="bio-e" style="background:#3b82f6; width:0; left:50%;"></div></div><div class="bio-val" id="bio-e-val">0%</div></div>
+                        <div class="bio-row" style="margin-bottom:0;"><div class="bio-label">Trí Tuệ</div><div class="bio-bar-bg"><div class="bio-fill" id="bio-i" style="background:#10b981; width:0; left:50%;"></div></div><div class="bio-val" id="bio-i-val">0%</div></div>
+                    </div>
+                    <div class="action-card">
+                        <div class="ac-header"><span><i class="fas fa-scroll"></i> Lệnh Bài Hôm Nay</span><span id="ac-personal-day">Ngày Số X</span></div>
+                        <div class="ac-body">
+                            <div class="ac-do"><i class="fas fa-check-circle"></i> NÊN: <span id="ac-do-txt"></span></div>
+                            <div class="ac-dont"><i class="fas fa-times-circle"></i> CẤM: <span id="ac-dont-txt"></span></div>
+                            <div class="ac-fengshui">
+                                <i class="fas fa-compass" style="color:var(--primary-color);"></i> La bàn phong thủy:<br>
+                                Giờ kỵ: <b id="ac-bad-hour"></b> | Hướng xuất hành kỵ: <b id="ac-bad-dir"></b><br>Màu giải hạn: <b id="ac-color"></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <button onclick="handleMenuClick('time')" class="btn-business">
-                <div class="btn-content">
-                    <span class="btn-title">Thông Điệp Mỗi Ngày</span>
-                    <span class="btn-desc">Rút một lá bài để nhận thông điệp và năng lượng cho ngày mới</span>
-                </div>
-                <div class="btn-icon"><i class="fas fa-search-plus"></i></div>
-            </button>
-
-            <button onclick="handleMenuClick('yesno')" class="btn-business">
-                <div class="btn-content">
-                    <span class="btn-title">Luận Đúng / Sai (Yes-No)</span>
-                    <span class="btn-desc">Nhận đáp án trực tiếp Có hoặc Không cho vấn đề</span>
-                </div>
-                <div class="btn-icon"><i class="fas fa-balance-scale"></i></div>
-            </button>
-            
-            <button onclick="handleMenuClick('tarot')" class="btn-business">
-                <div class="btn-content">
-                    <span class="btn-title">Trải Bài Tarot</span>
-                    <span class="btn-desc">Rút bài tự do 1, 3, 6 lá</span>
-                </div>
-                <div class="btn-icon"><i class="fas fa-layer-group"></i></div>
-            </button>
-
-            <button onclick="handleMenuClick('iching')" class="btn-business">
-                <div class="btn-content">
-                    <span class="btn-title">Gieo Quẻ Kinh Dịch</span>
-                    <span class="btn-desc">Xin quẻ 6 hào, phân tích quẻ biến</span>
-                </div>
-                <div class="btn-icon"><i class="fas fa-yin-yang"></i></div>
-            </button>
+            <div class="action-area">
+                <button onclick="handleMenuClick('daily')" class="btn-business"><div class="btn-icon"><i class="fas fa-sun"></i></div><span class="btn-title">Thông Điệp<br>Ngày Mới</span></button>
+                <button onclick="handleMenuClick('love')" class="btn-business"><div class="btn-icon"><i class="fas fa-heart"></i></div><span class="btn-title">Luận Giải<br>Tình Yêu</span></button>
+                <button onclick="handleMenuClick('yesno')" class="btn-business"><div class="btn-icon"><i class="fas fa-balance-scale-right"></i></div><span class="btn-title">Hỏi Đáp<br>Đúng / Sai</span></button>
+                <button onclick="handleMenuClick('past-future')" class="btn-business"><div class="btn-icon"><i class="fas fa-history"></i></div><span class="btn-title">Trải 3 Lá<br>Thời Gian</span></button>
+                <button onclick="handleMenuClick('free-spread')" class="btn-business"><div class="btn-icon"><i class="fas fa-th"></i></div><span class="btn-title">Trải Tự Do<br>(Cho Khách)</span></button>
+                <button onclick="handleMenuClick('iching')" class="btn-business"><div class="btn-icon"><i class="fas fa-yin-yang"></i></div><span class="btn-title">Gieo Quẻ<br>Kinh Dịch</span></button>
+                <button onclick="handleMenuClick('soulmate')" class="btn-business btn-highlight"><div class="btn-icon"><i class="fas fa-heart"></i></div><div style="text-align:left;"><span class="btn-title" style="font-size:1.05rem;">Kiểm Tra Tương Hợp 💘</span><div style="font-size:0.75rem; color:#be185d; margin-top:2px;">Đo độ hợp nhau qua Thần số học</div></div></button>
+            </div>
         </div>
 
-        <!-- SECTION: THÔNG ĐIỆP MỖI NGÀY -->
-        <div id="time-card-section" class="section">
+        <!-- 1. THÔNG ĐIỆP -->
+        <div id="daily-section" class="section">
+            <div class="section-intro"><b>💡 Hướng dẫn:</b> Rút 1 lá bài cho hôm nay. Sau đó bạn có thể tải về làm <b>Hình Nền Điện Thoại</b>!</div>
+            <div class="question-input-wrapper"><input type="text" id="input-daily" class="question-input" placeholder="Mục tiêu hôm nay của bạn là gì?"></div>
             <div class="sub-controls">
                 <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
-                <button class="btn-action primary" onclick="drawTimeCard()"><i class="fas fa-hand-sparkles"></i> Bốc Bài</button>
-                <button id="btn-export-time" class="btn-action" style="display: none;" onclick="exportImage('time-export-area', 'Codelo-ThongDiepMoiNgay')"><i class="fas fa-camera"></i> Lưu ảnh</button>
+                <button class="btn-action primary" onclick="drawDaily()"><i class="fas fa-hand-sparkles"></i> Bốc 1 Lá</button>
+                <button id="btn-export-daily" class="btn-action" style="display: none; background:#10b981; color:white;" onclick="exportWallpaper('btn-export-daily')"><i class="fas fa-mobile-alt"></i> Tải Hình Nền</button>
             </div>
-            
-            <div id="time-export-area" style="padding: 10px; border-radius: 12px;">
-                <div id="time-card-result" class="tarot-grid" style="grid-template-columns: 140px; margin-bottom: 15px;"></div>
-                
-                <div class="reading-result-box" id="reading-result-box">
-                    <div class="reading-title" id="reading-card-name"></div>
-                    <div class="reading-section">
-                        <h4><i class="fas fa-star" style="color:#fbbf24"></i> Tổng Quan:</h4>
-                        <p id="reading-general"></p>
-                    </div>
-                    <div class="reading-section">
-                        <h4><i class="fas fa-briefcase" style="color:#3b82f6"></i> Công Việc / Tài Chính:</h4>
-                        <p id="reading-work"></p>
-                    </div>
-                    <div class="reading-section">
-                        <h4><i class="fas fa-heart" style="color:#ef4444"></i> Tình Cảm / Quan Hệ:</h4>
-                        <p id="reading-love"></p>
-                    </div>
+            <div id="daily-export-area" style="padding: 15px; border-radius: 16px; background:var(--bg-color);">
+                <div id="display-q-daily" class="display-question"></div>
+                <div id="daily-card-result" class="tarot-grid" style="justify-content: center;"></div>
+                <div class="reading-result-box" id="daily-result-box">
+                    <div class="reading-title" id="daily-card-name"></div>
+                    <div class="reading-section"><h4><i class="fas fa-star" style="color:#fbbf24"></i> TỔNG QUAN:</h4><p id="daily-general"></p></div>
+                    <div class="reading-section"><h4><i class="fas fa-briefcase" style="color:#3b82f6"></i> CÔNG VIỆC:</h4><p id="daily-work"></p></div>
+                    <div class="reading-section"><h4><i class="fas fa-heart" style="color:#ef4444"></i> TÌNH CẢM:</h4><p id="daily-love"></p></div>
                 </div>
             </div>
         </div>
 
-        <!-- SECTION: LUẬN ĐÚNG/SAI -->
+        <!-- 2. LUẬN TÌNH YÊU 3 LÁ -->
+        <div id="love-section" class="section">
+            <div class="section-intro"><b>💡 Hướng dẫn:</b> Trải bài phân tích năng lượng Bạn, Đối phương và Tương lai.</div>
+            <div class="question-input-wrapper"><input type="text" id="input-love" class="question-input" placeholder="Nhập tên 2 người hoặc câu hỏi tình cảm..."></div>
+            <div class="sub-controls">
+                <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
+                <button class="btn-action primary" onclick="drawSpread(3, 'love')"><i class="fas fa-heart"></i> Trải 3 Lá Tình Yêu</button>
+                <button id="btn-export-love" class="btn-action" style="display: none;" onclick="exportImg('love-export-area', 'Codelo-Love', 'btn-export-love')"><i class="fas fa-camera"></i> Lưu ảnh</button>
+            </div>
+            <div id="love-export-area" style="padding: 15px; border-radius: 16px; background:var(--bg-color);">
+                <div id="display-q-love" class="display-question"></div>
+                <div id="love-card-result" class="tarot-grid"></div>
+                <div class="reading-result-box" id="love-result-box" style="margin-top: 15px;">
+                    <div class="reading-title"><i class="fas fa-heartbeat"></i> GIẢI MÃ TÌNH CẢM</div>
+                    <div class="reading-section"><h4><i class="fas fa-user" style="color:#3b82f6"></i> BẠN (HIỆN TẠI):</h4><p id="love-you"></p></div>
+                    <div class="reading-section"><h4><i class="fas fa-user-friends" style="color:#ec4899"></i> ĐỐI PHƯƠNG:</h4><p id="love-them"></p></div>
+                    <div class="reading-section"><h4><i class="fas fa-magic" style="color:#10b981"></i> TƯƠNG LAI SẮP TỚI:</h4><p id="love-future"></p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. LUẬN ĐÚNG/SAI -->
         <div id="yesno-section" class="section">
+            <div class="section-intro"><b>💡 Hướng dẫn:</b> Đặt một câu hỏi đóng (Có hoặc Không) thật rõ ràng rồi bốc bài nhé.</div>
+            <div class="question-input-wrapper"><input type="text" id="input-yesno" class="question-input" placeholder="Ví dụ: Tôi có nên nhắn tin cho người ấy?"></div>
             <div class="sub-controls">
                 <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
                 <button class="btn-action primary" onclick="drawYesNo()"><i class="fas fa-hand-sparkles"></i> Bốc Bài</button>
-                <button id="btn-export-yesno" class="btn-action" style="display: none;" onclick="exportImage('yesno-export-area', 'Codelo-YesNo')"><i class="fas fa-camera"></i> Lưu ảnh</button>
+                <button id="btn-export-yesno" class="btn-action" style="display: none;" onclick="exportImg('yesno-export-area', 'Codelo-YesNo', 'btn-export-yesno')"><i class="fas fa-camera"></i> Lưu ảnh</button>
             </div>
-            
-            <div id="yesno-export-area" style="padding: 10px; border-radius: 12px;">
-                <div id="yesno-card-result" class="tarot-grid" style="grid-template-columns: 140px; margin-bottom: 15px;"></div>
-                
+            <div id="yesno-export-area" style="padding: 15px; border-radius: 16px; background:var(--bg-color);">
+                <div id="display-q-yesno" class="display-question"></div>
+                <div id="yesno-card-result" class="tarot-grid" style="justify-content: center;"></div>
                 <div class="reading-result-box" id="yesno-result-box">
                     <div class="reading-title" id="yesno-card-name"></div>
-                    <div class="reading-section">
-                        <h4><i class="fas fa-gavel" style="color:#f97316"></i> Kết luận:</h4>
-                        <p id="yesno-answer" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;"></p>
+                    <div class="reading-section" style="text-align: center;">
+                        <h4 style="justify-content:center;"><i class="fas fa-gavel" style="color:#f97316"></i> PHÁN QUYẾT:</h4>
+                        <p id="yesno-answer" style="font-size: 1.4rem; font-weight: 800; margin: 10px 0;"></p>
                         <p id="yesno-desc"></p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- SECTION: TAROT TỰ DO -->
-        <div id="tarot-section" class="section">
+        <!-- 4. TRẢI 3 LÁ THỜI GIAN -->
+        <div id="past-future-section" class="section">
+            <div class="section-intro"><b>💡 Hướng dẫn:</b> Trải bài phân tích luồng sự kiện. Nhập vấn đề đang phân vân ở bên dưới.</div>
+            <div class="question-input-wrapper"><input type="text" id="input-3cards" class="question-input" placeholder="Ví dụ: Định hướng công việc sắp tới..."></div>
             <div class="sub-controls">
                 <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
-                <button class="btn-action" onclick="drawTarot(1, 'tarot-result')">1 Lá</button>
-                <button class="btn-action" onclick="drawTarot(3, 'tarot-result')">3 Lá</button>
-                <button class="btn-action" onclick="drawTarot(6, 'tarot-result')">6 Lá</button>
-                <button id="btn-export-tarot" class="btn-action primary" style="display: none;" onclick="exportImage('tarot-export-area', 'Codelo-Trai-Bai')"><i class="fas fa-camera"></i> Lưu ảnh</button>
+                <button class="btn-action primary" onclick="drawSpread(3, 'past-future')"><i class="fas fa-layer-group"></i> Trải 3 Lá</button>
+                <button id="btn-export-3cards" class="btn-action" style="display: none;" onclick="exportImg('3cards-export-area', 'Codelo-3La', 'btn-export-3cards')"><i class="fas fa-camera"></i> Lưu ảnh</button>
             </div>
-            <div id="tarot-export-area" style="padding: 10px; border-radius: 12px;">
-                <div id="tarot-result" class="tarot-grid"></div>
-            </div>
-        </div>
-
-        <!-- SECTION: KINH DỊCH -->
-        <div id="iching-section" class="section">
-            <div class="sub-controls">
-                <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
-                <button id="btn-gieo-tu-dong" class="btn-action" onclick="autoToss()"><i class="fas fa-bolt"></i> Xin Quẻ</button>
-                <button id="btn-export-iching" class="btn-action primary" style="display: none;" onclick="exportImage('iching-export-area', 'Codelo-Kinh-Dich')"><i class="fas fa-camera"></i> Lưu kết quả</button>
-            </div>
-            <div id="iching-export-area" style="padding: 10px; border-radius: 12px;">
-                <div id="lines-display" class="lines-container" style="background:#f8fafc; padding:15px; border-radius:12px; border:1px solid var(--card-border);"></div>
-                <div id="iching-result" class="results" style="display: none;">
-                    <div class="hexagram-result">
-                        <div class="hexagram-title">Quẻ Chủ (Hiện Tại)</div>
-                        <div id="que-chu-name" class="hexagram-name"></div>
-                        <div id="que-chu-detail" style="font-size:0.8rem;"></div>
-                    </div>
-                    <div class="hexagram-result" id="que-bien-container" style="display: none;">
-                        <div class="hexagram-title">Quẻ Biến (Tương Lai)</div>
-                        <div id="que-bien-name" class="hexagram-name"></div>
-                        <div id="que-bien-detail" style="font-size:0.8rem;"></div>
-                    </div>
+            <div id="3cards-export-area" style="padding: 15px; border-radius: 16px; background:var(--bg-color);">
+                <div id="display-q-3cards" class="display-question"></div>
+                <div id="past-future-card-result" class="tarot-grid"></div>
+                <div class="reading-result-box" id="past-future-result-box" style="margin-top: 15px;">
+                    <div class="reading-title"><i class="fas fa-stream"></i> DÒNG THỜI GIAN</div>
+                    <div class="reading-section"><h4><i class="fas fa-history" style="color:#94a3b8"></i> QUÁ KHỨ:</h4><p id="past-future-read-0"></p></div>
+                    <div class="reading-section"><h4><i class="fas fa-dot-circle" style="color:#3b82f6"></i> HIỆN TẠI:</h4><p id="past-future-read-1"></p></div>
+                    <div class="reading-section"><h4><i class="fas fa-fast-forward" style="color:#10b981"></i> TƯƠNG LAI:</h4><p id="past-future-read-2"></p></div>
                 </div>
             </div>
         </div>
 
-        <!-- CONTACT GRID -->
-        <div class="contact-label">Contact Work</div>
-        <div class="contact-grid">
-            <a href="mailto:Nhuthyne@gmail.com" class="contact-item email"><i class="fas fa-envelope"></i><span>Email</span></a>
-            <a href="https://zalo.me/0376138554" class="contact-item zalo" target="_blank"><i class="fas fa-phone-alt"></i><span>Zalo</span></a>
-            <a href="https://www.facebook.com/nhuthynee?" class="contact-item fb" target="_blank"><i class="fab fa-facebook-f"></i><span>Social</span></a>
+        <!-- 5. TRẢI TỰ DO -->
+        <div id="free-spread-section" class="section">
+            <div class="section-intro"><b>💡 Dành cho Khách:</b> Nhập câu hỏi chi tiết. Rút số lượng lá bài, lưu ảnh gửi cho Reader của bạn.</div>
+            <div class="question-input-wrapper"><input type="text" id="input-free" class="question-input" placeholder="Nhập câu hỏi gửi cho Reader..."></div>
+            <div class="sub-controls">
+                <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
+                <button class="btn-action primary" onclick="drawFreeTarot(3)">Trải 3 Lá</button>
+                <button class="btn-action primary" onclick="drawFreeTarot(6)">Trải 6 Lá</button>
+                <button class="btn-action primary" onclick="drawFreeTarot(12)">Trải 12 Lá</button>
+                <button id="btn-export-free" class="btn-action" style="display: none; background: #0f172a; color:white;" onclick="exportImg('free-export-area', 'Codelo-ChoReader', 'btn-export-free')"><i class="fas fa-camera"></i> Lưu ảnh gửi</button>
+            </div>
+            <div id="free-export-area" style="padding: 15px; border-radius: 16px; background:var(--bg-color);">
+                <div id="display-q-free" class="display-question" style="text-align: center;"></div>
+                <div id="free-card-result" class="tarot-grid"></div>
+            </div>
         </div>
 
-        <div class="footer"> 2026 Codelo VN. All rights reserved.<br>Designed for Bao Hy.</div>
-    </div>
+        <!-- 6. KINH DỊCH -->
+        <div id="iching-section" class="section">
+            <div class="section-intro"><b>💡 Hướng dẫn:</b> Tập trung vào vấn đề, nhập câu hỏi và bấm Xin Quẻ.</div>
+            <div class="question-input-wrapper"><input type="text" id="input-iching" class="question-input" placeholder="Bạn muốn xin quẻ Kinh Dịch về việc gì?"></div>
+            <div class="sub-controls">
+                <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
+                <button id="btn-gieo-tu-dong" class="btn-action primary" onclick="autoToss()"><i class="fas fa-coins"></i> Xin Quẻ</button>
+                <button id="btn-export-iching" class="btn-action" style="display: none;" onclick="exportImg('iching-export-area', 'Codelo-Kinh-Dich', 'btn-export-iching')"><i class="fas fa-camera"></i> Lưu kết quả</button>
+            </div>
+            <div id="iching-export-area" style="padding: 15px; border-radius: 16px; background:var(--bg-color);">
+                <div id="display-q-iching" class="display-question"></div>
+                <div id="lines-display" class="lines-container" style="background:#ffffff; padding:15px; border-radius:12px; border:1px solid var(--card-border);"></div>
+                <div id="iching-result" class="results" style="display: none;">
+                    <div class="hexagram-result"><div class="hexagram-title">QUẺ CHỦ (HIỆN TẠI)</div><div id="que-chu-name" class="hexagram-name"></div><div id="que-chu-detail" style="font-size:0.8rem;"></div></div>
+                    <div class="hexagram-result" id="que-bien-container" style="display: none;"><div class="hexagram-title">QUẺ BIẾN (TƯƠNG LAI)</div><div id="que-bien-name" class="hexagram-name"></div><div id="que-bien-detail" style="font-size:0.8rem;"></div></div>
+                </div>
+            </div>
+        </div>
 
-    <!-- KHU VỰC TẠO QR ẨN -->
-    <div id="export-footer" class="export-footer" style="display: none;">
-        <div id="qr-generator-cache" class="qr-wrapper"></div>
-        <div class="export-promo">
-            <div class="promo-title">Thông điệp từ <span>Codelo Tarot</span></div>
-            <div class="promo-desc">Quét mã QR để tự rút bài và nhận thông điệp cho riêng mình!</div>
+        <!-- 7. SOULMATE KHÔI PHỤC HTML ĐẦY ĐỦ -->
+        <div id="soulmate-section" class="section">
+            <div class="section-intro" style="background: #fdf2f8; border-color: #ec4899;"><b>💖 Kiểm Tra Tương Hợp:</b> Nhập Ngày Sinh của "Người Ấy" để hệ thống phân tích!</div>
+            <div class="dob-container" style="border-color: #fecdd3; background: #fff1f2;">
+                <label style="color: #be185d;"><i class="fas fa-heart"></i> Ngày Sinh của Người Ấy:</label>
+                <div class="dob-selectors">
+                    <select id="partner-day" style="border-color: #fecdd3;"><option value="" disabled selected>Ngày</option></select>
+                    <select id="partner-month" style="border-color: #fecdd3;"><option value="" disabled selected>Tháng</option></select>
+                    <select id="partner-year" style="border-color: #fecdd3;"><option value="" disabled selected>Năm</option></select>
+                </div>
+            </div>
+            <div class="sub-controls">
+                <button class="btn-action" onclick="switchSection('main-menu')"><i class="fas fa-arrow-left"></i> Trở về</button>
+                <button class="btn-action" style="background: #ec4899; color: white; border: none; box-shadow: 0 4px 10px rgba(236, 72, 153, 0.3);" onclick="calculateCompatibility()"><i class="fas fa-heart"></i> Phân Tích</button>
+                <button id="btn-export-soulmate" class="btn-action" style="display: none;" onclick="exportImg('soulmate-export-area', 'Codelo-TuongHop', 'btn-export-soulmate')"><i class="fas fa-camera"></i> Lưu kết quả</button>
+            </div>
+            
+            <div id="soulmate-export-area" style="padding: 15px; border-radius: 16px; background:var(--white); border: 2px dashed #fecdd3; display: none;">
+                <div class="soulmate-box" id="sm-result" style="display: block; margin-bottom:0;">
+                    <div class="reading-title" style="color: #be185d; text-align: center; border-bottom: 1px dashed #fecdd3;">🔮 BÁO CÁO TƯƠNG HỢP 🔮</div>
+                    <div class="sm-item" style="text-align: center; background: #fff1f2; border: 1px dashed #f43f5e;">
+                        <h4 style="justify-content: center; font-size: 1rem;"><i class="fas fa-heartbeat"></i> Chỉ Số Tương Hợp</h4>
+                        <p id="sm-score" style="font-size: 1.8rem; font-weight: 800; color: #e11d48; margin-top: 5px;"></p>
+                    </div>
+                    <div class="sm-item">
+                        <h4><i class="fas fa-fingerprint"></i> Năng lượng đường đời:</h4>
+                        <p id="comp-lifepath"></p>
+                    </div>
+                    <div class="sm-item">
+                        <h4><i class="fas fa-moon"></i> Cung Hoàng Đạo:</h4>
+                        <p id="comp-zodiac"></p>
+                    </div>
+                    <div class="sm-item" style="margin-bottom:0; background: #e0f2fe; border-left: 4px solid #0284c7;">
+                        <h4 style="color: #0369a1;"><i class="fas fa-link"></i> Lời Khuyên Mối Quan Hệ:</h4>
+                        <p id="comp-advice" style="color: #0f172a;"></p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- MODAL XEM & LƯU ẢNH TRÊN ĐIỆN THOẠI -->
+    <!-- KHU VỰC TẠO HÌNH NỀN ẨN -->
+    <div id="wallpaper-export-zone">
+        <div class="wp-frame">
+            <div class="wp-title" id="wp-action-title">HÀNH ĐỘNG HÔM NAY</div>
+            <div class="wp-date" id="wp-date"></div>
+            <img id="wp-card-img" class="wp-card-img" src="" alt="Tarot" crossorigin="anonymous">
+            <div class="wp-card-name" id="wp-card-name"></div>
+            <div class="wp-action-box">
+                <p id="wp-action-text"></p>
+            </div>
+            <div class="wp-footer">CODELO ENTERPRISE</div>
+        </div>
+    </div>
+
+    <!-- KHU VỰC TẠO QR DÀNH CHO XUẤT ẢNH -->
+    <div id="export-footer" style="display:none; align-items:center; justify-content:center; gap:12px; margin-top:20px; padding-top:15px; border-top:2px dashed #cbd5e1; background:#ffffff;">
+        <div class="qr-wrapper" style="width:65px; height:65px; background:white; border:2px solid #3b82f6; border-radius:10px; padding:4px; display:flex; justify-content:center; align-items:center;">
+            <div id="qr-generator-cache"></div>
+        </div>
+        <div>
+            <div style="font-size:0.85rem; color:#0f172a; font-weight:600;">Hệ sinh thái <span style="color:#3b82f6;">Codelo Tarot</span></div>
+            <div style="font-size:0.7rem; color:#64748b;">Quét mã QR để tự khai mở năng lượng vũ trụ!</div>
+        </div>
+    </div>
+    
+    <!-- MODAL XEM ẢNH -->
     <div id="imageModal" class="modal-overlay">
         <div class="image-modal-content">
-            <span class="close-btn" onclick="closeImageModal()">&times;</span>
-            <h3 style="font-size: 1.1rem; color: var(--primary-color); margin-top: 5px;">Ảnh Kết Quả Trải Bài</h3>
-            <div class="image-preview-wrapper">
-                <img id="export-preview-img" src="" alt="Trải bài Tarot Codelo">
-            </div>
-            <div class="image-save-hint">
-                <i class="fas fa-fingerprint"></i> Mẹo: Nhấn giữ vào ảnh 1-2 giây rồi chọn "Lưu hình ảnh" để lưu vào máy nhé!
-            </div>
-            <button class="btn-got-it" onclick="closeImageModal()">Đóng Cửa Sổ</button>
-        </div>
-    </div>
-
-    <!-- MODAL HƯỚNG DẪN CUTE DỄ THƯƠNG -->
-    <div id="guideModal" class="modal-overlay">
-        <div class="guide-content">
-            <span class="close-btn" onclick="closeGuide()">&times;</span>
-            <div class="guide-header">
-                <h2>✨ Cẩm Nang <span>Vũ Trụ</span> ✨</h2>
-                <p>Chào mừng bạn đến với Codelo Tarot! Đọc lướt qua hướng dẫn trước khi dùng nhé 👇</p>
-            </div>
-            <div class="guide-body">
-                <div class="guide-item" style="border-left-color: #ec4899; background: #fdf2f8;">
-                    <h4>🎂 1. Khai Báo Năng Lượng</h4>
-                    <p>Hãy <b>kéo chọn Ngày/Tháng/Năm sinh</b> ở màn hình chính đầu tiên. Bước này giúp hệ thống kết nối chuẩn xác với tần số vũ trụ của bạn đó nha!</p>
-                </div>
-                <div class="guide-item" style="border-left-color: #3b82f6; background: #eff6ff;">
-                    <h4>🔮 2. Thông Điệp Mỗi Ngày</h4>
-                    <p>Mỗi buổi sáng, vào đây rút <b>1 lá bài</b>. Hệ thống sẽ giải mã chi tiết các khía cạnh: Tổng quan, Công việc & Tình cảm cho ngày mới của bạn.</p>
-                </div>
-                <div class="guide-item" style="border-left-color: #f59e0b; background: #fffbeb;">
-                    <h4>⚖️ 3. Luận Đúng / Sai (Yes-No)</h4>
-                    <p>Đang đắn đo một câu hỏi? Hãy nhẩm trong đầu và rút bài. Vũ trụ sẽ cho bạn đáp án thẳng thắn <b>CÓ</b> hoặc <b>KHÔNG</b>.</p>
-                </div>
-                <div class="guide-item" style="border-left-color: #8b5cf6; background: #f5f3ff;">
-                    <h4>🃏 4. Trải Bài Tự Do</h4>
-                    <p>Dành riêng cho những bạn thích tự chiêm nghiệm. Rút liền lúc 1, 3 hoặc 6 lá để tự xâu chuỗi thông điệp.</p>
-                </div>
-                <div class="guide-item" style="border-left-color: #10b981; background: #ecfdf5;">
-                    <h4>☯️ 5. Gieo Quẻ Kinh Dịch</h4>
-                    <p>Chỉ cần bấm "Xin Quẻ", hệ thống sẽ tự động gieo đồng xu 6 lần để tìm ra <b>Quẻ Chủ</b> và <b>Quẻ Biến</b> cho bạn.</p>
-                </div>
-                <div class="guide-item" style="border-left-color: #f97316; background: #fff7ed;">
-                    <h4>📸 6. Chia Sẻ Thông Điệp</h4>
-                    <p>Xem xong nhớ bấm nút <b>Lưu ảnh</b> màu xanh lá để tải ảnh nét căng (có mã QR cực xịn) về khoe bạn bè nhé!</p>
-                </div>
-            </div>
-            <button class="btn-got-it" onclick="closeGuide()">Đã Hiểu Rồi 💖</button>
+            <span class="close-btn" onclick="closeImg()">&times;</span>
+            <h3 style="font-size: 1.1rem; color: var(--primary-color); margin-top: 5px;">Ảnh Kết Quả Đã Xong!</h3>
+            <div class="image-preview-wrapper"><img id="export-preview-img" src=""></div>
+            <div class="image-save-hint"><i class="fas fa-mobile-alt"></i> Mẹo: Nhấn giữ vào ảnh 1-2 giây rồi chọn <b>"Lưu hình ảnh"</b> nhé!</div>
+            <button class="btn-action primary" style="width: 100%; margin-top: 10px;" onclick="downloadImg()">Dùng Laptop? Tải Xuống Tại Đây</button>
         </div>
     </div>
 
     <script>
-        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('contextmenu', e => e.preventDefault());
 
-        document.onkeydown = function(e) {
-            if(e.keyCode == 123) return false; 
-            if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0))) return false;
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; 
-            if(e.key === 'PrintScreen' || e.keyCode == 44) {
-                navigator.clipboard.writeText(''); 
-                alert("Codelo trân trọng: Hãy dùng nút Lưu ảnh có sẵn trong web nhé!");
+        // HÀM GLOBAL TÍNH TOÁN
+        function calcLifePath(d, m, y) {
+            let str = d.toString() + m.toString() + y.toString(); let sum = 0;
+            for(let char of str) sum += parseInt(char);
+            while(sum > 9 && sum !== 11 && sum !== 22) { let temp = 0; for(let char of sum.toString()) temp += parseInt(char); sum = temp; }
+            return sum;
+        }
+
+        const zodiacNames = ["Ma Kết", "Bảo Bình", "Song Ngư", "Bạch Dương", "Kim Ngưu", "Song Tử", "Cự Giải", "Sư Tử", "Xử Nữ", "Thiên Bình", "Thiên Yết", "Nhân Mã"];
+        function getZodiacIndex(d, m) {
+            if((m==1 && d<=19) || (m==12 && d>=22)) return 0; if((m==1 && d>=20) || (m==2 && d<=18)) return 1; if((m==2 && d>=19) || (m==3 && d<=20)) return 2;
+            if((m==3 && d>=21) || (m==4 && d<=19)) return 3; if((m==4 && d>=20) || (m==5 && d<=20)) return 4; if((m==5 && d>=21) || (m==6 && d<=21)) return 5;
+            if((m==6 && d>=22) || (m==7 && d<=22)) return 6; if((m==7 && d>=23) || (m==8 && d<=22)) return 7; if((m==8 && d>=23) || (m==9 && d<=22)) return 8;
+            if((m==9 && d>=23) || (m==10 && d<=23)) return 9; if((m==10 && d>=24) || (m==11 && d<=21)) return 10; if((m==11 && d>=22) || (m==12 && d<=21)) return 11; return -1;
+        }
+
+        // ĐỒNG HỒ & THỜI TIẾT
+        setInterval(() => { const n = new Date(); document.getElementById('date-clock').textContent = n.toLocaleDateString('vi-VN', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' }) + ' | ' + n.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }, 1000);
+        function getAutoWeather() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (p) => { fetch(`https://api.open-meteo.com/v1/forecast?latitude=${p.coords.latitude}&longitude=${p.coords.longitude}&current_weather=true`).then(res => res.json()).then(data => { document.getElementById('location').textContent = "Vị trí của bạn"; document.getElementById('temperature').textContent = `${Math.round(data.current_weather.temperature)}°C`; }); },
+                    (e) => { fetch(`https://api.open-meteo.com/v1/forecast?latitude=10.8231&longitude=106.6297&current_weather=true`).then(res => res.json()).then(data => { document.getElementById('location').textContent = "Hồ Chí Minh"; document.getElementById('temperature').textContent = `${Math.round(data.current_weather.temperature)}°C`; }); }
+                );
             }
-        };
+        }
 
+        // CẨM NANG & STREAK
         function openGuide() { document.getElementById('guideModal').style.display = 'flex'; }
-        function closeGuide() { document.getElementById('guideModal').style.display = 'none'; localStorage.setItem('bh_guide_seen', 'true'); }
-        
-        function openImageModal(imgUrl) {
-            document.getElementById('export-preview-img').src = imgUrl;
-            document.getElementById('imageModal').style.display = 'flex';
-        }
-        function closeImageModal() {
-            document.getElementById('imageModal').style.display = 'none';
+        function closeGuide() { document.getElementById('guideModal').style.display = 'none'; localStorage.setItem('bh_guide_seen_v103', 'true'); }
+        function openReward() { document.getElementById('rewardModal').style.display = 'flex'; }
+        function closeReward() { document.getElementById('rewardModal').style.display = 'none'; }
+
+        function updateStreak() {
+            let today = new Date().toDateString(); let lastVisit = localStorage.getItem('bh_last_visit'); let streak = parseInt(localStorage.getItem('bh_streak')) || 0;
+            if (lastVisit !== today) {
+                let yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+                if (lastVisit === yesterday.toDateString()) { streak++; } else { streak = 1; }
+                localStorage.setItem('bh_last_visit', today); localStorage.setItem('bh_streak', streak);
+            }
+            document.getElementById('daily-streak').innerText = streak + ' ngày';
+            if (streak >= 30) { document.getElementById('streak-reward-btn').style.display = 'flex'; }
         }
 
-        function initDOB() {
-            const daySelect = document.getElementById('dob-day');
-            const monthSelect = document.getElementById('dob-month');
-            const yearSelect = document.getElementById('dob-year');
-            for(let i = 1; i <= 31; i++) { daySelect.innerHTML += `<option value="${i}">${i}</option>`; }
-            for(let i = 1; i <= 12; i++) { monthSelect.innerHTML += `<option value="${i}">Tháng ${i}</option>`; }
-            const currentYear = new Date().getFullYear();
-            for(let i = currentYear; i >= 1950; i--) { yearSelect.innerHTML += `<option value="${i}">${i}</option>`; }
+        function initDOB(id) {
+            const dS = document.getElementById(id+'-day'); const mS = document.getElementById(id+'-month'); const yS = document.getElementById(id+'-year');
+            for(let i=1;i<=31;i++) dS.innerHTML+=`<option value="${i}">${i}</option>`;
+            for(let i=1;i<=12;i++) mS.innerHTML+=`<option value="${i}">Tháng ${i}</option>`;
+            for(let i=new Date().getFullYear();i>=1950;i--) yS.innerHTML+=`<option value="${i}">${i}</option>`;
         }
 
-        function switchSection(sectionId) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
+        function calcAllData() {
+            const d = parseInt(document.getElementById('dob-day').value); const m = parseInt(document.getElementById('dob-month').value); const y = parseInt(document.getElementById('dob-year').value);
+            if(!d || !m || !y) return;
+
+            const birth = new Date(y, m-1, d); const today = new Date();
+            const daysLived = Math.floor((today - birth) / (1000 * 60 * 60 * 24));
+            const calcBio = (cycle) => { let val = Math.round(Math.sin((2 * Math.PI * daysLived) / cycle) * 100); return val; };
+            const p = calcBio(23); const e = calcBio(28); const int = calcBio(33);
             
-            if(sectionId === 'tarot-section') {
-                document.getElementById('tarot-result').innerHTML = ''; document.getElementById('btn-export-tarot').style.display = 'none';
-            }
-            if(sectionId === 'time-card-section') {
-                document.getElementById('reading-result-box').style.display = 'none'; document.getElementById('btn-export-time').style.display = 'none'; document.getElementById('time-card-result').innerHTML = '';
-            }
-            if(sectionId === 'yesno-section') {
-                document.getElementById('yesno-result-box').style.display = 'none'; document.getElementById('btn-export-yesno').style.display = 'none'; document.getElementById('yesno-card-result').innerHTML = '';
-            }
-            if(sectionId === 'iching-section') resetIching();
+            const setBar = (id, val, color) => { 
+                const el = document.getElementById(id); const valEl = document.getElementById(id+'-val');
+                let w = Math.abs(val) + '%'; let l = val < 0 ? (50 - Math.abs(val)/2) + '%' : '50%';
+                el.style.width = w; el.style.left = l; el.style.background = val < 0 ? '#94a3b8' : color;
+                valEl.innerText = val + '%'; valEl.style.color = val < 0 ? '#94a3b8' : color;
+            };
+            setBar('bio-p', p, '#ef4444'); setBar('bio-e', e, '#3b82f6'); setBar('bio-i', int, '#10b981');
+
+            let pdStr = d.toString() + m.toString() + today.getDate() + (today.getMonth()+1) + today.getFullYear();
+            let pd = 0; for(let c of pdStr) pd += parseInt(c);
+            while(pd > 9 && pd !== 11 && pd !== 22) { let temp = 0; for(let c of pd.toString()) temp += parseInt(c); pd = temp; }
+            
+            const doDont = {
+                1: {do: "Bắt đầu dự án mới, tự ra quyết định.", dont: "Phụ thuộc người khác, do dự."},
+                2: {do: "Ngoại giao, ký kết, nhường nhịn.", dont: "Xung đột, cãi vã, đòi hỏi quá mức."},
+                3: {do: "Sáng tạo, tiệc tùng, chia sẻ ý tưởng.", dont: "Giam mình trong phòng, suy nghĩ tiêu cực."},
+                4: {do: "Dọn dẹp, lên kế hoạch, rà soát tài chính.", dont: "Đầu tư mạo hiểm, phá vỡ quy tắc."},
+                5: {do: "Thay đổi, đi ra ngoài, thử cái mới.", dont: "Bảo thủ, cam kết dài hạn hôm nay."},
+                6: {do: "Chăm sóc gia đình, trang hoàng nhà cửa.", dont: "Bỏ bê người thân, làm việc quá sức."},
+                7: {do: "Tĩnh tâm, học tập, nghiên cứu độc lập.", dont: "Đến nơi đông đúc ồn ào, tin người mù quáng."},
+                8: {do: "Kinh doanh, đòi nợ, giải quyết sổ sách.", dont: "Chi tiêu hoang phí, thiếu kiểm soát quyền lực."},
+                9: {do: "Làm từ thiện, dọn dẹp đồ cũ, tha thứ.", dont: "Bắt đầu công việc mới, níu kéo cái cũ."}
+            };
+            let pdKey = pd; if(pd===11) pdKey=2; if(pd===22) pdKey=4;
+            document.getElementById('ac-personal-day').innerText = `Ngày Số ${pd}`;
+            document.getElementById('ac-do-txt').innerText = doDont[pdKey].do;
+            document.getElementById('ac-dont-txt').innerText = doDont[pdKey].dont;
+
+            const canVal = [4,5,5,4,1,1,2,2,3,3][y%10]; const chiVal = {0:0,1:0,2:1,3:1,4:2,5:2,6:0,7:0,8:1,9:1,10:2,11:2}[(y-4+1200)%12];
+            let menh = canVal + chiVal; if(menh>5) menh-=5;
+            const fs = {
+                1: {dir:"Nam", color:"Xanh lá, Đỏ", hour:"13:00 - 15:00"}, 
+                2: {dir:"Đông Bắc", color:"Vàng, Đất", hour:"09:00 - 11:00"}, 
+                3: {dir:"Bắc", color:"Đen, Xanh biển", hour:"23:00 - 01:00"}, 
+                4: {dir:"Đông", color:"Xanh lá", hour:"07:00 - 09:00"}, 
+                5: {dir:"Tây", color:"Trắng, Bạc", hour:"15:00 - 17:00"} 
+            };
+            document.getElementById('ac-bad-hour').innerText = fs[menh].hour;
+            document.getElementById('ac-bad-dir').innerText = fs[menh].dir;
+            document.getElementById('ac-color').innerText = fs[menh].color;
+
+            document.getElementById('astro-dashboard').style.display = 'block';
         }
 
-        function checkDOB() {
-            const d = document.getElementById('dob-day').value; const m = document.getElementById('dob-month').value; const y = document.getElementById('dob-year').value;
-            if (!d || !m || !y) {
-                alert("Cậu chủ vui lòng lăn chọn đầy đủ Ngày, Tháng, Năm sinh để hệ thống Codelo kết nối năng lượng chuẩn xác nhất nhé!");
-                return false;
-            }
-            return true;
+        // CHUYỂN TAB
+        function displayQuestion(inId, outId) {
+            const v = document.getElementById(inId).value.trim(); const el = document.getElementById(outId);
+            if(v) { el.innerHTML = `<strong><i class="fas fa-comment-dots"></i> Câu hỏi:</strong> ${v}`; el.style.display = 'block'; } else el.style.display = 'none';
+        }
+        
+        function switchSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.tarot-grid, #lines-display').forEach(e => e.innerHTML='');
+            document.querySelectorAll('.reading-result-box, .display-question, #soulmate-export-area').forEach(e => e.style.display='none');
+            document.querySelectorAll('button[id^="btn-export"]').forEach(e => {
+                e.style.display='none';
+                e.innerHTML = e.innerHTML.replace('Đang xử lý...', 'Lưu ảnh');
+            });
+            if(id === 'iching-section') document.getElementById('btn-gieo-tu-dong').innerHTML = '<i class="fas fa-coins"></i> Xin Quẻ';
+        }
+        
+        function handleMenuClick(id) {
+            const y1 = document.getElementById('dob-year').value;
+            if(!y1) { alert("Xin hãy khai báo Ngày Sinh của bạn ở màn hình chính để kích hoạt năng lượng!"); return; }
+            if(id==='soulmate') switchSection('soulmate-section');
+            else switchSection(id+'-section');
         }
 
-        function handleMenuClick(action) {
-            if (!checkDOB()) return; 
-            if (action === 'time') switchSection('time-card-section');
-            else if (action === 'tarot') switchSection('tarot-section');
-            else if (action === 'yesno') switchSection('yesno-section');
-            else if (action === 'iching') switchSection('iching-section');
-        }
-
-        // --- WEATHER & NEWS ---
-        function renderWeatherEffects(code, isDay) {
-            const container = document.getElementById('weather-anim-container'); container.innerHTML = ''; 
-            if (isDay === 1) { 
-                if (code <= 3) container.innerHTML = `<i class="fas fa-sun anim-sun"></i>`; 
-                else if (code <= 48) container.innerHTML = `<i class="fas fa-cloud anim-cloud cloud-1"></i><i class="fas fa-cloud anim-cloud cloud-2"></i>`; 
-                else { 
-                    let rainDrops = '';
-                    for(let i=0; i<15; i++) {
-                        let left = Math.floor(Math.random() * 100); let delay = Math.random() * 2; let duration = 0.5 + Math.random();
-                        rainDrops += `<div class="anim-rain" style="left: ${left}%; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
-                    }
-                    container.innerHTML = rainDrops;
-                }
-            } else { 
-                if (code > 60) { 
-                    let rainDrops = '';
-                    for(let i=0; i<15; i++) {
-                        let left = Math.floor(Math.random() * 100); let delay = Math.random() * 2;
-                        rainDrops += `<div class="anim-rain" style="left: ${left}%; animation-delay: ${delay}s; background: rgba(255,255,255,0.15);"></div>`;
-                    }
-                    container.innerHTML = rainDrops;
-                } 
-            }
-        }
-
-        function getWeather(lat, lon) {
-            document.getElementById('location').textContent = "Hồ Chí Minh"; 
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
-            fetch(url).then(response => response.json()).then(data => {
-                const temp = Math.round(data.current_weather.temperature);
-                const code = data.current_weather.weathercode; const isDay = data.current_weather.is_day;
-                document.getElementById('temperature').textContent = `${temp}°C`;
-                const iconEl = document.getElementById('weather-icon');
-                if (isDay === 1) {
-                    if (code <= 3) { iconEl.className = "fas fa-sun weather-icon-main"; iconEl.style.color = "#fbbf24"; } 
-                    else if (code <= 48) { iconEl.className = "fas fa-cloud-sun weather-icon-main"; iconEl.style.color = "#f1f5f9"; } 
-                    else { iconEl.className = "fas fa-cloud-showers-heavy weather-icon-main"; iconEl.style.color = "#93c5fd"; }
-                } else {
-                    if (code <= 3) { iconEl.className = "fas fa-moon weather-icon-main"; iconEl.style.color = "#fef3c7"; } 
-                    else { iconEl.className = "fas fa-cloud-moon-rain weather-icon-main"; }
-                }
-                renderWeatherEffects(code, isDay);
-            }).catch(err => { document.getElementById('temperature').textContent = "N/A"; });
-        }
-
-        async function fetchNews() {
-            const feeds = ['https://vnexpress.net/rss/kinh-doanh.rss', 'https://vnexpress.net/rss/phap-luat.rss'];
-            const newsContainer = document.getElementById('news-feed');
-            try {
-                const promises = feeds.map(feed => fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed)}&_t=${Date.now()}`).then(res => res.json()));
-                const results = await Promise.all(promises); let allItems = [];
-                results.forEach(data => { if(data.status === 'ok') allItems = allItems.concat(data.items); });
-                allItems.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-                let rawHtml = '';
-                allItems.slice(0, 8).forEach(item => {
-                    const timeStr = new Date(item.pubDate).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
-                    let icon = item.link.includes('kinh-doanh') ? 'fa-chart-line' : 'fa-gavel';
-                    rawHtml += `<div class="ticker-item"><span class="time-tag">[${timeStr}]</span><i class="fas ${icon}"></i> ${item.title}</div>`;
-                });
-                newsContainer.innerHTML = rawHtml + rawHtml;
-            } catch (error) { newsContainer.innerHTML = `<div class="ticker-item"><i class="fas fa-newspaper"></i> Đang tải tin tức...</div>`.repeat(2); }
-        }
-
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('date').textContent = now.toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long' });
-        }
-        setInterval(updateClock, 1000);
-
-        // --- TAROT DATA ---
+        // TAROT DATA (LẤY ẢNH TỪ API SIÊU TỐC WSRV.NL)
         const majorNames = ["The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor", "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit", "Wheel of Fortune", "Justice", "The Hanged Man", "Death", "Temperance", "The Devil", "The Tower", "The Star", "The Moon", "The Sun", "Judgement", "The World"];
-        const suits = [{code: 'Wands', imgCode: 'wa'}, {code: 'Cups', imgCode: 'cu'}, {code: 'Swords', imgCode: 'sw'}, {code: 'Pentacles', imgCode: 'pe'}];
-        const ranks = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Page", "Knight", "Queen", "King"];
-        
         const proxy = "https://wsrv.nl/?url="; 
+        const suffix = "&w=300&output=webp"; 
         let tarotDeck = [];
-        majorNames.forEach((name, i) => { let numStr = i < 10 ? '0' + i : i; tarotDeck.push({ name: name, type: "Major", img: `${proxy}sacred-texts.com/tarot/pkt/img/ar${numStr}.jpg` }); });
-        suits.forEach(suit => {
-            ranks.forEach((rank, i) => {
-                let suffix = '';
-                if (rank === "Ace") suffix = 'ac'; else if (rank === "Page") suffix = 'pa'; else if (rank === "Knight") suffix = 'kn'; else if (rank === "Queen") suffix = 'qu'; else if (rank === "King") suffix = 'ki';
-                else { let num = i + 1; suffix = num < 10 ? '0' + num : num.toString(); }
-                tarotDeck.push({ name: `${rank} of ${suit.code}`, type: suit.code, img: `${proxy}sacred-texts.com/tarot/pkt/img/${suit.imgCode}${suffix}.jpg` });
-            });
-        });
+        majorNames.forEach((n,i)=>tarotDeck.push({name:n, img:`${proxy}sacred-texts.com/tarot/pkt/img/ar${i<10?'0'+i:i}.jpg${suffix}`, type:"Major"}));
+        ['Wands','Cups','Swords','Pentacles'].forEach(s => { ["Ace","2","3","4","5","6","7","8","9","10","Page","Knight","Queen","King"].forEach((r,i) => { 
+            let sf = r==="Ace"?'ac':r==="Page"?'pa':r==="Knight"?'kn':r==="Queen"?'qu':r==="King"?'ki':(i+1<10?'0'+(i+1):i+1); 
+            tarotDeck.push({name: `${r} of ${s}`, img: `${proxy}sacred-texts.com/tarot/pkt/img/${s.substring(0,2).toLowerCase()}${sf}.jpg${suffix}`, type:s}); 
+        }); });
+        
+        function shuffleDeck(array) { let currentIndex = array.length, randomIndex; while (currentIndex != 0) { randomIndex = Math.floor(Math.random() * currentIndex); currentIndex--; [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]; } return array; }
 
-        function shuffleDeck(array) {
-            let currentIndex = array.length, randomIndex;
-            while (currentIndex != 0) {
-                randomIndex = Math.floor(Math.random() * currentIndex); currentIndex--;
-                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-            }
-            return array;
-        }
-
-        // ==========================================
-        // JS: TỪ ĐIỂN TAROT CHI TIẾT
-        // ==========================================
-        const majorDict = {
-            "The Fool": ["Khởi đầu mới, tự do, phiêu lưu.", "Cơ hội mới, hãy dám mạo hiểm.", "Tình cảm tươi mới, không ràng buộc.", "Liều lĩnh, thiếu suy nghĩ, rủi ro.", "Bất cẩn, thiếu kế hoạch rõ ràng.", "Hời hợt, thiếu sự cam kết."],
-            "The Magician": ["Sự sáng tạo, quyền lực, ý chí.", "Kỹ năng tốt, làm chủ tình huống.", "Sức hút mãnh liệt, chủ động.", "Thao túng, ảo tưởng, lừa dối.", "Lãng phí tài năng, kỹ năng kém.", "Thiếu trung thực, thao túng cảm xúc."],
-            "The High Priestess": ["Trực giác, bí ẩn, tiềm thức.", "Tin vào linh cảm, thông tin ẩn.", "Tình cảm sâu sắc nhưng thầm kín.", "Mất kết nối với bản thân.", "Thiếu thông tin, quyết định sai.", "Giấu giếm, thiếu chia sẻ cảm xúc."],
-            "The Empress": ["Sự nuôi dưỡng, sinh sôi, trù phú.", "Sự nghiệp phát triển, môi trường tốt.", "Tình yêu ấm áp, chăm sóc lẫn nhau.", "Phụ thuộc, cạn kiệt năng lượng.", "Bế tắc ý tưởng, thiếu hỗ trợ.", "Kiểm soát quá mức, ghen tuông."],
-            "The Emperor": ["Cấu trúc, quyền lực, trật tự.", "Khả năng lãnh đạo, công việc ổn định.", "Tình yêu bền vững nhưng cứng nhắc.", "Độc đoán, cứng nhắc, lạm quyền.", "Quản lý kém, môi trường ngột ngạt.", "Thích kiểm soát, thiếu lãng mạn."],
-            "The Hierophant": ["Truyền thống, tín ngưỡng, học hỏi.", "Làm việc theo khuôn khổ, có người hướng dẫn.", "Mối quan hệ cam kết, truyền thống.", "Nổi loạn, phá vỡ nguyên tắc.", "Cảm thấy bị gò bó, mâu thuẫn cấp trên.", "Khác biệt quan điểm, áp lực gia đình."],
-            "The Lovers": ["Tình yêu, sự hòa hợp, lựa chọn.", "Đối tác tốt, quyết định quan trọng.", "Hạnh phúc, kết nối sâu sắc.", "Mất cân bằng, lựa chọn sai lầm.", "Xung đột lợi ích, rạn nứt đối tác.", "Bất hòa, xa cách, cám dỗ."],
-            "The Chariot": ["Chiến thắng, ý chí, kiểm soát.", "Vượt qua thử thách, đạt mục tiêu.", "Cùng nhau vượt qua sóng gió.", "Mất phương hướng, thiếu kiểm soát.", "Bị áp đảo, thất bại tạm thời.", "Áp đặt, ép buộc đối phương."],
-            "Strength": ["Sức mạnh nội tâm, dũng cảm, kiên nhẫn.", "Giải quyết vấn đề khéo léo, tự tin.", "Tình yêu bao dung, thấu hiểu.", "Yếu đuối, nghi ngờ bản thân.", "Thiếu tự tin, né tránh khó khăn.", "Ghen tuông, bất an trong tình cảm."],
-            "The Hermit": ["Chiêm nghiệm, tĩnh lặng, tìm kiếm.", "Cần thời gian suy nghĩ, làm việc độc lập.", "Cần không gian riêng, tĩnh tâm.", "Cô lập, cô đơn, trốn tránh.", "Làm việc kém hiệu quả do cô lập.", "Xa cách, cảm thấy bị bỏ rơi."],
-            "Wheel of Fortune": ["May mắn, thay đổi, định mệnh.", "Cơ hội bất ngờ, chuyển biến tốt.", "Sự kiện bước ngoặt trong tình cảm.", "Xui xẻo, mất kiểm soát.", "Gặp trở ngại ngoài ý muốn.", "Mối quan hệ xáo trộn, bất ổn."],
-            "Justice": ["Công bằng, nhân quả, sự thật.", "Hợp đồng rõ ràng, làm việc minh bạch.", "Tôn trọng, đối xử công bằng.", "Bất công, dối trá, thiên vị.", "Rắc rối pháp lý, quyết định sai.", "Bất đồng, đối xử không công bằng."],
-            "The Hanged Man": ["Sự hy sinh, góc nhìn mới, tạm dừng.", "Cần thay đổi cách tiếp cận, trì hoãn.", "Hy sinh vì tình yêu, chậm lại.", "Hy sinh vô ích, cố chấp.", "Đình trệ, không chịu thay đổi.", "Mắc kẹt trong mối quan hệ độc hại."],
-            "Death": ["Kết thúc, lột xác, khởi đầu mới.", "Thay đổi công việc, đóng lại dự án cũ.", "Kết thúc giai đoạn cũ, bước ngoặt.", "Sợ thay đổi, níu kéo quá khứ.", "Cố chấp với công việc bế tắc.", "Không chịu buông bỏ người cũ."],
-            "Temperance": ["Cân bằng, điều độ, kiên nhẫn.", "Làm việc hài hòa, hợp tác tốt.", "Mối quan hệ bình yên, thấu hiểu.", "Mất cân bằng, cực đoan, vội vã.", "Xung đột, làm việc quá sức.", "Thiếu kiên nhẫn, dễ cãi vã."],
-            "The Devil": ["Cám dỗ, trói buộc, vật chất.", "Bị kẹt trong công việc độc hại.", "Mối quan hệ phụ thuộc, cám dỗ.", "Giải phóng, thoát khỏi gông cùm.", "Tự do khỏi môi trường xấu.", "Nhận ra và rũ bỏ tình cảm độc hại."],
-            "The Tower": ["Sụp đổ đột ngột, hỗn loạn, biến cố.", "Sự cố công việc, thay đổi sốc.", "Rạn nứt đột ngột, cãi vã lớn.", "Tránh được tai họa, thay đổi chậm.", "Hậu quả nhẹ hơn dự kiến.", "Vẫn còn níu kéo sau đổ vỡ."],
-            "The Star": ["Hy vọng, chữa lành, niềm tin.", "Tương lai tươi sáng, ý tưởng tốt.", "Bình yên, hàn gắn tổn thương.", "Thất vọng, mất niềm tin.", "Thiếu ý tưởng, bi quan.", "Tình cảm mệt mỏi, thiếu hy vọng."],
-            "The Moon": ["Ảo ảnh, sợ hãi, lo âu.", "Thông tin mập mờ, cẩn thận lừa dối.", "Bất an, hiểu lầm, giấu giếm.", "Sự thật sáng tỏ, vượt qua sợ hãi.", "Hiểu rõ vấn đề, giải quyết xong.", "Giải tỏa hiểu lầm, rõ ràng hơn."],
-            "The Sun": ["Thành công, niềm vui, rực rỡ.", "Đạt kết quả xuất sắc, được công nhận.", "Hạnh phúc viên mãn, ấm áp.", "Niềm vui bị trì hoãn, kém tự tin.", "Thành công không như mong đợi.", "Có chút rắc rối nhỏ nhưng vẫn ổn."],
-            "Judgement": ["Tái sinh, phán xét, thức tỉnh.", "Đánh giá lại, cơ hội thứ hai.", "Bước tiến mới sau khi nhìn nhận lại.", "Nghi ngờ bản thân, từ chối thay đổi.", "Bỏ lỡ cơ hội, sợ bị đánh giá.", "Cố chấp, không chịu sửa sai."],
-            "The World": ["Hoàn thành, trọn vẹn, thành tựu.", "Kết thúc thành công một chu kỳ.", "Tình cảm viên mãn, đạt mục tiêu.", "Dang dở, thiếu sót, trì hoãn.", "Dự án chưa hoàn thiện.", "Mối quan hệ thiếu đi một chút để trọn vẹn."]
-        };
-
+        const majorDict = { "The Fool": ["Khởi đầu mới, mạo hiểm", "Cơ hội mới", "Tình cảm tươi mới", "Bất cẩn, rủi ro", "Thiếu kế hoạch", "Hời hợt"], "The Magician": ["Sáng tạo, quyền lực", "Làm chủ tình huống", "Sức hút mãnh liệt", "Thao túng, lừa dối", "Lãng phí tài năng", "Thiếu trung thực"], "The High Priestess": ["Trực giác, bí ẩn", "Tin vào linh cảm", "Tình cảm thầm kín", "Mất kết nối bản thân", "Quyết định sai", "Giấu giếm"], "The Empress": ["Nuôi dưỡng, trù phú", "Sự nghiệp phát triển", "Ấm áp, chăm sóc", "Phụ thuộc", "Bế tắc ý tưởng", "Ghen tuông"], "The Emperor": ["Cấu trúc, quyền lực", "Lãnh đạo, ổn định", "Bền vững nhưng cứng nhắc", "Độc đoán", "Quản lý kém", "Kiểm soát"], "The Hierophant": ["Truyền thống, học hỏi", "Khuôn khổ", "Cam kết", "Nổi loạn", "Bị gò bó", "Khác biệt quan điểm"], "The Lovers": ["Tình yêu, hòa hợp", "Đối tác tốt", "Kết nối sâu sắc", "Mất cân bằng", "Xung đột lợi ích", "Bất hòa, cám dỗ"], "The Chariot": ["Chiến thắng, ý chí", "Vượt qua thử thách", "Cùng vượt sóng gió", "Mất phương hướng", "Thất bại tạm thời", "Áp đặt"], "Strength": ["Sức mạnh nội tâm", "Giải quyết khéo léo", "Bao dung", "Yếu đuối", "Né tránh khó khăn", "Bất an"], "The Hermit": ["Chiêm nghiệm, tĩnh lặng", "Làm việc độc lập", "Cần không gian riêng", "Cô lập", "Kém hiệu quả", "Xa cách"], "Wheel of Fortune": ["May mắn, thay đổi", "Cơ hội bất ngờ", "Bước ngoặt", "Xui xẻo", "Trở ngại", "Xáo trộn"], "Justice": ["Công bằng, sự thật", "Hợp đồng rõ ràng", "Tôn trọng", "Bất công", "Rắc rối pháp lý", "Thiên vị"], "The Hanged Man": ["Hy sinh, góc nhìn mới", "Cần đổi cách tiếp cận", "Chậm lại", "Hy sinh vô ích", "Đình trệ", "Mắc kẹt"], "Death": ["Kết thúc, lột xác", "Đóng dự án cũ", "Bước ngoặt", "Sợ thay đổi", "Cố chấp", "Níu kéo quá khứ"], "Temperance": ["Cân bằng, kiên nhẫn", "Hợp tác tốt", "Bình yên", "Mất cân bằng", "Làm việc quá sức", "Dễ cãi vã"], "The Devil": ["Cám dỗ, trói buộc", "Môi trường độc hại", "Phụ thuộc", "Giải phóng", "Thoát khỏi gông cùm", "Nhận ra sự thật"], "The Tower": ["Sụp đổ, biến cố", "Sự cố công việc", "Rạn nứt đột ngột", "Tránh được tai họa", "Hậu quả nhẹ hơn", "Níu kéo vô vọng"], "The Star": ["Hy vọng, chữa lành", "Ý tưởng tốt", "Bình yên", "Thất vọng", "Thiếu ý tưởng", "Mệt mỏi"], "The Moon": ["Ảo ảnh, lo âu", "Thông tin mập mờ", "Bất an, hiểu lầm", "Sự thật sáng tỏ", "Giải quyết xong", "Giải tỏa hiểu lầm"], "The Sun": ["Thành công, niềm vui", "Đạt kết quả tốt", "Viên mãn", "Niềm vui trì hoãn", "Không như mong đợi", "Rắc rối nhỏ"], "Judgement": ["Tái sinh, thức tỉnh", "Cơ hội thứ hai", "Bước tiến mới", "Từ chối thay đổi", "Sợ bị đánh giá", "Cố chấp"], "The World": ["Hoàn thành, trọn vẹn", "Thành công", "Đạt mục tiêu", "Trì hoãn", "Chưa hoàn thiện", "Thiếu sót"] };
         function getMinorMeaning(rank, suit, isUpright) {
-            const suitThemes = {
-                "Wands": { name: "hành động và đam mê", work: "dự án và động lực làm việc", love: "sự nhiệt huyết trong tình cảm" },
-                "Cups": { name: "cảm xúc và trực giác", work: "mối quan hệ đồng nghiệp và sự sáng tạo", love: "sự gắn kết và thấu hiểu lẫn nhau" },
-                "Swords": { name: "tư duy và lý trí", work: "các quyết định và giao tiếp công việc", love: "những khúc mắc và lời nói trong tình yêu" },
-                "Pentacles": { name: "vật chất và thực tế", work: "tài chính, đầu tư và nền tảng sự nghiệp", love: "sự an toàn và cam kết lâu dài" }
-            };
-            const rankMeanings = {
-                "Ace": { up: ["Khởi đầu mới rực rỡ về", "Cơ hội tuyệt vời cho", "Tiềm năng mới trong"], rev: ["Bỏ lỡ cơ hội về", "Sự chậm trễ trong", "Thiếu cảm hứng về"] },
-                "2": { up: ["Lên kế hoạch và đưa ra lựa chọn về", "Sự cân bằng bước đầu trong", "Định hướng rõ ràng cho"], rev: ["Sự e ngại, trì hoãn trong", "Mất cân bằng về", "Lo sợ rủi ro liên quan đến"] },
-                "3": { up: ["Mở rộng tầm nhìn và phát triển", "Bước tiến vững chắc trong", "Sự mong đợi thành quả từ"], rev: ["Gặp rào cản khi phát triển", "Sự chậm trễ trong", "Thiếu tầm nhìn về"] },
-                "4": { up: ["Sự ổn định và ăn mừng", "Nền tảng vững chắc trong", "Sự bình yên và hài hòa trong"], rev: ["Cảm giác thiếu an toàn về", "Sự bất ổn nhất thời trong", "Mâu thuẫn nhỏ trong"] },
-                "5": { up: ["Sự cạnh tranh, mâu thuẫn về", "Thử thách và xung đột trong", "Cảm giác khó khăn, bất đồng trong"], rev: ["Tránh né xung đột về", "Bắt đầu hòa giải", "Sự buông bỏ chấp niệm trong"] },
-                "6": { up: ["Sự công nhận, chiến thắng trong", "Thành tựu đáng tự hào về", "Tiến triển tích cực, được ủng hộ trong"], rev: ["Sự tự cao, kiêu ngạo trong", "Thiếu sự công nhận về", "Thất bại tạm thời trong"] },
-                "7": { up: ["Sự kiên trì, bảo vệ quan điểm về", "Đứng vững trước áp lực trong", "Cố gắng duy trì lợi thế trong"], rev: ["Cảm giác kiệt sức, muốn bỏ cuộc trong", "Sự choáng ngợp bởi", "Thiếu tự tin bảo vệ"] },
-                "8": { up: ["Sự tiến triển nhanh chóng, tốc độ về", "Hành động dứt khoát trong", "Giao tiếp suôn sẻ, thuận lợi trong"], rev: ["Sự trì trệ, chậm chạp trong", "Hành động vội vã, sai lầm trong", "Đình trệ thông tin về"] },
-                "9": { up: ["Sự bền bỉ, cẩn trọng trong", "Gần đạt được mục tiêu nhưng cần đề phòng về", "Bảo vệ thành quả trong"], rev: ["Sự kiệt sức, đa nghi quá mức về", "Cố chấp, từ chối sự giúp đỡ trong", "Cảm giác quá tải trong"] },
-                "10": { up: ["Trách nhiệm nặng nề, áp lực từ", "Gánh vác quá nhiều trong", "Hoàn thành một chu kỳ đầy mệt mỏi của"], rev: ["Học cách buông bỏ áp lực về", "Sự gục ngã vì quá sức trong", "Rũ bỏ gánh nặng của"] },
-                "Page": { up: ["Tin tức mới, sự khám phá về", "Khởi nguồn ý tưởng trẻ trung trong", "Thông điệp tích cực liên quan đến"], rev: ["Thiếu kinh nghiệm, non nớt trong", "Tin tức trì hoãn về", "Thiếu định hướng rõ ràng trong"] },
-                "Knight": { up: ["Hành động quyết liệt, tập trung vào", "Sự tiến lên mạnh mẽ trong", "Theo đuổi đam mê liên quan đến"], rev: ["Sự bốc đồng, nóng vội trong", "Thiếu kiên nhẫn, dễ nổi cáu về", "Kế hoạch bị đình trệ trong"] },
-                "Queen": { up: ["Sự thấu hiểu, tự tin và làm chủ", "Sức hút và sự khéo léo trong", "Trưởng thành và nuôi dưỡng trong"], rev: ["Sự ích kỷ, cảm xúc tiêu cực trong", "Phụ thuộc hoặc kiểm soát quá mức trong", "Ghen tị, thiếu khoan dung về"] },
-                "King": { up: ["Sự lãnh đạo, quyền lực và tầm nhìn trong", "Kiểm soát tốt và thành công về", "Bản lĩnh và sự ổn định trong"], rev: ["Sự độc tài, áp đặt trong", "Lạm quyền hoặc cứng nhắc về", "Thiếu bao dung, lạnh lùng trong"] }
-            };
-
-            let t = suitThemes[suit]; let r = rankMeanings[rank]; let state = isUpright ? r.up : r.rev;
-            const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
-            return [ cap(`${state[0]} ${t.name}.`), cap(`${state[1]} ${t.work}.`), cap(`${state[2]} ${t.love}.`) ];
+            const t = { "Wands": { name: "hành động", work: "công việc", love: "nhiệt huyết" }, "Cups": { name: "cảm xúc", work: "sáng tạo", love: "gắn kết" }, "Swords": { name: "lý trí", work: "quyết định", love: "giao tiếp" }, "Pentacles": { name: "thực tế", work: "tài chính", love: "cam kết" } }[suit];
+            const r = { "Ace": { up: ["Khởi đầu tốt về", "Cơ hội", "Tiềm năng"], rev: ["Bỏ lỡ", "Chậm trễ", "Thiếu cảm hứng"] }, "2": { up: ["Lên kế hoạch", "Cân bằng", "Định hướng"], rev: ["E ngại", "Mất cân bằng", "Lo sợ"] }, "3": { up: ["Mở rộng", "Bước tiến", "Thành quả"], rev: ["Rào cản", "Chậm trễ", "Thiếu tầm nhìn"] }, "4": { up: ["Ổn định", "Vững chắc", "Bình yên"], rev: ["Thiếu an toàn", "Bất ổn", "Mâu thuẫn"] }, "5": { up: ["Cạnh tranh", "Thử thách", "Khó khăn"], rev: ["Hòa giải", "Buông bỏ", "Vượt qua"] }, "6": { up: ["Được công nhận", "Thành tựu", "Tiến triển"], rev: ["Kiêu ngạo", "Thiếu công nhận", "Thất bại"] }, "7": { up: ["Kiên trì", "Đứng vững", "Bảo vệ"], rev: ["Kiệt sức", "Choáng ngợp", "Thiếu tự tin"] }, "8": { up: ["Tốc độ", "Hành động", "Thuận lợi"], rev: ["Trì trệ", "Vội vã", "Đình trệ"] }, "9": { up: ["Bền bỉ", "Cẩn trọng", "Bảo vệ"], rev: ["Đa nghi", "Cố chấp", "Quá tải"] }, "10": { up: ["Trách nhiệm", "Gánh vác", "Hoàn thành"], rev: ["Buông bỏ áp lực", "Gục ngã", "Rũ bỏ"] }, "Page": { up: ["Tin tức mới", "Ý tưởng", "Thông điệp"], rev: ["Non nớt", "Trì hoãn", "Thiếu định hướng"] }, "Knight": { up: ["Quyết liệt", "Mạnh mẽ", "Đam mê"], rev: ["Bốc đồng", "Nóng vội", "Đình trệ"] }, "Queen": { up: ["Thấu hiểu", "Khéo léo", "Nuôi dưỡng"], rev: ["Ích kỷ", "Kiểm soát", "Ghen tị"] }, "King": { up: ["Lãnh đạo", "Thành công", "Bản lĩnh"], rev: ["Độc tài", "Lạm quyền", "Lạnh lùng"] } }[rank];
+            let state = isUpright ? r.up : r.rev; return [ `${state[0]} ${t.name}.`, `${state[1]} ${t.work}.`, `${state[2]} ${t.love}.` ];
         }
 
-        function generateReading(card, isUpright) {
-            let gen, work, love;
-            const stateStr = isUpright ? " (Xuôi)" : " (Ngược)";
+        let lastDrawnCard = null;
+
+        // RÚT BÀI CÁC TÍNH NĂNG
+        function drawDaily() {
+            displayQuestion('input-daily', 'display-q-daily');
+            const res = document.getElementById('daily-card-result'); res.innerHTML='';
+            document.getElementById('daily-result-box').style.display='none'; document.getElementById('btn-export-daily').style.display='none';
+            lastDrawnCard = shuffleDeck([...tarotDeck])[0]; const isUp = Math.random()>0.5;
             
-            if (card.type === "Major") {
-                const data = majorDict[card.name];
-                if(isUpright) { gen = data[0]; work = data[1]; love = data[2]; }
-                else { gen = data[3]; work = data[4]; love = data[5]; }
-            } else {
-                let parts = card.name.split(" of ");
-                let meanings = getMinorMeaning(parts[0], parts[1], isUpright);
-                gen = meanings[0]; work = meanings[1]; love = meanings[2];
-            }
+            const w = document.createElement('div'); w.className='tarot-card';
+            w.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-front"><img src="${lastDrawnCard.img}" class="${isUp?'':'img-reversed'}" crossorigin="anonymous"></div></div>`;
+            res.appendChild(w);
 
-            document.getElementById('reading-general').innerText = gen;
-            document.getElementById('reading-work').innerText = work;
-            document.getElementById('reading-love').innerText = love;
-            document.getElementById('reading-card-name').innerHTML = `${card.name.replace(' of ', ' of ')} ${stateStr}`;
-        }
-
-        function drawTimeCard() {
-            const resultDiv = document.getElementById('time-card-result'); resultDiv.innerHTML = '';
-            document.getElementById('reading-result-box').style.display = 'none';
-            document.getElementById('btn-export-time').style.display = 'none';
-
-            let selectedCard = shuffleDeck([...tarotDeck])[0];
-            const isUpright = Math.random() > 0.5;
-
-            const cardWrapper = document.createElement('div'); cardWrapper.className = 'tarot-card';
-            cardWrapper.innerHTML = `
-                <div class="card-inner">
-                    <div class="card-back"></div>
-                    <div class="card-front"><img src="${selectedCard.img}" class="${isUpright ? '' : 'img-reversed'}" alt="${selectedCard.name}" crossorigin="anonymous"></div>
-                </div>
-            `;
-            resultDiv.appendChild(cardWrapper);
-
-            setTimeout(() => {
-                cardWrapper.classList.add('flipped');
-                setTimeout(() => {
-                    generateReading(selectedCard, isUpright);
-                    document.getElementById('reading-result-box').style.display = 'block';
-                    document.getElementById('btn-export-time').style.display = 'inline-flex';
+            setTimeout(()=>{
+                w.classList.add('flipped');
+                setTimeout(()=>{
+                    let gen, work, love;
+                    if (lastDrawnCard.type === "Major") { const data = majorDict[lastDrawnCard.name]; if(isUp) { gen=data[0]; work=data[1]; love=data[2]; } else { gen=data[3]; work=data[4]; love=data[5]; } } 
+                    else { let p = lastDrawnCard.name.split(" of "); let m = getMinorMeaning(p[0], p[1], isUp); gen=m[0]; work=m[1]; love=m[2]; }
+                    
+                    document.getElementById('daily-card-name').innerHTML = `${lastDrawnCard.name.replace(' of ', ' of ').toUpperCase()} ${isUp ? '(XUÔI)' : '(NGƯỢC)'}`;
+                    document.getElementById('daily-general').innerText = gen;
+                    document.getElementById('daily-work').innerText = work;
+                    document.getElementById('daily-love').innerText = love;
+                    
+                    document.getElementById('daily-result-box').style.display='block';
+                    document.getElementById('btn-export-daily').style.display='inline-flex';
                 }, 600);
             }, 300);
         }
 
-        // ==========================================
-        // JS: LUẬN ĐÚNG / SAI (YES/NO)
-        // ==========================================
+        // TẠO HÌNH NỀN BẰNG ASYNC/AWAIT MƯỢT MÀ
+        async function exportWallpaper(btnId) {
+            if(!lastDrawnCard) return;
+            const btn = document.getElementById(btnId); const oldHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...'; btn.style.pointerEvents = 'none';
+
+            try {
+                const zone = document.getElementById('wallpaper-export-zone');
+                document.getElementById('wp-date').innerText = new Date().toLocaleDateString('vi-VN');
+                document.getElementById('wp-card-name').innerText = document.getElementById('daily-card-name').innerText;
+                let acText = document.getElementById('ac-do-txt').innerText;
+                document.getElementById('wp-action-text').innerText = acText ? acText : "Hãy giữ tinh thần lạc quan và tỏa sáng.";
+
+                // Tải ảnh vào frame
+                const imgEl = document.getElementById('wp-card-img');
+                imgEl.src = lastDrawnCard.img;
+                await new Promise((resolve) => { imgEl.onload = resolve; imgEl.onerror = resolve; });
+
+                document.body.classList.add('is-exporting'); zone.classList.add('active-export');
+                await new Promise(r => setTimeout(r, 300)); 
+
+                const canvas = await html2canvas(zone, { scale: 2, useCORS: true, removeContainer: true, foreignObjectRendering: false });
+                
+                document.body.classList.remove('is-exporting'); zone.classList.remove('active-export');
+                openImageModal(canvas.toDataURL('image/png'), 'Codelo-Wallpaper.png');
+            } catch (err) {
+                console.error(err);
+                document.body.classList.remove('is-exporting'); document.getElementById('wallpaper-export-zone').classList.remove('active-export');
+                alert("Lỗi bộ nhớ. Vui lòng tải lại trang!");
+            } finally {
+                btn.innerHTML = oldHtml; btn.style.pointerEvents = 'auto';
+            }
+        }
+
+        // TRẢI ĐA LÁ
+        function drawSpread(num, type) {
+            displayQuestion(`input-${type}`, `display-q-${type}`);
+            document.getElementById(`btn-export-${type}`).style.display = 'none';
+            document.getElementById(`${type}-result-box`).style.display = 'none';
+            const res = document.getElementById(`${type}-card-result`); res.innerHTML = '';
+            
+            let cards = shuffleDeck([...tarotDeck]).slice(0, num);
+            let interpretations = [];
+            
+            cards.forEach((c, i) => {
+                const isUp = Math.random() > 0.5;
+                let meaning = "";
+                if (c.type === "Major") { meaning = isUp ? majorDict[c.name][type==='love'?2:0] : majorDict[c.name][type==='love'?5:3]; } 
+                else { let p = c.name.split(" of "); meaning = getMinorMeaning(p[0], p[1], isUp)[type==='love'?2:0]; }
+                interpretations.push(`<b>${c.name.toUpperCase()} (${isUp?'XUÔI':'NGƯỢC'}):</b> ${meaning}`);
+
+                const titles = type === 'love' ? ["BẠN", "NGƯỜI ẤY", "TƯƠNG LAI"] : ["QUÁ KHỨ", "HIỆN TẠI", "TƯƠNG LAI"];
+                const w = document.createElement('div'); w.className = 'tarot-card';
+                w.innerHTML = `<div style="font-size:0.65rem; font-weight:700; color:var(--accent-color); margin-bottom:4px;">${titles[i]}</div><div class="card-inner"><div class="card-back"></div><div class="card-front"><img src="${c.img}" class="${isUp ? '' : 'img-reversed'}" crossorigin="anonymous"></div></div><div class="card-label ${isUp ? '' : 'text-nguoc'}">${c.name.replace(' of ', '<br>of ')}</div>`;
+                res.appendChild(w);
+                
+                setTimeout(() => { w.classList.add('flipped'); }, 300 + (i * 300));
+            });
+
+            setTimeout(() => { 
+                if (type === 'love') {
+                    document.getElementById('love-you').innerHTML = interpretations[0];
+                    document.getElementById('love-them').innerHTML = interpretations[1];
+                    document.getElementById('love-future').innerHTML = interpretations[2];
+                } else {
+                    document.getElementById('past-future-read-0').innerHTML = interpretations[0];
+                    document.getElementById('past-future-read-1').innerHTML = interpretations[1];
+                    document.getElementById('past-future-read-2').innerHTML = interpretations[2];
+                }
+                document.getElementById(`${type}-result-box`).style.display = 'block'; 
+                document.getElementById(`btn-export-${type}`).style.display = 'inline-flex'; 
+            }, 300 + (num * 300) + 400);
+        }
+
         function drawYesNo() {
-            const resultDiv = document.getElementById('yesno-card-result'); resultDiv.innerHTML = '';
-            document.getElementById('yesno-result-box').style.display = 'none';
-            document.getElementById('btn-export-yesno').style.display = 'none';
-
-            let selectedCard = shuffleDeck([...tarotDeck])[0];
-            const isUpright = Math.random() > 0.5;
-
-            const cardWrapper = document.createElement('div'); cardWrapper.className = 'tarot-card';
-            cardWrapper.innerHTML = `
-                <div class="card-inner">
-                    <div class="card-back"></div>
-                    <div class="card-front"><img src="${selectedCard.img}" class="${isUpright ? '' : 'img-reversed'}" alt="${selectedCard.name}" crossorigin="anonymous"></div>
-                </div>
-            `;
-            resultDiv.appendChild(cardWrapper);
-
-            setTimeout(() => {
-                cardWrapper.classList.add('flipped');
-                setTimeout(() => {
-                    let answer = isUpright ? "CÓ (THUẬN LỢI)" : "KHÔNG (THỬ THÁCH)";
-                    let color = isUpright ? "#10b981" : "#ef4444";
-                    let desc = isUpright 
-                        ? "Năng lượng hiện tại đang ủng hộ quyết định này. Mọi yếu tố đang diễn ra khá suôn sẻ, hãy tự tin tiến bước và nắm bắt cơ hội của bạn." 
-                        : "Vũ trụ khuyên bạn nên chậm lại và suy nghĩ kỹ hơn. Có thể vẫn còn những rủi ro ẩn khuất hoặc đây chưa phải là thời điểm thích hợp.";
-
-                    document.getElementById('yesno-card-name').innerHTML = `${selectedCard.name} ${isUpright ? '(Xuôi)' : '(Ngược)'}`;
-                    document.getElementById('yesno-answer').innerHTML = `<span style="color:${color}">${answer}</span>`;
-                    document.getElementById('yesno-desc').innerText = desc;
-                    
-                    document.getElementById('yesno-result-box').style.display = 'block';
-                    document.getElementById('btn-export-yesno').style.display = 'inline-flex';
+            displayQuestion('input-yesno', 'display-q-yesno');
+            const res = document.getElementById('yesno-card-result'); res.innerHTML=''; document.getElementById('yesno-result-box').style.display='none'; document.getElementById('btn-export-yesno').style.display='none';
+            let c = shuffleDeck([...tarotDeck])[0]; const isUp = Math.random()>0.5;
+            const w = document.createElement('div'); w.className='tarot-card';
+            w.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-front"><img src="${c.img}" class="${isUp?'':'img-reversed'}" crossorigin="anonymous"></div></div>`;
+            res.appendChild(w);
+            setTimeout(()=>{
+                w.classList.add('flipped');
+                setTimeout(()=>{
+                    document.getElementById('yesno-answer').innerHTML = `<span style="color:${isUp?'#10b981':'#ef4444'}">${isUp?'CÓ (THUẬN LỢI)':'KHÔNG (THỬ THÁCH)'}</span>`;
+                    document.getElementById('yesno-desc').innerText = isUp ? "Năng lượng hiện tại đang ủng hộ quyết định này. Hãy tự tin tiến bước." : "Vũ trụ khuyên bạn nên chậm lại và suy nghĩ kỹ hơn.";
+                    document.getElementById('yesno-card-name').innerHTML = `${c.name.toUpperCase()} ${isUp ? '(XUÔI)' : '(NGƯỢC)'}`;
+                    document.getElementById('yesno-result-box').style.display='block'; document.getElementById('btn-export-yesno').style.display='inline-flex';
                 }, 600);
             }, 300);
         }
 
-        // ==========================================
-        // JS: TRẢI BÀI TAROT NHIỀU LÁ
-        // ==========================================
-        function drawTarot(numCards, containerId) {
-            document.getElementById('btn-export-tarot').style.display = 'none';
-            const resultDiv = document.getElementById(containerId); resultDiv.innerHTML = '';
-            let selected = shuffleDeck([...tarotDeck]).slice(0, numCards);
-
-            selected.forEach((card, index) => {
-                const isUpright = Math.random() > 0.5;
-                const stateText = isUpright ? 'Xuôi' : 'Ngược';
-                const labelClass = isUpright ? '' : 'text-nguoc';
-                const cardWrapper = document.createElement('div'); cardWrapper.className = 'tarot-card';
-                cardWrapper.innerHTML = `
-                    <div class="card-inner">
-                        <div class="card-back"></div>
-                        <div class="card-front"><img src="${card.img}" class="${isUpright ? '' : 'img-reversed'}" alt="${card.name}" crossorigin="anonymous"></div>
-                    </div>
-                    <div class="card-label ${labelClass}">${card.name.replace(' of ', ' of<br>')}<br>(${stateText})</div>
-                `;
-                cardWrapper.onclick = () => cardWrapper.classList.toggle('flipped');
-                resultDiv.appendChild(cardWrapper);
-                setTimeout(() => { cardWrapper.classList.add('flipped'); }, 200 + (index * 150));
+        function drawFreeTarot(num) {
+            displayQuestion('input-free', 'display-q-free');
+            document.getElementById('btn-export-free').style.display = 'none';
+            const res = document.getElementById('free-card-result'); res.innerHTML = '';
+            res.style.gridTemplateColumns = num === 12 ? "repeat(4, 1fr)" : "repeat(3, 1fr)";
+            let cards = shuffleDeck([...tarotDeck]).slice(0, num);
+            cards.forEach((c, i) => {
+                const isUp = Math.random()>0.5;
+                const w = document.createElement('div'); w.className = 'tarot-card';
+                w.innerHTML = `<div style="font-size:0.65rem; font-weight:700; color:var(--accent-color); margin-bottom:4px;">LÁ ${i+1}</div><div class="card-inner"><div class="card-back"></div><div class="card-front"><img src="${c.img}" class="${isUp?'':'img-reversed'}" crossorigin="anonymous"></div></div><div class="card-label ${isUp?'':'text-nguoc'}">${c.name.replace(' of ','<br>of ')}<br>(${isUp?'Xuôi':'Ngược'})</div>`;
+                w.onclick = () => w.classList.toggle('flipped');
+                res.appendChild(w);
+                setTimeout(() => { w.classList.add('flipped'); }, 200 + (i * 100));
             });
-            setTimeout(() => { document.getElementById('btn-export-tarot').style.display = 'inline-flex'; }, 200 + (numCards * 150) + 300);
+            setTimeout(() => { document.getElementById('btn-export-free').innerHTML = `<i class="fas fa-camera"></i> Lưu ảnh gửi (${num} lá)`; document.getElementById('btn-export-free').style.display = 'inline-flex'; }, 200 + (num * 100) + 300);
         }
 
-        // ==========================================
-        // JS: KINH DỊCH
-        // ==========================================
-        const elements = { 7: "Thiên (Trời)", 3: "Trạch (Đầm)", 5: "Hỏa (Lửa)", 1: "Lôi (Sấm)", 6: "Phong (Gió)", 2: "Thủy (Nước)", 4: "Sơn (Núi)", 0: "Địa (Đất)" };
-        const elementPrefix = { 7: "Thiên", 3: "Trạch", 5: "Hỏa", 1: "Lôi", 6: "Phong", 2: "Thủy", 4: "Sơn", 0: "Địa" };
-        let currentLines = [];
-
+        // KINH DỊCH
+        const elements = { 7: "THIÊN", 3: "TRẠCH", 5: "HỎA", 1: "LÔI", 6: "PHONG", 2: "THỦY", 4: "SƠN", 0: "ĐỊA" };
         function autoToss() {
-            resetIching();
-            const btnGieo = document.getElementById('btn-gieo-tu-dong');
-            btnGieo.disabled = true; btnGieo.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gieo...';
-            for (let i = 0; i < 6; i++) {
-                let coin1 = Math.random() > 0.5 ? 2 : 3; let coin2 = Math.random() > 0.5 ? 2 : 3; let coin3 = Math.random() > 0.5 ? 2 : 3;
-                currentLines.push(coin1 + coin2 + coin3);
-            }
-            renderIchingLinesAuto();
-        }
-
-        function renderIchingLinesAuto() {
-            const container = document.getElementById('lines-display'); container.innerHTML = '';
-            currentLines.forEach((val, index) => {
-                let isYang = (val === 7 || val === 9); let isMoving = (val === 6 || val === 9);
-                let textMoving = val === 6 ? "<span class='dong-am'>Động Âm</span>" : (val === 9 ? "<span class='dong-duong'>Động Dương</span>" : "");
+            displayQuestion('input-iching', 'display-q-iching');
+            document.getElementById('lines-display').innerHTML = ''; document.getElementById('iching-result').style.display = 'none'; document.getElementById('btn-export-iching').style.display = 'none';
+            const btn = document.getElementById('btn-gieo-tu-dong'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            let lines = []; for (let i=0; i<6; i++) { lines.push((Math.random()>0.5?2:3) + (Math.random()>0.5?2:3) + (Math.random()>0.5?2:3)); }
+            
+            const cont = document.getElementById('lines-display');
+            lines.forEach((v, i) => {
+                let isY = (v===7||v===9); let isM = (v===6||v===9); let txtM = v===6?"<span class='dong-am'>Động Âm</span>":(v===9?"<span class='dong-duong'>Động Dương</span>":"");
                 const row = document.createElement('div'); row.className = 'hao-row';
-                row.innerHTML = `<div class="hao-label">Hào ${index + 1}</div><div class="hao"><div class="${isYang ? 'yang' : 'yin'}"></div></div><div class="hao-status">${isMoving ? textMoving : ''}</div>`;
-                container.prepend(row); setTimeout(() => { row.classList.add('show'); }, index * 200);
+                row.innerHTML = `<div class="hao-label">Hào ${i+1}</div><div class="hao"><div class="${isY?'yang':'yin'}"></div></div><div class="hao-status">${isM?txtM:''}</div>`;
+                cont.prepend(row); setTimeout(() => { row.classList.add('show'); }, i*200);
             });
             setTimeout(() => {
-                calculateHexagrams();
-                const btnGieo = document.getElementById('btn-gieo-tu-dong');
-                btnGieo.disabled = false; btnGieo.innerHTML = '<i class="fas fa-bolt"></i> Xin Quẻ Mới';
-                document.getElementById('btn-export-iching').style.display = 'inline-flex'; 
-            }, 6 * 200 + 300);
+                let pB = [], sB = [], hasM = false;
+                lines.forEach(v => { if(v===7){pB.push(1);sB.push(1);} else if(v===8){pB.push(0);sB.push(0);} else if(v===9){pB.push(1);sB.push(0);hasM=true;} else if(v===6){pB.push(0);sB.push(1);hasM=true;} });
+                const getI = (b,s) => (b[s]*1)+(b[s+1]*2)+(b[s+2]*4);
+                const pL = getI(pB,0), pU = getI(pB,3); 
+                document.getElementById('que-chu-name').innerText = (pU===pL)?`THUẦN ${elements[pU]}`:`${elements[pU]} ${elements[pL]}`; 
+                document.getElementById('que-chu-detail').innerHTML = `Thượng: <b>${elements[pU]}</b> <br> Hạ: <b>${elements[pL]}</b>`;
+                document.getElementById('iching-result').style.display = 'flex';
+                
+                if(hasM) { 
+                    const sL = getI(sB,0), sU = getI(sB,3); 
+                    document.getElementById('que-bien-name').innerText = (sU===sL)?`THUẦN ${elements[sU]}`:`${elements[sU]} ${elements[sL]}`; 
+                    document.getElementById('que-bien-detail').innerHTML = `Thượng: <b>${elements[sU]}</b> <br> Hạ: <b>${elements[sL]}</b>`;
+                    document.getElementById('que-bien-container').style.display = 'block'; 
+                }
+                btn.disabled = false; btn.innerHTML = '<i class="fas fa-coins"></i> Xin Quẻ Mới'; document.getElementById('btn-export-iching').style.display = 'inline-flex';
+            }, 1500);
         }
 
-        function calculateHexagrams() {
-            let primaryBinary = [], secondaryBinary = [], hasMovingLine = false;
-            currentLines.forEach(val => {
-                if (val === 7) { primaryBinary.push(1); secondaryBinary.push(1); }
-                else if (val === 8) { primaryBinary.push(0); secondaryBinary.push(0); }
-                else if (val === 9) { primaryBinary.push(1); secondaryBinary.push(0); hasMovingLine = true; }
-                else if (val === 6) { primaryBinary.push(0); secondaryBinary.push(1); hasMovingLine = true; }
-            });
-            const getTrigramIndex = (binArr, start) => (binArr[start]*1) + (binArr[start+1]*2) + (binArr[start+2]*4);
-            const pLower = getTrigramIndex(primaryBinary, 0); const pUpper = getTrigramIndex(primaryBinary, 3);
-            const pName = (pUpper === pLower) ? `Thuần ${elementPrefix[pUpper]}` : `${elementPrefix[pUpper]} ${elementPrefix[pLower]}`;
+        // TƯƠNG HỢP CÓ KIỂM TRA ĐẦY ĐỦ HTML
+        function calculateCompatibility() {
+            const d1 = parseInt(document.getElementById('dob-day').value); const m1 = parseInt(document.getElementById('dob-month').value); const y1 = parseInt(document.getElementById('dob-year').value);
+            if(!d1 || !m1 || !y1) { alert("Vui lòng khai báo Ngày Sinh của BẠN ở màn hình chính trước nhé!"); switchSection('main-menu'); return; }
+
+            const d2 = parseInt(document.getElementById('partner-day').value); const m2 = parseInt(document.getElementById('partner-month').value); const y2 = parseInt(document.getElementById('partner-year').value);
+            if(!d2 || !m2 || !y2) { alert("Vui lòng nhập Ngày Sinh của NGƯỜI ẤY để tính toán tương hợp!"); return; }
+
+            let lpn1 = calcLifePath(d1, m1, y1); let baseLpn1 = (lpn1===11?2:(lpn1===22?4:lpn1));
+            let lpn2 = calcLifePath(d2, m2, y2); let baseLpn2 = (lpn2===11?2:(lpn2===22?4:lpn2));
+
+            const compMatrix = {
+                1: {1:85, 2:75, 3:90, 4:60, 5:95, 6:65, 7:85, 8:50, 9:80},
+                2: {1:75, 2:85, 3:70, 4:90, 5:60, 6:95, 7:75, 8:85, 9:65},
+                3: {1:90, 2:70, 3:85, 4:65, 5:95, 6:80, 7:60, 8:75, 9:90},
+                4: {1:60, 2:90, 3:65, 4:85, 5:50, 6:80, 7:95, 8:90, 9:70},
+                5: {1:95, 2:60, 3:95, 4:50, 5:85, 6:65, 7:80, 8:70, 9:75},
+                6: {1:65, 2:95, 3:80, 4:80, 5:65, 6:85, 7:60, 8:90, 9:95},
+                7: {1:85, 2:75, 3:60, 4:95, 5:80, 6:60, 7:85, 8:50, 9:70},
+                8: {1:50, 2:85, 3:75, 4:90, 5:70, 6:90, 7:50, 8:85, 9:60},
+                9: {1:80, 2:65, 3:90, 4:70, 5:75, 6:95, 7:70, 8:60, 9:85}
+            };
             
-            document.getElementById('que-chu-name').innerText = pName;
-            document.getElementById('que-chu-detail').innerHTML = `Thượng: <b>${elements[pUpper]}</b> <br> Hạ: <b>${elements[pLower]}</b>`;
-            document.getElementById('iching-result').style.display = 'flex';
+            let score = (compMatrix[baseLpn1] && compMatrix[baseLpn1][baseLpn2]) ? compMatrix[baseLpn1][baseLpn2] : 75;
 
-            const queBienContainer = document.getElementById('que-bien-container');
-            if (hasMovingLine) {
-                const sLower = getTrigramIndex(secondaryBinary, 0); const sUpper = getTrigramIndex(secondaryBinary, 3);
-                const sName = (sUpper === sLower) ? `Thuần ${elementPrefix[sUpper]}` : `${elementPrefix[sUpper]} ${elementPrefix[sLower]}`;
-                document.getElementById('que-bien-name').innerText = sName;
-                document.getElementById('que-bien-detail').innerHTML = `Thượng: <b>${elements[sUpper]}</b> <br> Hạ: <b>${elements[sLower]}</b>`;
-                queBienContainer.style.display = 'block';
-            } else { queBienContainer.style.display = 'none'; }
+            const elementsZ = { 0:"Earth", 1:"Air", 2:"Water", 3:"Fire", 4:"Earth", 5:"Air", 6:"Water", 7:"Fire", 8:"Earth", 9:"Air", 10:"Water", 11:"Fire" };
+            let z1 = getZodiacIndex(d1, m1); let z2 = getZodiacIndex(d2, m2);
+            let e1 = elementsZ[z1]; let e2 = elementsZ[z2];
+            let zodiacText = "";
+            if(e1 === e2) { score += 5; zodiacText = "Cùng hệ nguyên tố, rất dễ thấu hiểu nhau."; }
+            else if ((e1==="Fire"&&e2==="Air") || (e1==="Air"&&e2==="Fire") || (e1==="Earth"&&e2==="Water") || (e1==="Water"&&e2==="Earth")) { score += 8; zodiacText = "Hai nguyên tố tương trợ, bù trừ hoàn hảo."; }
+            else { score -= 5; zodiacText = "Khác biệt nguyên tố, cần nỗ lực dung hòa."; }
+
+            if(score > 99) score = 99;
+
+            let relNum = baseLpn1 + baseLpn2;
+            while(relNum > 9) { let t=0; for(let c of relNum.toString()) t+=parseInt(c); relNum = t;}
+            const relAdvice = {
+                1: "Mối quan hệ mang tính thúc đẩy, cả hai đều muốn độc lập.",
+                2: "Sự kết nối rất êm đềm, thiên về cảm xúc và sự đồng điệu.",
+                3: "Một cặp đôi vui ngộ, luôn có tiếng cười và đam mê sáng tạo.",
+                4: "Mối quan hệ xây dựng trên nền tảng thực tế, vững chắc và an toàn.",
+                5: "Rất nhiều sự bất ngờ, thay đổi và những chuyến phiêu lưu cùng nhau.",
+                6: "Thiên về xây dựng tổ ấm, chăm sóc lẫn nhau và tinh thần trách nhiệm.",
+                7: "Sự kết nối về mặt tâm linh và trí tuệ. Cần không gian riêng cho nhau.",
+                8: "Cặp đôi quyền lực, tập trung vào tài chính và các mục tiêu vật chất.",
+                9: "Một mối tình mang tính chữa lành, học cách bao dung và cho đi."
+            };
+
+            document.getElementById('sm-score').innerText = score;
+            document.getElementById('comp-lifepath').innerHTML = `Bạn mang năng lượng số <b>${lpn1}</b>, người ấy số <b>${lpn2}</b>.`;
+            document.getElementById('comp-zodiac').innerHTML = `${zodiacNames[z1]} và ${zodiacNames[z2]}: ${zodiacText}`;
+            document.getElementById('comp-advice').innerText = relAdvice[relNum];
+
+            document.getElementById('soulmate-export-area').style.display = 'block';
+            document.getElementById('btn-export-soulmate').style.display = 'inline-flex';
         }
 
-        function resetIching() {
-            currentLines = []; document.getElementById('lines-display').innerHTML = '';
-            document.getElementById('iching-result').style.display = 'none'; document.getElementById('btn-export-iching').style.display = 'none';
-            document.getElementById('btn-gieo-tu-dong').innerHTML = '<i class="fas fa-bolt"></i> Xin Quẻ';
-        }
+        // XUẤT ẢNH AN TOÀN CAO CHO ĐIỆN THOẠI BẰNG ASYNC/AWAIT
+        async function exportImg(id, name, btnId) {
+            const btn = document.getElementById(btnId); const oldText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...'; btn.style.pointerEvents = 'none';
 
-        // ==========================================
-        // JS: TÍNH NĂNG LƯU/XUẤT ẢNH HOÀN HẢO CHO ĐIỆN THOẠI
-        // ==========================================
-        function exportImage(containerId, fileName) {
-            const container = document.getElementById(containerId); 
-            const oldBg = container.style.background;
-            const footer = document.getElementById('export-footer');
+            try {
+                const el = document.getElementById(id); const oldBg = el.style.background;
+                const f = document.getElementById('export-footer'); 
+                
+                let qrDataUrl = "";
+                const qrCanvas = document.querySelector('#qr-generator-cache canvas');
+                if (qrCanvas) qrDataUrl = qrCanvas.toDataURL("image/png");
 
-            // Lấy QR Canvas
-            const qrCanvas = document.querySelector('#qr-generator-cache canvas');
-            let qrDataUrl = '';
-            if (qrCanvas) {
-                qrDataUrl = qrCanvas.toDataURL("image/png");
-            } else {
-                const qrImg = document.querySelector('#qr-generator-cache img');
-                if (qrImg) qrDataUrl = qrImg.src;
+                const footerClone = f.cloneNode(true);
+                footerClone.style.display = 'flex';
+                footerClone.querySelector('.qr-wrapper').innerHTML = `<img src="${qrDataUrl}" alt="Codelo QR" style="width:100%; height:100%;">`;
+                
+                el.style.background = '#ffffff'; el.appendChild(footerClone); 
+                document.body.classList.add('is-exporting'); el.classList.add('export-mode');
+
+                await new Promise(r => setTimeout(r, 300)); 
+
+                const canvas = await html2canvas(el, { scale: window.innerWidth < 768 ? 1.5 : 2, backgroundColor: '#ffffff', useCORS: true, removeContainer: true, foreignObjectRendering: false });
+                
+                document.body.classList.remove('is-exporting'); el.classList.remove('export-mode'); 
+                el.style.background = oldBg; footerClone.remove();
+
+                openImageModal(canvas.toDataURL('image/png'), name + '.png'); 
+            } catch (err) {
+                console.error(err);
+                document.body.classList.remove('is-exporting'); document.getElementById(id).classList.remove('export-mode'); 
+                alert("Hệ thống quá tải hoặc mạng quá chậm. Vui lòng thử lại!");
+            } finally {
+                btn.innerHTML = oldText; btn.style.pointerEvents = 'auto';
             }
-
-            footer.innerHTML = `
-                <div class="qr-wrapper">
-                    <img src="${qrDataUrl}" alt="Codelo QR">
-                </div>
-                <div class="export-promo">
-                    <div class="promo-title">Thông điệp từ <span>Codelo Tarot</span></div>
-                    <div class="promo-desc">Quét mã QR để tự rút bài và nhận thông điệp cho riêng mình!</div>
-                </div>
-            `;
-
-            container.style.background = '#ffffff'; 
-            container.appendChild(footer); 
-
-            // Bẻ phẳng hiệu ứng 3D tạm thời
-            container.classList.add('export-mode');
-
-            setTimeout(() => {
-                html2canvas(container, { scale: 2, backgroundColor: '#ffffff', useCORS: true }).then(canvas => {
-                    container.classList.remove('export-mode'); 
-                    container.style.background = oldBg;
-                    container.removeChild(footer); 
-                    
-                    canvas.toBlob(function(blob) {
-                        if (!blob) {
-                            alert("Có lỗi khi tạo ảnh!");
-                            return;
-                        }
-
-                        // Cách 1: Thử gọi Web Share API native trên điện thoại
-                        const file = new File([blob], fileName + '.png', { type: 'image/png' });
-                        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                            navigator.share({
-                                files: [file],
-                                title: 'Codelo Tarot',
-                                text: 'Thông điệp Tarot dành riêng cho bạn!'
-                            }).catch(() => {
-                                // Nếu người dùng nhấn hủy Share -> mở Khung xem ảnh để lưu tay
-                                openImageModal(URL.createObjectURL(blob));
-                            });
-                        } else {
-                            // Cách 2: Mở Popup xem ảnh để người dùng chạm giữ Lưu vào điện thoại (Hoạt động 100% mọi trình duyệt)
-                            openImageModal(URL.createObjectURL(blob));
-                        }
-                    }, 'image/png');
-
-                }).catch(err => {
-                    container.classList.remove('export-mode'); 
-                    container.style.background = oldBg;
-                    container.removeChild(footer);
-                    alert("Có lỗi khi tạo hình ảnh, cậu chủ thử lại nhé!");
-                });
-            }, 500);
         }
 
-        window.onload = function() { 
-            getWeather(10.8231, 106.6297); 
-            fetchNews(); 
-            updateClock(); 
-            initDOB(); 
-            
-            new QRCode(document.getElementById("qr-generator-cache"), {
-                text: "https://nhuthyne.github.io/tarot/",
-                width: 150,
-                height: 150,
-                colorDark : "#0f172a",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
-            });
+        function openImageModal(data, name) { window.dlName=name; document.getElementById('export-preview-img').src=data; document.getElementById('imageModal').style.display='flex'; }
+        function closeImg() { document.getElementById('imageModal').style.display='none'; }
+        function downloadImg() { const a=document.createElement('a'); a.download=window.dlName; a.href=document.getElementById('export-preview-img').src; a.click(); }
 
-            if (!localStorage.getItem('bh_guide_seen')) {
-                setTimeout(openGuide, 500);
-            }
-        };
+        window.onload = function() {
+            initDOB('dob'); initDOB('partner'); getAutoWeather(); updateStreak();
+            new QRCode(document.getElementById("qr-generator-cache"), { text: "https://nhuthyne.github.io/tarot/", width: 100, height: 100 });
+            if (!localStorage.getItem('bh_guide_seen_v103')) { setTimeout(openGuide, 600); }
+        }
     </script>
 </body>
 </html>
